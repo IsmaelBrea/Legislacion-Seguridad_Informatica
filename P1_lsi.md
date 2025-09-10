@@ -1,15 +1,15 @@
 # PRÁCTICA 1 - Seguridad Informática
 
-## Defensas
+## Defensas en clase
 - Traer papel y boli.  
 - Revisar siempre todo lo que aparezca en pantalla.  
 
 ---
 
-## Redes
+## Redes para la realización de las prácticas
 - **Eduroam**: no permitido el tráfico a los puertos 80 y 443.  
 - **UDCDocencia**: no permitido el tráfico al puerto 22.  
-- **VPN**:  
+- **VPN**(recomendada):  
   - Se obtienen dos IPs:
     - Una IP de la red para conectarse a la máquina Debian. Esta IP puede cambiar porque la tabla de la VPN se va llenando.  
       **No usar una IP fija con los 4 octetos definidos.**  
@@ -59,4 +59,5 @@ Primeros pasos obligatorios
    Cambiar la contraseña del usuario lsi.
    
    Cambiar la contraseña del usuario root.
+
 
