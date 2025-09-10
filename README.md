@@ -1,5 +1,5 @@
 # Seguridad_Informatica
-Prácticas de seguridad informática en una máquina Debian.
+Prácticas de seguridad informática en una máquina Debian
 ---
 
 El objetivo principal de estas prácticas es:
