@@ -56,16 +56,27 @@ Al conectarse por primera vez, se pide aceptar la huella digital (fingerprint).
 
 Primeros pasos obligatorios
 
-    -Cambiar la contraseña del usuario lsi.
-   
-    -Cambiar la contraseña del usuario root.
+  -Cambiar la contraseña del usuario lsi.
+  ```bash
+  passwd
+  ```
+  -Cambiar la contraseña del usuario root.
+  ```bash
+su
+passwd
+```
 
+Diferencia entre $ y #
+
+$ → estás usando un usuario normal (ej. lsi).
+# → estás usando el usuario root (administrador).
 
 ---
 # Puntos a resolver de la práctica 1
 
 El objetivo de esta práctica es comprender y probar el funcionamiento básico y configuración de su máquina de laboratorio. El alumno se “familiarizará” con los comandos y ficheros de configuración de un entorno Linux.
 Se cerrará esta práctica con la configuración básica de servicios de red, como trabajo a desarrollar en grupos de dos alumnos.
+
 
 
 
