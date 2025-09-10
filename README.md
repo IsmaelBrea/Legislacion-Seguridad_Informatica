@@ -1,4 +1,4 @@
-# 🔐 Seguridad_Informatica
+# Seguridad_Informatica
 
 Prácticas de **Seguridad Informática** realizadas en una máquina **Debian**.  
 El repositorio recoge las prácticas desarrolladas y **explicadas paso a paso**, con el objetivo de consolidar conocimientos teóricos y aplicarlos en un entorno práctico.
