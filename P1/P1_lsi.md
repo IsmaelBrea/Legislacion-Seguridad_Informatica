@@ -38,7 +38,7 @@
 - Usuario inicial:  
   - `lsi2.3.1`  
   - IP: `10.11.48.74`  
-  - Contraseña inicial: `virtualj..`  
+  - Contraseña inicial: `virtual;..`  
   - Root: `lsi`  
 
 - Usuario propio:  
@@ -54,9 +54,18 @@ Al conectarse por primera vez, se pide aceptar la huella digital (fingerprint).
 
 
 
-
 Primeros pasos obligatorios
-   Cambiar la contraseña del usuario lsi.
+
+    -Cambiar la contraseña del usuario lsi.
    
-   Cambiar la contraseña del usuario root.
+    -Cambiar la contraseña del usuario root.
+
+
+---
+# Puntos a resolver de la práctica 1
+
+El objetivo de esta práctica es comprender y probar el funcionamiento básico y configuración de su máquina de laboratorio. El alumno se “familiarizará” con los comandos y ficheros de configuración de un entorno Linux.
+Se cerrará esta práctica con la configuración básica de servicios de red, como trabajo a desarrollar en grupos de dos alumnos.
+
+
 
