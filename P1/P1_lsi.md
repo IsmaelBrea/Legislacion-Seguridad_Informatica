@@ -74,9 +74,9 @@ Diferencia entre `$` y `#`
 ---
 # Puntos a resolver de la práctica 1
 
-El objetivo de esta práctica es comprender y probar el **funcionamiento básico y configuración de su máquina de laboratorio**. El alumno se “familiarizará” con los **comandos y ficheros de configuración de un entorno Linux**.
-Se cerrará esta práctica con la configuración básica de servicios de red, como trabajo a desarrollar en grupos de dos alumnos.
+Familiarizarse con el **funcionamiento básico y la configuración de la máquina de laboratorio**, utilizando **comandos y ficheros de configuración en Linux**.  
 
+La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
 
 
 
