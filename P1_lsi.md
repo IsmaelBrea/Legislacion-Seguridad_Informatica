@@ -47,7 +47,7 @@
 
 Conexión por SSH:  
 ```bash
-ssh lsi2.3.1@10.11.48.74
+ssh lsi@10.11.48.169
 ```
 
 Al conectarse por primera vez, se pide aceptar la huella digital (fingerprint).
@@ -59,3 +59,4 @@ Primeros pasos obligatorios
    Cambiar la contraseña del usuario lsi.
    
    Cambiar la contraseña del usuario root.
+
