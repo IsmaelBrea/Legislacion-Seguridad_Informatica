@@ -27,7 +27,7 @@
 ## Sistema Operativo
 - Se comienza con **Debian 10**.  
 - Actualizar sistema: 10 → 11 → 12.  
-- Actualizar también el kernel a la versión 12.  
+- Actualizar también el kernel a la versión correspondiente. 
 - Una vez actualizado, eliminar ficheros de las versiones 10 y 11.  
 - **No se puede saltar directamente de Debian 10 a 12.**  
 - Revisar los servicios activos para asegurar que no queda nada corriendo que no corresponda.  
@@ -77,6 +77,7 @@ Diferencia entre `$` y `#`
 Familiarizarse con el **funcionamiento básico y la configuración de la máquina de laboratorio**, utilizando **comandos y ficheros de configuración en Linux**.  
 
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
+
 
 
 
