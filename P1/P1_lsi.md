@@ -224,6 +224,8 @@ Familiarizarse con el **funcionamiento básico y la configuración de la máquin
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
 
 
+**Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list).**
+
 
 
 
