@@ -177,12 +177,13 @@ Diferencia entre `$` y `#`
   Cambia de usuario **y carga el entorno completo** del nuevo usuario, incluyendo su PATH, variables y directorio inicial (`/root` si es root).
 
 ---
-###3-Comprobar el número máximo de comandos permitidos en el historial (history) y ampliarlo
+### 3-Comprobar el número máximo de comandos permitidos en el historial (history) y ampliarlo
 **El comando history es independiente para cada usuario, incluyendo root.**
 
 Cada usuario puede tener configuraciones distintas en ~/.bashrc o /etc/profile que afecten HISTSIZE y HISTFILESIZE:
-    HISTSIZE -> número máximo de comandos que se guardan en la sesión actual.
-    HISTFILESIZE -> número máximo de comandos que se guardan en el archivo de historial (~/.bash_history).
+- HISTSIZE -> número máximo de comandos que se guardan en la sesión actual.
+- HISTFILESIZE -> número máximo de comandos que se guardan en el archivo de historial (\~/.bash_history).
+
 
 Por tanto, lo primero que debemos hacer es comprobar cuandos comandos tenemos permitidos en ambos usuarios:
 ```bash
@@ -219,6 +220,7 @@ En otras palabras:
 Familiarizarse con el **funcionamiento básico y la configuración de la máquina de laboratorio**, utilizando **comandos y ficheros de configuración en Linux**.  
 
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
+
 
 
 
