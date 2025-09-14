@@ -46,8 +46,9 @@
   - `lsi2.3.4`  
   - IP: `10.11.48.169`  
 
+---
 
-### Primeros pasos obligatorios
+## Primeros pasos obligatorios
 
 ### 1.Conexión por SSH:  
 ```bash
@@ -221,6 +222,7 @@ En otras palabras:
 Familiarizarse con el **funcionamiento básico y la configuración de la máquina de laboratorio**, utilizando **comandos y ficheros de configuración en Linux**.  
 
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
+
 
 
 
