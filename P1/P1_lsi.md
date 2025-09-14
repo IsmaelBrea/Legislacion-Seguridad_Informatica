@@ -258,7 +258,7 @@ Familiarizarse con el **funcionamiento básico y la configuración de la máquin
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
 
 ---
-## **Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list).**
+### **Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list).**
 
 Los pasos básicos explicados por el profesor ya los hemos realizado:
   - Conexión por SSH, entender y comprobar el correcto funcionamiento del fingerprint
@@ -320,6 +320,7 @@ En resumen:
 - Pide una IP al router (DHCP), así se conecta a la red o Internet.
 
 ---
+
 
 
 
