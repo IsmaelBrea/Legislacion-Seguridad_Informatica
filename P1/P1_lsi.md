@@ -164,20 +164,20 @@ passwd
 
 **passwd: change password**
 
-Diferencia entre `$` y `#`
+### Diferencia entre `$` y `#`
 
-  `$` → estás usando un usuario normal (ej. lsi).  
-  \# → estás usando el usuario root (administrador).  
+- `$` → estás usando un usuario normal (ej. lsi).  
+- `#` → estás usando el usuario root (administrador).  
 
 
-**DIFERENCIAS ENTRE SU Y SU-**:
+### DIFERENCIAS ENTRE SU Y SU-
 
 - **`su`**  
   Cambia de usuario (por defecto a root) pero **mantiene tu entorno actual**, incluyendo directorio y variables.
 
 - **`su -`**  
   Cambia de usuario **y carga el entorno completo** del nuevo usuario, incluyendo su PATH, variables y directorio inicial (`/root` si es root).
-
+  
 ---
 ### 3-Activar sudo
 Activar sudo en Debian 10
@@ -200,7 +200,17 @@ sudo whoami
 
 Debería mostrar root
 
+### Diferencia entre `su` y `sudo`
 
+- **`su -`**  
+  Te loguea como root hasta que cierres sesión. Necesitas la **contraseña de root**.
+
+- **`sudo`**  
+  Ejecuta **un solo comando como root** usando tu contraseña de usuario normal.  
+  No cambia tu usuario permanentemente, solo eleva privilegios para ese comando.  
+
+
+---
 ### 4-Comprobar el número máximo de comandos permitidos en el historial (history) y ampliarlo
 **El comando history es independiente para cada usuario, incluyendo root.**
 
@@ -250,6 +260,7 @@ La práctica finaliza con la **configuración básica de servicios de red**, rea
 
 Los pasos básicos explicados por el profesor ya los hemos realizado:
 1-Cm
+
 
 
 
