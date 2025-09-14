@@ -243,9 +243,9 @@ source /root/.bashrc
 
 En otras palabras:
 
-  Normalmente, .bashrc se ejecuta cuando inicias sesión o abres una nueva terminal.
+  - Normalmente, .bashrc se ejecuta cuando inicias sesión o abres una nueva terminal.
   
-  Con source, no necesitas cerrar ni abrir otra sesión, se aplican los cambios inmediatamente en la terminal actual.
+  - Con source, no necesitas cerrar ni abrir otra sesión, se aplican los cambios inmediatamente en la terminal actual.
 
 
 ---
@@ -260,6 +260,7 @@ La práctica finaliza con la **configuración básica de servicios de red**, rea
 
 Los pasos básicos explicados por el profesor ya los hemos realizado:
 1-Cm
+
 
 
 
