@@ -233,6 +233,8 @@ root@debian:~# echo $HISTFILESIZE
 500
 ```
 
+**echo**: muestra texto o variables en la terminal. Imprime texto o el contenido de ciertas variables ($variable) en la pantalla. 
+
 Para aumentar ambos historiales tenemos que hacer lo siguiente:
 ```bash
 echo "export HISTSIZE=1000000" >> /root/.bashrc
@@ -255,7 +257,7 @@ Familiarizarse con el **funcionamiento básico y la configuración de la máquin
 
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
 
-
+---
 **Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list).**
 
 Los pasos básicos explicados por el profesor ya los hemos realizado:
@@ -264,6 +266,10 @@ Los pasos básicos explicados por el profesor ya los hemos realizado:
   - Instalar sudo
   - Ampliar el historial de comandos permitidos en ambos usuarios (lsi y root)
 
+
+
+
+---
 
 
 
