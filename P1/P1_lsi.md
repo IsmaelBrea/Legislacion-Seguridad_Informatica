@@ -17,7 +17,7 @@
   - Ambas IPs son diferentes.  
 
 **IP de los alumnos:** `10.11.48.0/23`  
-- `/23` porque con `/24` no alcanzan las IPs para todos los alumnos.  
+- `/23` porque con `/24` no alcanzan las IPs para todos los alumnos, ya que solo habría 256 direcciones posibles con /24. Con /23 hay 512 direcciones IPs disponibles, suficientes para todos.
 - `0` → IP de subred.  
 - `1` → IP de gateway.  
 - `255` → IP de broadcast.  
@@ -325,6 +325,7 @@ En resumen:
 
 2. ens33 → real, siempre encendida, obtiene IP automática para conectarse a la red.
 ---
+
 
 
 
