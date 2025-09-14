@@ -179,7 +179,29 @@ Diferencia entre `$` y `#`
   Cambia de usuario **y carga el entorno completo** del nuevo usuario, incluyendo su PATH, variables y directorio inicial (`/root` si es root).
 
 ---
-### 3-Comprobar el número máximo de comandos permitidos en el historial (history) y ampliarlo
+### 3-Activar sudo
+Activar sudo en Debian 10
+
+Instala sudo (como root):
+```bash
+su -              # Entrar como root
+apt update         # Actualizar lista de paquetes
+apt install sudo   # Instalar sudo
+```
+Añadir nuestro usuario lsi al grupo sudo
+```bash 
+usermod -aG sudo lsi    # Permite a 'lsi' usar sudo
+```
+
+Prueba sudo:
+```bash
+sudo whoami   
+```
+
+Debería mostrar root
+
+
+### 4-Comprobar el número máximo de comandos permitidos en el historial (history) y ampliarlo
 **El comando history es independiente para cada usuario, incluyendo root.**
 
 Cada usuario puede tener configuraciones distintas en ~/.bashrc o /etc/profile que afecten HISTSIZE y HISTFILESIZE:
@@ -226,6 +248,8 @@ La práctica finaliza con la **configuración básica de servicios de red**, rea
 
 **Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list).**
 
+Los pasos básicos explicados por el profesor ya los hemos realizado:
+1-Cm
 
 
 
