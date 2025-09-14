@@ -293,7 +293,7 @@ Este archivo de configuracion le indica a mi máquina como usar sus cables y WIF
 Lo que muestra mi salida es lo siguiente:
 
 ```bash
-auto lo ens33**
+auto lo ens33
 ```
 
 - Significa que estas dos interfaces (lo y ens33) se activan automáticamente al arrancar el sistema.
@@ -325,6 +325,7 @@ En resumen:
 
 2. ens33 → real, siempre encendida, obtiene IP automática para conectarse a la red.
 ---
+
 
 
 
