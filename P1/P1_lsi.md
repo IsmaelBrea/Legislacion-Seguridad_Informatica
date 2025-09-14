@@ -160,6 +160,7 @@ passwd
 ```
 
 **su: access to super user**
+
 **passwd: change password**
 
 Diferencia entre `$` y `#`
@@ -220,6 +221,7 @@ En otras palabras:
 Familiarizarse con el **funcionamiento básico y la configuración de la máquina de laboratorio**, utilizando **comandos y ficheros de configuración en Linux**.  
 
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
+
 
 
 
