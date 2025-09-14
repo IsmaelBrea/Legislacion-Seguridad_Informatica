@@ -292,7 +292,9 @@ Este archivo de configuracion le indica a mi máquina como usar sus cables y WIF
 
 Lo que muestra mi salida es lo siguiente:
 
-**auto lo ens33**
+```bash
+auto lo ens33**
+```
 
 - Significa que estas dos interfaces (lo y ens33) se activan automáticamente al arrancar el sistema.
 
@@ -302,24 +304,28 @@ Lo que muestra mi salida es lo siguiente:
 
 - ens33 = cable de red o interfaz de red real.
 
+```bash
+iface lo inet loopback
+```
+- iface lo = esta configurando la interfaz lo
+- inet = usamos el protocolo de red Ipv4
+- loopback: tipo de conexión interna (la máquina habla consigo misma, no sale a Internet)
+
+```bash
+iface ens33 inet dhcp
+```
+- iface ens33 = esta configurando la interfaz de red real
+- inet = usamos el protocolo de red Ipv4
+- dhcp (dynamic host control protocol) = la IP se asigna automáticamente por el router.
+
 
 
 En resumen:
-1. lo → interfaz interna
+1. lo → interna, siempre encendida, no sale a Internet.
 
-- Siempre está activada.
-
-- La usa tu ordenador para hablar consigo mismo.
-
-- No se conecta a Internet.
-
-2. ens33 → interfaz de red
-
-- Se activa automáticamente.
-
-- Pide una IP al router (DHCP), así se conecta a la red o Internet.
-
+2. ens33 → real, siempre encendida, obtiene IP automática para conectarse a la red.
 ---
+
 
 
 
