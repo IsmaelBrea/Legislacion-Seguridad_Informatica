@@ -258,18 +258,69 @@ Familiarizarse con el **funcionamiento básico y la configuración de la máquin
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
 
 ---
-**Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list).**
+## **Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list).**
 
 Los pasos básicos explicados por el profesor ya los hemos realizado:
   - Conexión por SSH, entender y comprobar el correcto funcionamiento del fingerprint
   - Cambiar las contraseñas de los usuarios (lsi y root)
   - Instalar sudo
   - Ampliar el historial de comandos permitidos en ambos usuarios (lsi y root)
+  - 
+
+ANÁLISIS DE LOS FICHEROS BÁSICOS DE CONFIGURACIÓN (/etc - archivos de configuración del sistema)
+Son archivos de texto que contienen parámetros que definen cómo se comporta el sistema.
+
+En Debian (y en Linux en general) casi todo se configura a través de archivos en /etc/. Es un directorio de configuración que contiene archivos y subcarpetas que configuran el sistema y los servicios.
+
+Por ejemplo:
+
+**etc/network/interfaces**
+
+```bash
+lsi@debian:~$ cat /etc/network/interfaces
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+#source /etc/network/interfaces.d/*
+# The loopback network interface
+auto lo ens33
+iface lo inet loopback
+iface ens33 inet dhcp
+```
+
+Todo lo que lleve "#" son comentarios, no se ejeuctan.
+Este archivo de configuracion le indica a mi máquina como usar sus cables y WIFI. No guarda la IP real ni lo que el ordenador está haciendo ahora, solo dice que hacer cuando arranca.
+
+Lo que muestra mi salida es lo siguiente:
+
+**auto lo ens33**
+
+- Significa que estas dos interfaces (lo y ens33) se activan automáticamente al arrancar el sistema.
+
+- “auto” = se enciende sola.
+
+- lo = loopback, conexión interna de la máquina (no sale a Internet). La usa la máquina para hablar consigo misma.
+
+- ens33 = cable de red o interfaz de red real.
 
 
 
+En resumen:
+1. lo → interfaz interna
+
+- Siempre está activada.
+
+- La usa tu ordenador para hablar consigo mismo.
+
+- No se conecta a Internet.
+
+2. ens33 → interfaz de red
+
+- Se activa automáticamente.
+
+- Pide una IP al router (DHCP), así se conecta a la red o Internet.
 
 ---
+
 
 
 
