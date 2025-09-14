@@ -259,7 +259,11 @@ La práctica finaliza con la **configuración básica de servicios de red**, rea
 **Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list).**
 
 Los pasos básicos explicados por el profesor ya los hemos realizado:
-1-Cm
+  - Conexión por SSH, entender y comprobar el correcto funcionamiento del fingerprint
+  - Cambiar las contraseñas de los usuarios (lsi y root)
+  - Instalar sudo
+  - Ampliar el historial de comandos permitidos en ambos usuarios (lsi y root)
+
 
 
 
