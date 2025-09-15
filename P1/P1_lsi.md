@@ -726,20 +726,21 @@ sudo apt autoremove -y
 sudo apt autoclean
 ```
 
-update → actualiza la lista de paquetes
+- update → actualiza la lista de paquetes
 
-upgrade → actualiza todos los paquetes que tengan nuevas versiones sin tocar dependencias que puedan romper algo.
+- upgrade → actualiza todos los paquetes que tengan nuevas versiones sin tocar dependencias que puedan romper algo.
 
-full-upgrade → actualiza incluso paquetes que cambian dependencias
+- full-upgrade → actualiza incluso paquetes que cambian dependencias
 
-autoremove → elimina paquetes que ya no hacen falta
+- autoremove → elimina paquetes que ya no hacen falta
 
--y significa “sí automáticamente”, para no tener que confirmarlas una por una.
+- -y significa “sí automáticamente”, para no tener que confirmarlas una por una.
 
 
 En upgrade nos pide actualizar el GRUB en el dev/sda (gestor de arranque que usa Debian (y casi todas las distros Linux)).
 
 Tendré que marcar [*] con un espacion en dev/sda y darle a Aceptar moviendose con en Tabulador.
+
 
 
 
