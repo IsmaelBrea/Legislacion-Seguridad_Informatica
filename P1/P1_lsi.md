@@ -592,6 +592,66 @@ Además, cada línea termina con main, contrib, etc.:
   - contrib → paquetes extra que dependen de software libre adicional. Paquetes que son libres, pero necesitan algo fuera de Debian para funcionar. Es decir, el programa es libre, pero para usarlo necesitas software que no está en main.
 
 
-### **Con este archivo nos aseguramos de que partimos con una máquina Debian versión 10 (Buster)**
+#### **Con este archivo nos aseguramos de que partimos con una máquina Debian versión 10 (Buster)**
+
+---
+
+### **Apartado B) ¿Qué distro y versión tiene la máquina inicialmente entregada?. Actualice su
+máquina a la última versión estable disponible.**
+
+Distro = versión completa de Linux lista para usar. En nuestro caso Debian, y ya sabemos ques la versión 10.
+
+Kernel = es el núcleo del Sistema Operativo. Actúa como puente entre hardware y software. Todavía no sabemos su versión.
+
+
+### Versión del distro
+Según el source.list ya sabemos que estamos en un Debian 10. Esto se puede comprobar de varias maneras:
+
+1-lsb_relesase -a (Linux Standard Base release)
+Muestra información sobre nuestra distrubución de Linux.
+```bash
+lsi@debian:~$ lsb_release -a
+No LSB modules are available.
+Distributor ID: Debian
+Description:    Debian GNU/Linux 10 (buster)
+Release:        10
+Codename:       buster
+```
+
+-a → significa all, es decir, “muestra toda la información disponible”.
+
+
+2-/etc/debian_version
+```bash
+lsi@debian:~$ cat /etc/debian_version
+10.4
+```
+
+### Versión del kernel
+
+Varias formas de obtener la versión del kernel:
+
+1. uname (Unix Name):
+2. 
+```bash
+man uname
+````
+
+Parámetros:
+-r	Muestra la versión del kernel
+-a	Muestra toda la información disponible (kernel, hostname, arquitectura, fecha de compilación…)
+-s	Muestra el nombre del sistema operativo
+-m	Muestra la arquitectura de la máquina (amd64, i386…)
+
+```bash
+lsi@debian:~$ uname -r
+4.19.0-9-amd64
+```
+
+```bash
+lsi@debian:~$ uname -a
+Linux debian 4.19.0-9-amd64 #1 SMP Debian 4.19.118-2+deb10u1 (2020-06-07) x86_64 GNU/Linux
+```
+
 
 
