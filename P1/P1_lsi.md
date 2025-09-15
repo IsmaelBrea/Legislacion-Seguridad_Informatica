@@ -483,7 +483,9 @@ Qué pasa detrás de escena:
 
   4. El DNS responde algo como 10.8.8.50
 
+
 Tu ordenador ahora hace ping 10.8.8.50 y puedes comunicarte con el servidor.
+
 ---
 
 
@@ -492,27 +494,23 @@ Tu ordenador ahora hace ping 10.8.8.50 y puedes comunicarte con el servidor.
 El archivo /etc/nsswitch.conf le dice a tu Debian dónde mirar primero y dónde después para encontrar cosas como usuarios, contraseñas o direcciones de otros ordenadores.
 
 ```bash
-lsi@debian:~$ cat /etc/nsswitch.conf
-# /etc/nsswitch.conf
-#
-# Example configuration of GNU Name Service Switch functionality.
-# If you have the `glibc-doc-reference' and `info' packages installed, try:
-# `info libc "Name Service Switch"' for information about this file.
-
-passwd:         files systemd
-group:          files systemd
-shadow:         files
-gshadow:        files
+passwd:         files systemd        # Usuarios: primero archivos locales (/etc/passwd), luego systemd
+group:          files systemd        # Grupos: primero archivos locales (/etc/group), luego systemd
+shadow:         files                # Contraseñas cifradas: solo archivos locales (/etc/shadow)
+gshadow:        files                # Contraseñas de grupos: solo archivos locales (/etc/gshadow)
 
 hosts:          files mdns4_minimal [NOTFOUND=return] dns myhostname
-networks:       files
+                                    # Nombres de ordenadores: primero /etc/hosts, luego red local (mdns),
+                                    # si no está [NOTFOUND=return], luego DNS y finalmente el nombre de la máquina
+networks:       files                # Redes: busca en archivos locales (/etc/networks)
 
-protocols:      db files
-services:       db files
-ethers:         db files
-rpc:            db files
+protocols:      db files             # Protocolos de red: primero base de datos, luego archivo (/etc/protocols)
+services:       db files             # Servicios de red: primero base de datos, luego archivo (/etc/services)
+ethers:         db files             # Direcciones MAC: primero base de datos, luego archivo (/etc/ethers)
+rpc:            db files             # Servicios RPC: primero base de datos, luego archivo (/etc/rpc)
 
-netgroup:       nis
+netgroup:       nis                  # Grupos de red: usa NIS (servicio de red)
+
 ```
 
 Ahora, línea por línea:
@@ -549,6 +547,49 @@ Todo lo demás (networks, protocols, services…) → funciona igual: primero ar
 Así siempre sabe dónde buscar y en qué orden.
 
 
+### systemd = jefe del Linux que arranca y controla todos los servicios y tareas.
+Sin él, tu Debian no sabría qué programas ejecutar al iniciar.
+
+---
 
 
 
+**/etc/apt/sources.list**:
+
+Cada línea es el sitio donde se accede para descargar los paquetes necesarios.
+
+```bash
+lsi@debian:~$ cat /etc/apt/sources.list
+#
+
+# deb cdrom:[Debian GNU/Linux 10.4.0 _Buster_ - Official amd64 DVD Binary-1 20200509-10:26]/ buster contrib main
+
+#deb cdrom:[Debian GNU/Linux 10.4.0 _Buster_ - Official amd64 DVD Binary-1 20200509-10:26]/ buster contrib main
+
+deb http://deb.debian.org/debian/ buster main
+deb-src http://deb.debian.org/debian/ buster main
+
+deb http://security.debian.org/debian-security buster/updates main contrib
+deb-src http://security.debian.org/debian-security buster/updates main contrib
+
+# buster-updates, previously known as 'volatile'
+deb http://deb.debian.org/debian/ buster-updates main contrib
+deb-src http://deb.debian.org/debian/ buster-updates main contrib
+```
+
+El archivo /etc/apt/sources.list le dice a Debian de dónde puede descargar programas y actualizaciones. Cada línea indica un “repositorio”, que es un servidor con paquetes de software.
+
+Las líneas que empiezan con # son comentarios, es decir, notas que el sistema ignora. Por ejemplo, las que hablan del DVD de instalación no se usan.
+
+Las líneas que empiezan con deb indican paquetes listos para instalar (programas ya compilados).
+
+Las líneas que empiezan con deb-src indican el código fuente de esos programas, que sirve si quieres compilar tú mismo el software.
+
+Además, cada línea termina con main, contrib, etc.:
+
+  - main → paquetes oficiales de Debian. Funcionan solos, no necesitan nada externo. Programas básicos como vim o bash.
+  
+  - contrib → paquetes extra que dependen de software libre adicional. Paquetes que son libres, pero necesitan algo fuera de Debian para funcionar. Es decir, el programa es libre, pero para usarlo necesitas software que no está en main.
+
+
+### **Con este archivo nos aseguramos de que partimos con una máquina Debian versión 10 (Buster)**
