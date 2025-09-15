@@ -385,13 +385,14 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ```
 
-Este archivo es ua lista de nombres de computadoras y a qué dirección IP corresponden.
+Este archivo es una lista de nombres de computadoras y a qué dirección IP corresponden.
 “Este nombre corresponde a esta dirección IP”.
 Obtiene una relación entre un nombre de máquina y una dirección IP: en cada línea de /etc/hosts se especifica una dirección IP y los nombres de máquina que le corresponden, de forma que un usuario no tenga que recordar direcciones sino nombres de hosts. Habitualmente se suelen incluir las direcciones, nombres y alias de todos los equipos conectados a la red local, de forma que para comunicación dentro de la red no se tenga que recurrir a DNS a la hora de resolver un nombre de máquina.
 
+```bash
 127.0.0.1   localhost     #Cuando el sistema vea el nombre localhost, en realidad se conecta a 127.0.0.1 (tu propio PC).
 127.0.1.1   debian        #También “yo mismo”, pero usando el nombre de la máquina (debian).
-
+```
 
 ¿Y por qué no sale tu IP 10.11.48.169?
 
@@ -483,14 +484,69 @@ Qué pasa detrás de escena:
   4. El DNS responde algo como 10.8.8.50
 
 Tu ordenador ahora hace ping 10.8.8.50 y puedes comunicarte con el servidor.
+---
 
 
+**/etc/nsswitch.conf**:
+
+El archivo /etc/nsswitch.conf le dice a tu Debian dónde mirar primero y dónde después para encontrar cosas como usuarios, contraseñas o direcciones de otros ordenadores.
+
+```bash
+lsi@debian:~$ cat /etc/nsswitch.conf
+# /etc/nsswitch.conf
+#
+# Example configuration of GNU Name Service Switch functionality.
+# If you have the `glibc-doc-reference' and `info' packages installed, try:
+# `info libc "Name Service Switch"' for information about this file.
+
+passwd:         files systemd
+group:          files systemd
+shadow:         files
+gshadow:        files
+
+hosts:          files mdns4_minimal [NOTFOUND=return] dns myhostname
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup:       nis
+```
+
+Ahora, línea por línea:
+
+- passwd: files systemd → para encontrar usuarios, primero mira los archivos locales (/etc/passwd) y después systemd
+
+- group: files systemd → para encontrar grupos de usuarios, igual
+
+- shadow: files → para las contraseñas cifradas, solo mira los archivos locales (/etc/shadow)
+
+- hosts: files mdns4_minimal [NOTFOUND=return] dns myhostname
+
+Para encontrar otros ordenadores por su nombre:
+
+  - Mira tu archivo /etc/hosts (como tu agenda local)
+  
+  - Busca en la red local (mdns)
+  
+  - Si no hay, pregunta al DNS (como la guía telefónica de Internet)
+  
+  - Si es tu propia máquina, usa su nombre (myhostname)
+
+Todo lo demás (networks, protocols, services…) → funciona igual: primero archivos locales, después servidores o bases de datos externas si hace falta
 
 
+**Resumen fácil:**
 
+- nsswitch.conf = el orden que sigue tu Debian para buscar información.
 
+- Primero mira archivos locales.
 
+- Si no lo encuentra, pregunta a servicios de red o bases de datos.
 
+Así siempre sabe dónde buscar y en qué orden.
 
 
 
