@@ -357,6 +357,7 @@ En resumen:
 
 
 **etc/hosts**
+
 Es como una agenda de nombres de red para tu propio ordenador.
 ```bash
 lsi@debian:~$ cat /etc/hosts
@@ -424,8 +425,10 @@ ff02::2 ip6-allrouters
 - ff02::1 → enviar mensaje a todos los PCs de tu red.. Es como si enviaras un mensaje al aire y todos los PCs de tu red pudieran leerlo.
 
 - ff02::2 → enviar mensaje a todos los routers de tu red. Sirve para enviar mensajes a los routers sin tener que escribir su IP exacta.
+---
  
 **/etc/resolv.conf**:
+
 
 
 
