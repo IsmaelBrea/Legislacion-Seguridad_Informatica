@@ -219,6 +219,8 @@ Debería mostrar root
 ### 4-Comprobar el número máximo de comandos permitidos en el historial (history) y ampliarlo
 **El comando history es independiente para cada usuario, incluyendo root.**
 
+El historial del root en mi máquina empieza a partir del comando 148
+
 Cada usuario puede tener configuraciones distintas en ~/.bashrc o /etc/profile que afecten HISTSIZE y HISTFILESIZE:
 - HISTSIZE -> número máximo de comandos que se guardan en la sesión actual.
 - HISTFILESIZE -> número máximo de comandos que se guardan en el archivo de historial (\~/.bash_history).
@@ -621,7 +623,22 @@ Codename:       buster
 -a → significa all, es decir, “muestra toda la información disponible”.
 
 
-2-/etc/debian_version
+2-cat /etc/*-release -> también nos da información sobre la versión.
+```bash
+lsi@debian:~$ cat /etc/*-release
+PRETTY_NAME="Debian GNU/Linux 10 (buster)"
+NAME="Debian GNU/Linux"
+VERSION_ID="10"
+VERSION="10 (buster)"
+VERSION_CODENAME=buster
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+```
+
+
+3-/etc/debian_version
 ```bash
 lsi@debian:~$ cat /etc/debian_version
 10.4
@@ -652,6 +669,74 @@ lsi@debian:~$ uname -r
 lsi@debian:~$ uname -a
 Linux debian 4.19.0-9-amd64 #1 SMP Debian 4.19.118-2+deb10u1 (2020-06-07) x86_64 GNU/Linux
 ```
+
+### Actualizar a Debian 11
+
+1. Ninguna actualización con update o upgrade va funcionar en Debian 10 ya que no está soportado oficialmente y los repositorios han sido movidos a archive.debian.org. apt intenta buscar archivos que ya no existen.
+
+Por tanto, vamos a cambiar el contenido del archivo sources.list para poder actualizar los últimos paquetes de la versión 10.
+
+```bash
+sudo nano /etc/apt/sources.list
+
+#
+
+# deb cdrom:[Debian GNU/Linux 10.4.0 _Buster_ - Official amd64 DVD Binary-1 20200509-10:26]/ buster contrib main
+
+#deb cdrom:[Debian GNU/Linux 10.4.0 _Buster_ - Official amd64 DVD Binary-1 20200509-10:26]/ buster contrib main
+
+deb http://archive.debian.org/debian/ buster main
+deb-src http://archive.debian.org/debian/ buster main
+
+deb http://archive.debian.org/debian-security buster/updates main contrib
+deb-src http://archive.debian.org/debian-security buster/updates main contrib
+
+# buster-updates, previously known as 'volatile'
+deb http://archive.debian.org/debian/ buster-updates main contrib
+deb-src http://archive.debian.org/debian/ buster-updates main contrib
+```
+Guarda y cierra (Ctrl+O, Enter, Ctrl+X).
+
+
+
+2. Desactivar la comprobación de fechas expiradas
+
+Los repositorios antiguos pueden dar error de “Release file expired”. Para solucionarlo, actualiza con:
+```bash
+sudo apt update -o Acquire::Check-Valid-Until=false
+```
+
+
+3. Ver qué se puede actualizar
+
+Ya apt detectó paquetes actualizables. Confirma la lista:
+```bash
+apt list --upgradable
+```
+
+No actualiza nada. SOLO INFORMA
+
+
+4. Actualizar todos los paquetes de Debian 10:
+
+```bash
+sudo apt upgrade -y
+sudo apt full-upgrade -y
+sudo apt autoremove -y
+sudo apt autoclean
+```
+
+update → actualiza la lista de paquetes
+
+upgrade → actualiza todos los paquetes que tengan nuevas versiones sin tocar dependencias que puedan romper algo.
+
+full-upgrade → actualiza incluso paquetes que cambian dependencias
+
+autoremove → elimina paquetes que ya no hacen falta
+
+-y significa “sí automáticamente”, para no tener que confirmarlas una por una.
+
+
 
 
 
