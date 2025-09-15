@@ -357,6 +357,7 @@ En resumen:
 
 
 **etc/hosts**
+Es como una agenda de nombres de red para tu propio ordenador.
 ```bash
 lsi@debian:~$ cat /etc/hosts
 127.0.0.1       localhost
@@ -368,8 +369,10 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ```
 
-Este archivo es un archivo de nombres. Sirve para decir:
+Este archivo es ua lista de nombres de computadoras y a qué dirección IP corresponden.
 “Este nombre corresponde a esta dirección IP”.
+Obtiene una relación entre un nombre de máquina y una dirección IP: en cada línea de /etc/hosts se especifica una dirección IP y los nombres de máquina que le corresponden, de forma que un usuario no tenga que recordar direcciones sino nombres de hosts. Habitualmente se suelen incluir las direcciones, nombres y alias de todos los equipos conectados a la red local, de forma que para comunicación dentro de la red no se tenga que recurrir a DNS a la hora de resolver un nombre de máquina.
+
 127.0.0.1   localhost     #Cuando el sistema vea el nombre localhost, en realidad se conecta a 127.0.0.1 (tu propio PC).
 127.0.1.1   debian        #También “yo mismo”, pero usando el nombre de la máquina (debian).
 
@@ -377,16 +380,52 @@ Este archivo es un archivo de nombres. Sirve para decir:
 ¿Y por qué no sale tu IP 10.11.48.169?
 
 Porque 127.x.x.x no es tu IP real de la red, es una dirección especial solo para uso interno del ordenador.
+
 La 10.11.48.169 sí es tu IP real en la red (la que usan otros equipos para conectarse a tu máquina).
 
 
 **Resumen fácil:**
+
 127.0.0.1 y 127.0.1.1 = tu PC hablando consigo mismo.
 
 10.11.48.169 = tu PC hablando con otros en la red.
 
 
+Las últimas líneas que aparecen con comentario hacen referencia a IPv6:
+```bash
+::1     localhost ip6-localhost ip6-loopback
+```
+- ::1 = dirección IPv6 que apunta a tu propio PC (igual que 127.0.0.1 en IPv4).
 
+- Nombres que se le pueden dar: localhost, ip6-localhost, ip6-loopback.
+
+- Sirve para que tu máquina se pueda hablar a sí misma usando IPv6.
+
+
+```bash
+ff02::1 ip6-allnodes
+```
+- Dirección especial que significa “todos los dispositivos de la red local”.
+
+- Se usa en redes IPv6 para enviar mensajes a todos los equipos a la vez.
+
+```bash
+ff02::2 ip6-allrouters
+```
+- Dirección especial que significa “todos los routers de la red”.
+
+- Se usa en redes IPv6 para enviar mensajes a todos los routers a la vez.
+
+
+**Resumen fácil:**
+
+- ::1 → tu PC hablando consigo mismo (IPv6).
+
+- ff02::1 → enviar mensaje a todos los PCs de tu red.. Es como si enviaras un mensaje al aire y todos los PCs de tu red pudieran leerlo.
+
+- ff02::2 → enviar mensaje a todos los routers de tu red. Sirve para enviar mensajes a los routers sin tener que escribir su IP exacta.
+ 
+**/etc/resolv.conf**:
 
 
 
