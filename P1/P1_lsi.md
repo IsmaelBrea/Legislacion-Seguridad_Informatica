@@ -258,7 +258,7 @@ Familiarizarse con el **funcionamiento básico y la configuración de la máquin
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
 
 ---
-### **Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list).**
+### **Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list,etc).**
 
 Los pasos básicos explicados por el profesor ya los hemos realizado:
   - Conexión por SSH, entender y comprobar el correcto funcionamiento del fingerprint
@@ -268,11 +268,39 @@ Los pasos básicos explicados por el profesor ya los hemos realizado:
   - 
 
 ANÁLISIS DE LOS FICHEROS BÁSICOS DE CONFIGURACIÓN (/etc - archivos de configuración del sistema)
+📂 /etc = Configuraciones del sistema y programas
+Aquí casi todo son archivos de texto que puedes abrir y leer.
 Son archivos de texto que contienen parámetros que definen cómo se comporta el sistema.
 
 En Debian (y en Linux en general) casi todo se configura a través de archivos en /etc/. Es un directorio de configuración que contiene archivos y subcarpetas que configuran el sistema y los servicios.
+#### 🔑 Configuración de usuarios y contraseñas:
+- `/etc/passwd` → lista de usuarios del sistema.  
+- `/etc/shadow` → contraseñas cifradas de los usuarios.  
+- `/etc/group` → grupos de usuarios.  
 
-Por ejemplo:
+#### 🌐 Configuración de red:
+- `/etc/hosts` → tabla local de nombres (para resolver direcciones sin DNS).  
+- `/etc/hostname` → el nombre del equipo.  
+- `/etc/network/interfaces` (en Debian/Ubuntu viejos) → configuración de interfaces de red.  
+
+#### ⚙️ Configuración de arranque y servicios:
+- `/etc/fstab` → qué particiones montar al arrancar.  
+- `/etc/systemd/` → scripts y configuraciones de servicios en sistemas modernos.  
+- `/etc/init.d/` → scripts de inicio (sistemas más antiguos).  
+
+#### 📦 Configuración de programas:
+Cada aplicación suele tener su propia carpeta:  
+- `/etc/ssh/sshd_config` → configuración del servidor SSH.  
+- `/etc/apache2/` → configuración del servidor web Apache.  
+- `/etc/mysql/` → configuración de MySQL.  
+
+#### 📑 Otros ficheros útiles:
+- `/etc/resolv.conf` → servidores DNS.  
+- `/etc/sudoers` → quién puede usar `sudo`.  
+- `/etc/crontab` → tareas programadas.  
+
+
+### Ejemplos probados en la práctica:
 
 **etc/network/interfaces**
 
@@ -325,6 +353,7 @@ En resumen:
 
 2. ens33 → real, siempre encendida, obtiene IP automática para conectarse a la red.
 ---
+
 
 
 
