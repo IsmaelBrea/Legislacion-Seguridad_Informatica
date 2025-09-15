@@ -697,6 +697,11 @@ deb-src http://archive.debian.org/debian/ buster-updates main contrib
 ```
 Guarda y cierra (Ctrl+O, Enter, Ctrl+X).
 
+- main → Contiene software completamente libre, soportado oficialmente por Debian.
+
+- contrib → Software libre, pero depende de paquetes que están en non-free. Por ejemplo, un programa libre que necesita un driver privativo para funcionar.
+
+- non-free → Software propietario o con restricciones. Debian no puede garantizar soporte completo, pero a veces es necesario para que ciertos dispositivos o drivers funcionen (por ejemplo, controladores Wi-Fi, tarjetas gráficas, firmware).
 
 
 2. Desactivar la comprobación de fechas expiradas
@@ -758,6 +763,7 @@ Ya tenemos el Debian 10 LIMPIO Y ACTUALIZADO.
 
 
 Vamos a pasar ahora al 11:
+
 
 
 
