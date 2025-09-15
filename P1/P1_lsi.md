@@ -193,6 +193,11 @@ Añadir nuestro usuario lsi al grupo sudo
 usermod -aG sudo lsi    # Permite a 'lsi' usar sudo
 ```
 
+-aG:
+  - G → indica “agregar al usuario a estos grupos”.
+
+  - a → significa “añadir al grupo sin quitarlo de los demás grupos que ya tiene”.
+
 Prueba sudo:
 ```bash
 sudo whoami   
@@ -429,6 +434,7 @@ ff02::2 ip6-allrouters
 ---
  
 **/etc/resolv.conf**:
+
 
 
 
