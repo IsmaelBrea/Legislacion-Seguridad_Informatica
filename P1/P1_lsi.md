@@ -524,9 +524,13 @@ Ahora, línea por línea:
 - hosts: files mdns4_minimal [NOTFOUND=return] dns myhostname
 
 Para encontrar otros ordenadores por su nombre:
+    
     - Mira tu archivo /etc/hosts (como tu agenda local)
+    
     - Busca en la red local (mdns)
+    
     - Si no hay, pregunta al DNS (como la guía telefónica de Internet)
+    
     - Si es tu propia máquina, usa su nombre (myhostname)
 
 Todo lo demás (networks, protocols, services…) → funciona igual: primero archivos locales, después servidores o bases de datos externas si hace falta
@@ -589,4 +593,5 @@ Además, cada línea termina con main, contrib, etc.:
 
 
 ### **Con este archivo nos aseguramos de que partimos con una máquina Debian versión 10 (Buster)**
+
 
