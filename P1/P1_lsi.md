@@ -281,13 +281,22 @@ Son archivos de texto que contienen parámetros que definen cómo se comporta el
 
 En Debian (y en Linux en general) casi todo se configura a través de archivos en /etc/. Es un directorio de configuración que contiene archivos y subcarpetas que configuran el sistema y los servicios.
 #### 🔑 Configuración de usuarios y contraseñas:
-- `/etc/passwd` → lista de usuarios del sistema.  
-- `/etc/shadow` → contraseñas cifradas de los usuarios.  
-- `/etc/group` → grupos de usuarios.  
+- `/etc/passwd` → lista de usuarios del sistema, su ID, grupo, carpeta y shell, pero no contiene contraseñas reales. Ejemplo:
+```bash
+root:x:0:0:root:/root:/bin/bash     #nombre usuario, contraseña guardada en /etc/shadow, UID, GID, info del user, diretcorio del user, shell por defecto al iniciar sesión
+```  
+- `/etc/shadow` → USAR SUDO. Contraseñas cifradas de los usuarios. Ejemplo:
+```bash
+root:$6$FSEZLE5xfP.Xo3/M$Vd.VBf1s6M5fJWzeg8bHQxPHk75T3LBZjKGvyE4gRj0fNKVhnWHCfx2yO93NRPoAQsHMkFHS/AiJulnl3O/XC0:20345:0:99999:7:::
+```
+- `/etc/group` → grupos de usuarios y sus miembros.  Ejemplo:
+```bash
+sudo:x:27:lsi     #nombre grupo, contraseñas guardadas en /etc/shadow, GID, lista de miembros
+```
 
 #### 🌐 Configuración de red:
 - `/etc/hosts` → tabla local de nombres (para resolver direcciones sin DNS).  
-- `/etc/hostname` → el nombre del equipo.  
+- `/etc/hostname` → el nombre del equipo -> debian (mi máquina) 
 - `/etc/network/interfaces` (en Debian/Ubuntu viejos) → configuración de interfaces de red.  
 
 #### ⚙️ Configuración de arranque y servicios:
@@ -432,12 +441,48 @@ ff02::2 ip6-allrouters
 
 - ff02::2 → enviar mensaje a todos los routers de tu red. Sirve para enviar mensajes a los routers sin tener que escribir su IP exacta.
 ---
+
+
  
 **/etc/resolv.conf**:
 
+Ponemos los servidores de nombres (DNS) que utilizará el equipo. El orden es importante, pues las consultas se envían al servidor de la primera línea nameserver, y si este fallara, se pasa al segundo y luego al tercero; por lo tanto, en primer lugar deberíamos poner siempre el servidor DNS más rápido.
 
+```bash
+lsi@debian:~$ cat /etc/resolv.conf
+domain udc.pri
+search udc.pri
+nameserver 10.8.8.8
+nameserver 10.8.8.9
+```
 
+Este archivo le dice a tu Debian cómo traducir nombres de páginas o máquinas a direcciones IP.
 
+  - domain udc.pri → tu dominio local, básicamente “tu zona de red”
+
+  - search udc.pri → si escribes un nombre corto de host, el sistema lo busca dentro de este dominio
+
+  - nameserver 10.8.8.8 → primera dirección de servidor DNS que se usará para buscar nombres
+
+  - nameserver 10.8.8.9 → segunda dirección de servidor DNS (respaldo)
+
+En palabras fáciles: si escribes servidor1, tu Debian intenta buscarlo como servidor1.udc.pri usando primero el DNS 10.8.8.8 y si falla, prueba con 10.8.8.9.
+
+Ejemplo:
+```bash
+ping servidor1
+```
+Qué pasa detrás de escena:
+
+  1. Tu ordenador ve servidor1 y como no tiene IP directa, añade automáticamente el dominio de búsqueda: servidor1.udc.pri
+
+  2. Luego pregunta al DNS 10.8.8.8: “¿Cuál es la IP de servidor1.udc.pri?”
+
+  3. Si 10.8.8.8 no contesta, prueba 10.8.8.9
+
+  4. El DNS responde algo como 10.8.8.50
+
+Tu ordenador ahora hace ping 10.8.8.50 y puedes comunicarte con el servidor.
 
 
 
