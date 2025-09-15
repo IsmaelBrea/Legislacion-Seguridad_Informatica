@@ -764,7 +764,27 @@ Ya tenemos el Debian 10 LIMPIO Y ACTUALIZADO.
 
 Vamos a pasar ahora al 11:
 
+Cambiamos el archivo de source.list de forma que quede tal que así:
 
+```bash
+lsi@debian:~$ sudo nano /etc/apt/sources.list
+lsi@debian:~$ cat /etc/apt/sources.list
+#
+
+# deb cdrom:[Debian GNU/Linux 10.4.0 _Buster_ - Official amd64 DVD Binary-1 20200509-10:26]/ buster contrib main
+
+#deb cdrom:[Debian GNU/Linux 10.4.0 _Buster_ - Official amd64 DVD Binary-1 20200509-10:26]/ buster contrib main
+
+deb http://deb.debian.org/debian bullseye main contrib non-free
+deb-src http://deb.debian.org/debian bullseye main contrib non-free
+
+deb http://security.debian.org/debian-security bullseye/updates main contrib non-free
+deb-src http://security.debian.org/debian-security bullseye/updates main contrib non-free
+
+# buster-updates, previously known as 'volatile'
+deb http://deb.debian.org/debian bullseye-updates main contrib non-free
+deb-src http://deb.debian.org/debian bullseye-updates main contrib non-free
+```
 
 
 
