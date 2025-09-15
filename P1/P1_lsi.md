@@ -754,6 +754,11 @@ sudo apt autoclean
 - -y significa “sí automáticamente”, para no tener que confirmarlas una por una.
 
 
+Ya tenemos el Debian 10 LIMPIO Y ACTUALIZADO.
+
+
+Vamos a pasar ahora al 11:
+
 
 
 
