@@ -270,6 +270,7 @@ Los pasos básicos explicados por el profesor ya los hemos realizado:
 ### **ANÁLISIS DE LOS FICHEROS BÁSICOS DE CONFIGURACIÓN (/etc - archivos de configuración del sistema)**
 
 📂 /etc = Configuraciones del sistema y programas
+
 Aquí casi todo son archivos de texto que puedes abrir y leer.
 Son archivos de texto que contienen parámetros que definen cómo se comporta el sistema.
 
@@ -428,6 +429,7 @@ ff02::2 ip6-allrouters
 ---
  
 **/etc/resolv.conf**:
+
 
 
 
