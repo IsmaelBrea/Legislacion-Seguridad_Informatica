@@ -356,10 +356,34 @@ En resumen:
 ---
 
 
+**etc/hosts**
+```bash
+lsi@debian:~$ cat /etc/hosts
+127.0.0.1       localhost
+127.0.1.1       debian
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+```
+
+Este archivo es un archivo de nombres. Sirve para decir:
+“Este nombre corresponde a esta dirección IP”.
+127.0.0.1   localhost     #Cuando el sistema vea el nombre localhost, en realidad se conecta a 127.0.0.1 (tu propio PC).
+127.0.1.1   debian        #También “yo mismo”, pero usando el nombre de la máquina (debian).
 
 
+¿Y por qué no sale tu IP 10.11.48.169?
+
+Porque 127.x.x.x no es tu IP real de la red, es una dirección especial solo para uso interno del ordenador.
+La 10.11.48.169 sí es tu IP real en la red (la que usan otros equipos para conectarse a tu máquina).
 
 
+**Resumen fácil:**
+127.0.0.1 y 127.0.1.1 = tu PC hablando consigo mismo.
+
+10.11.48.169 = tu PC hablando con otros en la red.
 
 
 
