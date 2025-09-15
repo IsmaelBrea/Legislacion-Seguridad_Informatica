@@ -778,13 +778,24 @@ lsi@debian:~$ cat /etc/apt/sources.list
 deb http://deb.debian.org/debian bullseye main contrib non-free
 deb-src http://deb.debian.org/debian bullseye main contrib non-free
 
-deb http://security.debian.org/debian-security bullseye/updates main contrib non-free
-deb-src http://security.debian.org/debian-security bullseye/updates main contrib non-free
+deb http://security.debian.org/debian-security bullseye-security main contrib non-free
+deb-src http://security.debian.org/debian-security bullseye-security main contrib non-free
 
 # buster-updates, previously known as 'volatile'
 deb http://deb.debian.org/debian bullseye-updates main contrib non-free
 deb-src http://deb.debian.org/debian bullseye-updates main contrib non-free
 ```
+
+
+Ahora hacemos al igual que antes los siguientes pasos:
+```bash
+sudo apt update
+sudo apt upgrade -y
+sudo apt full-upgrade -y
+sudo apt autoremove -y
+sudo apt autoclean
+```
+
 
 
 
