@@ -267,7 +267,7 @@ Los pasos básicos explicados por el profesor ya los hemos realizado:
   - Ampliar el historial de comandos permitidos en ambos usuarios (lsi y root)
   - 
 
-## **ANÁLISIS DE LOS FICHEROS BÁSICOS DE CONFIGURACIÓN (/etc - archivos de configuración del sistema)**
+### **ANÁLISIS DE LOS FICHEROS BÁSICOS DE CONFIGURACIÓN (/etc - archivos de configuración del sistema)**
 
 📂 /etc = Configuraciones del sistema y programas
 Aquí casi todo son archivos de texto que puedes abrir y leer.
@@ -354,6 +354,7 @@ En resumen:
 
 2. ens33 → real, siempre encendida, obtiene IP automática para conectarse a la red.
 ---
+
 
 
 
