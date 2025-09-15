@@ -737,6 +737,10 @@ autoremove → elimina paquetes que ya no hacen falta
 -y significa “sí automáticamente”, para no tener que confirmarlas una por una.
 
 
+En upgrade nos pide actualizar el GRUB en el dev/sda (gestor de arranque que usa Debian (y casi todas las distros Linux)).
+
+Tendré que marcar [*] con un espacion en dev/sda y darle a Aceptar moviendose con en Tabulador.
+
 
 
 
