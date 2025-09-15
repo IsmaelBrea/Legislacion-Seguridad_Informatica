@@ -670,7 +670,7 @@ lsi@debian:~$ uname -a
 Linux debian 4.19.0-9-amd64 #1 SMP Debian 4.19.118-2+deb10u1 (2020-06-07) x86_64 GNU/Linux
 ```
 
-### Actualizar a Debian 11
+### Actualizar a Debian 11 (Buster -> BullSeye)
 
 1. Ninguna actualización con update o upgrade va funcionar en Debian 10 ya que no está soportado oficialmente y los repositorios han sido movidos a archive.debian.org. apt intenta buscar archivos que ya no existen.
 
@@ -721,6 +721,21 @@ No actualiza nada. SOLO INFORMA
 
 ```bash
 sudo apt upgrade -y
+```
+
+En upgrade nos pide actualizar el GRUB en el dev/sda (gestor de arranque que usa Debian (y casi todas las distros Linux)).
+
+Tendré que marcar [*] con un espacion en dev/sda y darle a Aceptar moviendose con en Tabulador.
+
+
+```bash
+lsi@debian:~$ cat /etc/debian_version
+10.13
+```
+
+Después de esto, haremos:
+
+```bash
 sudo apt full-upgrade -y
 sudo apt autoremove -y
 sudo apt autoclean
@@ -728,18 +743,18 @@ sudo apt autoclean
 
 - update → actualiza la lista de paquetes
 
-- upgrade → actualiza todos los paquetes que tengan nuevas versiones sin tocar dependencias que puedan romper algo.
+- upgrade → actualiza todos los paquetes que tengan nuevas versiones sin tocar dependencias que puedan romper algo
 
-- full-upgrade → actualiza incluso paquetes que cambian dependencias
+- full-upgrade → actualiza incluso paquetes que cambian dependencias 
 
-- autoremove → elimina paquetes que ya no hacen falta
+- autoremove → elimina paquetes que ya no hacen falta ((viejos, huérfanos, dependencias obsoletas)
+
+- autoclean → borra los paquetes .deb descargados que ya no sirven, liberando espacio.
 
 - -y significa “sí automáticamente”, para no tener que confirmarlas una por una.
 
 
-En upgrade nos pide actualizar el GRUB en el dev/sda (gestor de arranque que usa Debian (y casi todas las distros Linux)).
 
-Tendré que marcar [*] con un espacion en dev/sda y darle a Aceptar moviendose con en Tabulador.
 
 
 
