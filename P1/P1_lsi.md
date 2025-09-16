@@ -690,8 +690,7 @@ Además, cada línea termina con main, contrib, etc.:
 
 ---
 
-### **Apartado B) ¿Qué distro y versión tiene la máquina inicialmente entregada?. Actualice su
-máquina a la última versión estable disponible.**
+### **Apartado B) ¿Qué distro y versión tiene la máquina inicialmente entregada?. Actualice su máquina a la última versión estable disponible.**
 
 Distro = versión completa de Linux lista para usar. En nuestro caso Debian, y ya sabemos ques la versión 10.
 
@@ -956,6 +955,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
