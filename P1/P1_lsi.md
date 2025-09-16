@@ -5,7 +5,6 @@
 - Revisar siempre todo lo que aparezca en pantalla.  
 
 <br>
-<br>
 
 ## Repaso COMANDOS BÁSICOS útiles para las prácticas
 ```bash
@@ -79,7 +78,7 @@ shutdown now         # Apagar
 ```
 
 ---
-
+<br>
 ## Redes para la realización de las prácticas
 - **Eduroam**: no permitido el tráfico a los puertos 80 y 443.  
 - **UDCDocencia**: no permitido el tráfico al puerto 22.  
@@ -107,6 +106,7 @@ shutdown now         # Apagar
 - Revisar los servicios activos para asegurar que no queda nada corriendo que no corresponda.  
 
 ---
+<br>
 
 ## Usuarios
 - Usuario inicial:  
@@ -958,6 +958,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
