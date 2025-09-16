@@ -4,6 +4,9 @@
 - Traer papel y boli.  
 - Revisar siempre todo lo que aparezca en pantalla.  
 
+<br>
+<br>
+
 ## Repaso COMANDOS BÁSICOS útiles para las prácticas
 ```bash
 # Navegación
@@ -955,6 +958,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
