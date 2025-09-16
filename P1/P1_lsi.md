@@ -347,8 +347,10 @@ En otras palabras:
   
   - Con source, no necesitas cerrar ni abrir otra sesión, se aplican los cambios inmediatamente en la terminal actual.
 
+
 <br>
 <br>
+
 ---
 # Puntos a resolver de la práctica 1
 
@@ -961,6 +963,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
