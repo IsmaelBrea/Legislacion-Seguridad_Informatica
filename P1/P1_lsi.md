@@ -747,8 +747,11 @@ man uname
 
 Parámetros:
 -r	Muestra la versión del kernel
+
 -a	Muestra toda la información disponible (kernel, hostname, arquitectura, fecha de compilación…)
+
 -s	Muestra el nombre del sistema operativo
+
 -m	Muestra la arquitectura de la máquina (amd64, i386…)
 
 ```bash
@@ -953,6 +956,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
