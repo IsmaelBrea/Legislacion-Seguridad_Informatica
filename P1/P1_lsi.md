@@ -337,7 +337,7 @@ Cada aplicación suele tener su propia carpeta:
 
 **Para encontrar los ficheros que nos piden podemos usar:**
 ```bash
-find -name
+find -namefind [ruta] -name "patrón"
 ```
 
 
@@ -899,5 +899,6 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
