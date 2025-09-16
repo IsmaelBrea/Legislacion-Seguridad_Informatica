@@ -149,7 +149,7 @@ ECDSA → SHA256:fBaTUZzR9oa1B2VWLwurmhlCaeRhpr5uloGtThsikF8
 
 
 ---
-### 2-Cambiar las contraseñas de los usuarios
+### 2-Cambiar las contraseñas de los usuarios y el hostname de la máquina
   -Cambiar la contraseña del usuario lsi.
   ```bash
   passwd
@@ -168,6 +168,21 @@ passwd
 
 - `$` → estás usando un usuario normal (ej. lsi).  
 - `#` → estás usando el usuario root (administrador).  
+
+
+-Cambiar el hostname de la máquina:
+```bash
+su
+nano /etc/hostname
+
+```
+Actualizar el nombre, guardar y salir.
+Reiniciar la máquina
+
+```bash
+su
+reboot
+```
 
 
 ### DIFERENCIAS ENTRE SU Y SU-
@@ -675,6 +690,35 @@ lsi@debian:~$ uname -a
 Linux debian 4.19.0-9-amd64 #1 SMP Debian 4.19.118-2+deb10u1 (2020-06-07) x86_64 GNU/Linux
 ```
 
+### Herramienta para ver ambas con un comando: neofetch
+```bash
+sudo
+apt install neofetch
+```
+
+```bash
+neofetch
+```
+Ejemplo de salida:
+root@ismael:/home/lsi# neofetch
+       _,met$$$$$gg.          lsi@ismael
+    ,g$$$$$$$$$$$$$$$P.       ----------
+  ,g$$P"     """Y$$.".        OS: Debian GNU/Linux 11 (bullseye) x86_64
+ ,$$P'              `$$$.     Host: VMware Virtual Platform None
+',$$P       ,ggs.     `$$b:   Kernel: 5.10.0-35-amd64
+`d$$'     ,$P"'   .    $$$    Uptime: 33 mins
+ $$P      d$'     ,    $$P    Packages: 1652 (dpkg)
+ $$:      $$.   -    ,d$$'    Shell: bash 5.1.4
+ $$;      Y$b._   _,d$P'      Resolution: preferred
+ Y$$.    `.`"Y$$$$P"'         Terminal: /dev/pts/0
+ `$$b      "-.__              CPU: Intel Xeon E5-2630 0 (1) @ 2.294GHz
+  `Y$$                        GPU: 00:0f.0 VMware SVGA II Adapter
+   `Y$$.                      Memory: 465MiB / 1467MiB
+     `$$b.
+       `Y$$b.
+          `"Y$b._
+              `"""
+
 ### Actualizar a Debian 11 (Buster -> BullSeye)
 
 1. Ninguna actualización con update o upgrade va funcionar en Debian 10 ya que no está soportado oficialmente y los repositorios han sido movidos a archive.debian.org. apt intenta buscar archivos que ya no existen.
@@ -815,12 +859,45 @@ Si mientras estaba haciendo los comandos "sudo apt upgrade -y" o "sudo apt full-
 sudo kill -9 5900 5899
 sudo kill -9 20607
 ```
+- -9: Señal SIGKILL - la más fuerte, no se puede ignorar
+
+- 5900 5899 20607: Números de identificación de los procesos (PID)
+
 
 2. Eliminar archivos de bloqueo:
+```bash
 sudo rm /var/lib/dpkg/lock-frontend
 sudo rm /var/lib/dpkg/lock  
 sudo rm /var/cache/apt/archives/lock
+```
+
+3. Comprobar paquetes pendientes de instalación
+```bash
+sudo dpkg --configure -a
+```
+Este comando intenta configurar todos los paquetes que estén descargados pero no completamente configurados. No muestra una lista explícita, pero si hay errores, los verás en la salida.
 
 
+4. Comprobar paquetes rotos o dependencias
+```bash
+sudo apt install -f
+```
+-f → significa fix broken
+
+
+Ya por último hacemos una limpieza del sistema. 
+
+Es recoendable usar --dry-run antes de hacer un autoremove para ver todos los paquetes que van a ser eliminados.
+```bash
+sudo apt autoremove --dry-run
+```
+
+```bash
+apt autoremove -y
+apt autoclean
+```
+
+
+### Actualizar a Debian 12 (BullSeye -> Bookworm)
 
 
