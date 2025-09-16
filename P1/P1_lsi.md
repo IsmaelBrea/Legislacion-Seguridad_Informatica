@@ -948,6 +948,8 @@ sudo apt install -f
 ```
 -f → significa fix broken
 
+Por tanto este comando detecta paquetes con dependencias incompletas o conflictos e intenta repararlos automáticamente.
+
 
 Ya por último hacemos una limpieza del sistema. 
 
@@ -963,6 +965,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
