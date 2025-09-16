@@ -179,7 +179,7 @@ passwd
   Cambia de usuario **y carga el entorno completo** del nuevo usuario, incluyendo su PATH, variables y directorio inicial (`/root` si es root).
   
 ---
-### 3-Activar sudo
+### 3-Activar sudo   (NO ES RECOMENDABLE. AYUDA A COMETER ERRORES)
 Activar sudo en Debian 10
 
 Instala sudo (como root):
@@ -319,6 +319,12 @@ Cada aplicación suele tener su propia carpeta:
 
 
 ### Ejemplos probados en la práctica:
+
+**Para encontrar los ficheros que nos piden podemos usar:**
+```bash
+find -name
+```
+
 
 **etc/network/interfaces**
 
@@ -797,7 +803,23 @@ sudo apt autoclean
 
 
 
+## Problemas con las actualizaciones: se queda parada la instación por que se cierra el ssh
 
+Si mientras estaba haciendo los comandos "sudo apt upgrade -y" o "sudo apt full-upgrade -y" se paró la actualización, debemos arreglar los paquetes.
+
+
+**Cosas que hice**:
+
+1. Matar procesos:
+```bash
+sudo kill -9 5900 5899
+sudo kill -9 20607
+```
+
+2. Eliminar archivos de bloqueo:
+sudo rm /var/lib/dpkg/lock-frontend
+sudo rm /var/lib/dpkg/lock  
+sudo rm /var/cache/apt/archives/lock
 
 
 
