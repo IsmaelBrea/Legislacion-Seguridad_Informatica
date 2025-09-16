@@ -770,7 +770,7 @@ apt install neofetch
 ```bash
 neofetch
 ```
-Ejemplo de salida:
+
 ![Neofetch](../images/neofetch.png)
 
 ### Actualizar a Debian 11 (Buster -> BullSeye)
@@ -953,6 +953,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
