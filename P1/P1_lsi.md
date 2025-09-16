@@ -79,6 +79,7 @@ shutdown now         # Apagar
 
 ---
 <br>
+
 ## Redes para la realización de las prácticas
 - **Eduroam**: no permitido el tráfico a los puertos 80 y 443.  
 - **UDCDocencia**: no permitido el tráfico al puerto 22.  
@@ -958,6 +959,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
