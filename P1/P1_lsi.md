@@ -97,6 +97,7 @@ shutdown now         # Apagar
 - `255` → IP de broadcast.  
 
 ---
+<br>
 
 ## Sistema Operativo
 - Se comienza con **Debian 10**.  
@@ -959,6 +960,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
