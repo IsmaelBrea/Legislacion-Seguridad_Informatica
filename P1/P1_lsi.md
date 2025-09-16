@@ -4,6 +4,77 @@
 - Traer papel y boli.  
 - Revisar siempre todo lo que aparezca en pantalla.  
 
+## Repaso COMANDOS BÁSICOS útiles para las prácticas
+```bash
+# Navegación
+pwd                 # Carpeta actual
+ls                  # Listar
+ls -l               # Listar con detalles
+ls -a               # Incluir ocultos
+cd /ruta            # Cambiar carpeta
+cd ~                # Ir al home
+cd ..               # Subir un nivel
+
+# Archivos y directorios
+touch archivo.txt   # Crear archivo vacío
+mkdir carpeta       # Crear carpeta
+mkdir -p a/b/c      # Crear subcarpetas
+cp origen destino   # Copiar archivo
+cp -r dir1 dir2     # Copiar directorio
+mv origen destino   # Mover/renombrar
+rm archivo.txt      # Borrar archivo
+rm -r carpeta       # Borrar carpeta
+
+# Ver contenido
+cat archivo.txt     # Mostrar contenido
+less archivo.txt    # Leer con paginador
+head archivo.txt    # Primeras 10 líneas
+tail archivo.txt    # Últimas 10 líneas
+tail -f archivo.log # Ver en tiempo real
+
+# Búsqueda
+find . -name "archivo.txt"  # Buscar archivo
+grep "texto" archivo.txt    # Buscar texto
+grep -r "texto" /ruta       # Buscar en varios archivos
+
+# Permisos
+ls -l               # Ver permisos
+chmod 755 archivo   # Cambiar permisos
+chown usr:grp arch  # Cambiar propietario
+
+# Procesos
+ps aux              # Listar procesos
+top                 # Procesos en tiempo real
+kill PID            # Terminar proceso
+
+# Paquetes (Debian/Ubuntu)
+sudo apt update           # Actualizar lista
+sudo apt upgrade          # Actualizar paquetes
+sudo apt install paquete  # Instalar
+sudo apt remove paquete   # Eliminar
+
+# Red
+ping 8.8.8.8         # Probar conexión
+ip a                 # Ver IP
+curl ifconfig.me     # Ver IP pública
+
+# Usuarios
+whoami               # Usuario actual
+id                   # UID y grupos
+adduser usuario      # Crear usuario
+passwd usuario       # Cambiar contraseña
+
+# Sistema
+uname -r             # Versión kernel
+lsb_release -a       # Versión distro
+df -h                # Espacio en disco
+du -sh carpeta       # Tamaño carpeta
+free -h              # Memoria RAM
+uptime               # Tiempo encendido
+reboot               # Reiniciar
+shutdown now         # Apagar
+```
+
 ---
 
 ## Redes para la realización de las prácticas
@@ -899,6 +970,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
