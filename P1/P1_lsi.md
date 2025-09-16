@@ -773,22 +773,39 @@ neofetch
 Ejemplo de salida:
 root@ismael:/home/lsi# neofetch
        _,met$$$$$gg.          lsi@ismael
+       
     ,g$$$$$$$$$$$$$$$P.       ----------
+    
   ,g$$P"     """Y$$.".        OS: Debian GNU/Linux 11 (bullseye) x86_64
+  
  ,$$P'              `$$$.     Host: VMware Virtual Platform None
+ 
 ',$$P       ,ggs.     `$$b:   Kernel: 5.10.0-35-amd64
+
 `d$$'     ,$P"'   .    $$$    Uptime: 33 mins
+
  $$P      d$'     ,    $$P    Packages: 1652 (dpkg)
+ 
  $$:      $$.   -    ,d$$'    Shell: bash 5.1.4
+ 
  $$;      Y$b._   _,d$P'      Resolution: preferred
+ 
  Y$$.    `.`"Y$$$$P"'         Terminal: /dev/pts/0
+ 
  `$$b      "-.__              CPU: Intel Xeon E5-2630 0 (1) @ 2.294GHz
+ 
   `Y$$                        GPU: 00:0f.0 VMware SVGA II Adapter
+  
    `Y$$.                      Memory: 465MiB / 1467MiB
+   
      `$$b.
+     
        `Y$$b.
+       
           `"Y$b._
+          
               `"""
+              
 
 ### Actualizar a Debian 11 (Buster -> BullSeye)
 
@@ -970,6 +987,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
