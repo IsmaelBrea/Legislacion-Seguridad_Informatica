@@ -649,7 +649,6 @@ lsi@debian:~$ cat /etc/debian_version
 Varias formas de obtener la versión del kernel:
 
 1. uname (Unix Name):
-2. 
 ```bash
 man uname
 ````
@@ -795,6 +794,7 @@ sudo apt full-upgrade -y
 sudo apt autoremove -y
 sudo apt autoclean
 ```
+
 
 
 
