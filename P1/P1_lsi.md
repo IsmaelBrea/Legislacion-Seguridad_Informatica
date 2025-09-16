@@ -418,7 +418,7 @@ Cada aplicación suele tener su propia carpeta:
 ```bash
 find -namefind [ruta] -name "patrón"
 ```
-
+<br>
 
 **etc/network/interfaces**
 
@@ -965,6 +965,7 @@ apt autoclean
 
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
+
 
 
 
