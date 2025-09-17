@@ -8,6 +8,8 @@
 
 ## Repaso COMANDOS BÁSICOS útiles para las prácticas
 ```bash
+#Accesos
+last               #Sesiones de usuarios accedidas a la máquina
 # Navegación
 pwd                 # Carpeta actual
 ls                  # Listar
@@ -80,6 +82,19 @@ shutdown now         # Apagar
 ---
 <br>
 
+## Usuarios
+- Usuario inicial:  
+  - `lsi`  
+  - IP: `10.11.48.74`  
+  - Contraseña inicial usuario lsi: `virtual;..`  
+  - Root: `root@debian`
+  - - Contraseña inicial root: `virtual;..`  
+
+- Usuario propio:  
+  - `lsi2.3.4`  
+  - IP: `10.11.48.169`  
+
+---
 ## Redes para la realización de las prácticas
 - **Eduroam**: no permitido el tráfico a los puertos 80 y 443.  
 - **UDCDocencia**: no permitido el tráfico al puerto 22.  
@@ -88,7 +103,16 @@ shutdown now         # Apagar
     - Una IP de la red para conectarse a la máquina Debian. Esta IP puede cambiar porque la tabla de la VPN se va llenando.  
       **No usar una IP fija con los 4 octetos definidos.**  
     - Una IP propia de la máquina local.  
-  - Ambas IPs son diferentes.  
+  - Ambas IPs son diferentes.
+ 
+
+```bash
+lsi@ismael:~$ last
+lsi      pts/0        10.30.12.189     Wed Sep 17 20:30   still logged in
+lsi      pts/0        10.20.37.81      Tue Sep 16 18:04 - 18:05  (00:00)
+```
+
+Aquí podemos ver que en dos sesiones distintas a pesar de entrar con nuestra IP que es 10.11.48.169, al conectarnos tenemos distintas IP con las que salimos al exterior. Esto es por que tenemos asignado DHCP, el cuál tendremos que cambiar más adelante  por una ruta estática con nuestra IP de la máquina.
 
 **IP de los alumnos:** `10.11.48.0/23`  
 - `/23` porque con `/24` no alcanzan las IPs para todos los alumnos, ya que solo habría 256 direcciones posibles con /24. Con /23 hay 512 direcciones IPs disponibles, suficientes para todos.
@@ -110,19 +134,6 @@ shutdown now         # Apagar
 ---
 <br>
 
-## Usuarios
-- Usuario inicial:  
-  - `lsi`  
-  - IP: `10.11.48.74`  
-  - Contraseña inicial usuario lsi: `virtual;..`  
-  - Root: `root@debian`
-  - - Contraseña inicial root: `virtual;..`  
-
-- Usuario propio:  
-  - `lsi2.3.4`  
-  - IP: `10.11.48.169`  
-
----
 
 ## Primeros pasos obligatorios
 
@@ -966,9 +977,39 @@ apt autoclean
 
 ### Actualizar a Debian 12 (BullSeye -> Bookworm)
 
+Cambiar el sources.list:
+```bash
+#
+
+# deb cdrom:[Debian GNU/Linux 10.4.0 _Buster_ - Official amd64 DVD Binary-1 20200509-10:26]/ buster contrib main
+
+#deb cdrom:[Debian GNU/Linux 10.4.0 _Buster_ - Official amd64 DVD Binary-1 20200509-10:26]/ buster contrib main
+
+deb https://deb.debian.org/debian bookworm main non-free-firmware
+deb-src https://deb.debian.org/debian bookworm main non-free-firmware
+
+deb https://security.debian.org/debian-security bookworm-security main non-free-firmware
+deb-src https://security.debian.org/debian-security bookworm-security main non-free-firmware
+
+# buster-updates, previously known as 'volatile'
+deb https://deb.debian.org/debian bookworm-updates main non-free-firmware
+deb-src https://deb.debian.org/debian bookworm-updates main non-free-firmware
+```
 
 
+```bash
+sudo apt update           # Actualiza la lista de paquetes
+sudo apt upgrade -y       # Actualiza paquetes sin eliminar nada. NO ES OBLIGATORIO. Podemos usar full-upgrade directamente
+sudo apt full-upgrade -y  # Actualiza todo, incluso si requiere eliminar o reemplazar paquetes
+sudo apt autoremove -y    # Limpia paquetes antiguos que ya no se usan
+apt autoclean
+```
 
+Vamos a reiniciar la máquina para comprobar que está actualizado y sin problemas.
+```bash
+su
+reboot
+```
 
 
 
