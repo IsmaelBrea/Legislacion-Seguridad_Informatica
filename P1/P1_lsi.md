@@ -969,6 +969,7 @@ Es recoendable usar --dry-run antes de hacer un autoremove para ver todos los pa
 sudo apt autoremove --dry-run
 ```
 
+Limpiar los paquetes viejos
 ```bash
 apt autoremove -y
 apt autoclean
@@ -1010,6 +1011,7 @@ Vamos a reiniciar la máquina para comprobar que está actualizado y sin problem
 su
 reboot
 ```
+
 
 
 
