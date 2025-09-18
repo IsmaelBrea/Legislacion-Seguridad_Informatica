@@ -1013,7 +1013,7 @@ reboot
 ```
 
 
-
+Ya tenemos todo instalado y limpio, pero no se me ha instalado la última versión del kernel del debian 12. Por tanto vamos a intentar actualizarla más:
 
 
 
