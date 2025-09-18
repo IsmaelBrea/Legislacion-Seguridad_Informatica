@@ -1015,10 +1015,48 @@ reboot
 
 Ya tenemos todo instalado y limpio, pero no se me ha instalado la última versión del kernel del debian 12. Por tanto vamos a intentar actualizarla más:
 
+```bash
+sudo apt update
+sudo apt install linux-image-amd64 linux-headers-amd64   #instala el kernel predeterminado de Debian 12 (paquete linux-image-amd64) y los headers del kernel (linux-headers-amd64) necesarios para compilar módulos o drivers si los necesitaras
+sudo reboot
+```
 
 
+### RESUMEN DE TODOS LOS COMANDOS UTILIZADOS PARA ACTUALIZAR DEBIAN:
+```bash
+# Repositorios
+sudo nano /etc/apt/sources.list   # Editar repositorios a nueva versión
+
+# Listas y actualizaciones
+sudo apt update -o Acquire::Check-Valid-Until=false  # Actualizar lista ignorando fechas expiradas
+apt list --upgradable                               # Ver paquetes actualizables
+sudo apt upgrade -y                                 # Actualizar paquetes sin romper dependencias
+sudo apt full-upgrade -y                            # Actualizar todo, incluso cambios de dependencias
+sudo apt autoremove -y                              # Limpiar paquetes que ya no se usan
+sudo apt autoclean                                  # Limpiar .deb descargados
+
+# Problemas con bloqueos
+sudo kill -9 PID                                    # Matar procesos colgados (apt/dpkg)
+sudo rm /var/lib/dpkg/lock-frontend                 # Quitar lock de dpkg
+sudo rm /var/lib/dpkg/lock
+sudo rm /var/cache/apt/archives/lock
+
+# Reparar paquetes
+sudo dpkg --configure -a                             # Configurar paquetes pendientes
+sudo apt install -f                                  # Arreglar dependencias rotas
+
+# Kernel
+sudo apt install linux-image-amd64 linux-headers-amd64  # Instalar kernel y headers de Debian 12
+sudo reboot                                            # Reiniciar para aplicar cambios
+
+# Información útil
+uname -r          # Versión actual del kernel
+lsb_release -a    # Información de la distro
+neofetch          # Info completa de sistema y kernel (opcional)
+```
 
 
+dpkg hace la “operación cruda” sobre paquetes, apt hace lo mismo pero además busca dependencias y repositorios automáticamente.
 
 
 
