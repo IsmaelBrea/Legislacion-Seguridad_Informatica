@@ -782,7 +782,21 @@ lsi@debian:~$ uname -a
 Linux debian 4.19.0-9-amd64 #1 SMP Debian 4.19.118-2+deb10u1 (2020-06-07) x86_64 GNU/Linux
 ```
 
-### Herramienta para ver ambas con un comando: neofetch
+### Herramienta para ver ambas con un comando: hostnamectl (preinstalada) y neofetch
+```bash
+lsi@ismael:~$ hostnamectl
+ Static hostname: ismael
+       Icon name: computer-vm
+         Chassis: vm 🖴
+      Machine ID: db1c24869f59488fb51181a0eb0bcae8
+         Boot ID: 3fc5e6d90e474895972c5c7680d46015
+  Virtualization: vmware
+Operating System: Debian GNU/Linux 12 (bookworm)
+          Kernel: Linux 5.10.0-35-amd64
+    Architecture: x86-64
+Firmware Version: 6.00
+```
+
 ```bash
 sudo
 apt install neofetch
@@ -1057,6 +1071,7 @@ neofetch          # Info completa de sistema y kernel (opcional)
 
 
 dpkg hace la “operación cruda” sobre paquetes, apt hace lo mismo pero además busca dependencias y repositorios automáticamente.
+
 
 
 
