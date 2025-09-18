@@ -10,6 +10,7 @@
 ```bash
 #Accesos
 last               #Sesiones de usuarios accedidas a la máquina
+
 # Navegación
 pwd                 # Carpeta actual
 ls                  # Listar
@@ -1071,6 +1072,7 @@ neofetch          # Info completa de sistema y kernel (opcional)
 
 
 dpkg hace la “operación cruda” sobre paquetes, apt hace lo mismo pero además busca dependencias y repositorios automáticamente.
+
 
 
 
