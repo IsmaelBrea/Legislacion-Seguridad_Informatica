@@ -1037,6 +1037,32 @@ sudo reboot
 ```
 
 
+Ya por último vamos a borrar todo sobre los kernels 10 y 11 y dejar solo el 12:
+```bash
+lsi@ismael:~$ dpkg --list | grep linux-image
+dpkg --list | grep linux-headers
+rc  linux-image-4.19.0-27-amd64             4.19.316-1                          amd64        Linux 4.19 for 64-bit PCs (signed)
+rc  linux-image-4.19.0-9-amd64              4.19.118-2+deb10u1                  amd64        Linux 4.19 for 64-bit PCs (signed)
+ii  linux-image-5.10.0-35-amd64             5.10.237-1                          amd64        Linux 5.10 for 64-bit PCs (signed)
+ii  linux-image-6.1.0-39-amd64              6.1.148-1                           amd64        Linux 6.1 for 64-bit PCs (signed)
+ii  linux-image-amd64                       6.1.148-1                           amd64        Linux for 64-bit PCs (meta-package)
+ii  linux-headers-6.1.0-39-amd64            6.1.148-1                           amd64        Header files for Linux 6.1.0-39-amd64
+ii  linux-headers-6.1.0-39-common           6.1.148-1                           all          Common header files for Linux 6.1.0-39
+ii  linux-headers-amd64                     6.1.148-1                           amd64        Header files for Linux amd6
+```
+
+Borrar kernels antiguos:
+```bash
+sudo apt purge -y linux-image-4.19.*-amd64 linux-image-5.10.*-amd64
+sudo apt purge -y linux-headers-4.19.*-amd64 linux-headers-5.10.*-amd64
+```
+
+Limpiar paquetes huérfanos:
+```bash
+sudo apt autoremove --purge -y
+sudo apt autoclean
+```
+
 ### RESUMEN DE TODOS LOS COMANDOS UTILIZADOS PARA ACTUALIZAR DEBIAN:
 ```bash
 # Repositorios
@@ -1072,6 +1098,7 @@ neofetch          # Info completa de sistema y kernel (opcional)
 
 
 dpkg hace la “operación cruda” sobre paquetes, apt hace lo mismo pero además busca dependencias y repositorios automáticamente.
+
 
 
 
