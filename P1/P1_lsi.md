@@ -1135,7 +1135,10 @@ La secuencia completa sería algo así:
 
 - journalctl -b → todo lo que hizo systemd durante este arranque.
 
-- systemd-analyze → cuánto tardó cada parte del arranque.
+- systemd-analyze → cuánto tardó cada parte del arranque.  
+
+- systemctl list-dependencies default.target Lista todas →  las units (servicios y targets) que dependen del target por defecto, es decir, todo lo que se inicia automáticamente cuando arranca tu máquina.
+
 
 TODO ESTO HACERLO DENTRO DEL USUARIO ROOT!!
 
@@ -1219,6 +1222,73 @@ systemd-analyze blame
 Este comando muestra los servicios que se iniciaron durante el arranque, ordenados por el tiempo que tardó cada uno en arrancar.
 
 Sirve para identificar qué servicios ralentizan el inicio de tu sistema.
+
+<br>
+
+**systemctl list-dependencies default.target**
+Lista todas las units (servicios y targets) que dependen del target por defecto, es decir, todo lo que se inicia automáticamente cuando arranca tu máquina.
+```bash
+root@ismael:/home/lsi# systemctl list-dependencies default.target
+default.target
+○ ├─anacron.service
+● ├─avahi-daemon.service
+● ├─console-setup.service
+● ├─cron.service
+● ├─cups-browsed.service
+● ├─cups.path
+● ├─cups.service
+● ├─dbus.service
+○ ├─e2scrub_reap.service
+● ├─ModemManager.service
+● ├─networking.service
+● ├─NetworkManager.service
+● ├─open-vm-tools.service
+● ├─plymouth-quit-wait.service
+● ├─plymouth-quit.service
+● ├─pulseaudio-enable-autospawn.service
+● ├─rsyslog.service
+● ├─run-vmblock\x2dfuse.mount
+○ ├─ssa.service
+● ├─ssh.service
+● ├─systemd-ask-password-wall.path
+● ├─systemd-logind.service
+○ ├─systemd-update-utmp-runlevel.service
+● ├─systemd-user-sessions.service
+○ ├─tpm2-abrmd.service
+○ ├─unattended-upgrades.service
+● ├─wpa_supplicant.service
+● ├─basic.target
+● │ ├─-.mount
+● │ ├─low-memory-monitor.service
+○ │ ├─tmp.mount
+● │ ├─paths.target
+● │ ├─slices.target
+● │ │ ├─-.slice
+● │ │ └─system.slice
+● │ ├─sockets.target
+● │ │ ├─avahi-daemon.socket
+● │ │ ├─cups.socket
+● │ │ ├─dbus.socket
+● │ │ ├─systemd-initctl.socket
+● │ │ ├─systemd-journald-audit.socket
+● │ │ ├─systemd-journald-dev-log.socket
+● │ │ ├─systemd-journald.socket
+● │ │ ├─systemd-udevd-control.socket
+● │ │ └─systemd-udevd-kernel.socket
+● │ ├─sysinit.target
+● │ │ ├─apparmor.service
+● │ │ ├─dev-hugepages.mount
+● │ │ ├─dev-mqueue.mount
+● │ │ ├─keyboard-setup.service
+```
+
+Interpretación rápida
+
+- ○ → unit cargada pero inactiva.
+
+- ● → unit activa (está corriendo ahora).
+
+- ├─ y │ → representan la jerarquía o dependencias entre unidades.
 
 <br>
 <br>
@@ -1354,21 +1424,19 @@ veritysetup.target → Volúmenes con verificación de integridad (dm-verity).
 
 
 
-
-systemctl list-dependencies default.target
-
-
 ### RESUMEN FÁCIL SOBRE EL TIEMPO DE ARRANQUE Y LOS TARGETS
 
 - Para averiguar nuestro target por defecto -> systemctl get-default
 - Para cambiar el target de arranque -> systemctl set-default xxx.target (hemos puesto
 multi-user.target)
+- Para ver el arranque de la máquina a partir del target que tengamos por defecto -> systemctl list-dependencies default.target
 - Para averiguar los targets en memoria -> systemctl list-units –type=target
 - Para averiguar los targets instalados -> systemctl list-unit-files –type=target
 - Para averiguar los servicios en memoria -> systemctl list-units –type=service
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
