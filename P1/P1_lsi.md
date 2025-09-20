@@ -1134,6 +1134,7 @@ TODO ESTO HACERLO DENTRO DEL USUARIO ROOT!!
 <br>
 
 **mesg (display message o diagnostic message)**:
+
 Muestra los mensajes que el kernel va escribiendo desde que se arranca la máquina.
 
 Ejemplos de mensajes que muestra:
@@ -1177,6 +1178,7 @@ journalctl -b
 
 <br>
 
+
 **systemd-analyze**
 
 Mide cuánto tarda cada parte del arranque de tu sistema. Te da un resumen de kernel + userspace (espacio de usuario).
@@ -1210,6 +1212,8 @@ Este comando muestra los servicios que se iniciaron durante el arranque, ordenad
 
 Sirve para identificar qué servicios ralentizan el inicio de tu sistema.
 
+<br>
+<br>
 
 ###  💳 Target 
 
@@ -1234,6 +1238,7 @@ Normalmente:
 
 
 systemctl list-dependencies default.target
+
 
 
 
