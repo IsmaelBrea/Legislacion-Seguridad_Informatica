@@ -428,7 +428,7 @@ Cada aplicación suele tener su propia carpeta:
 
 **Para encontrar los ficheros que nos piden podemos usar:**
 ```bash
-find -namefind [ruta] -name "patrón"
+find [ruta] -name "patrón"
 ```
 <br>
 
@@ -1098,6 +1098,7 @@ neofetch          # Info completa de sistema y kernel (opcional)
 
 
 dpkg hace la “operación cruda” sobre paquetes, apt hace lo mismo pero además busca dependencias y repositorios automáticamente.
+
 
 
 
