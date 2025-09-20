@@ -1272,8 +1272,8 @@ SUB    = The low-level unit activation state, values depend on unit type.
 To show all installed unit files use 'systemctl list-unit-files'.
 ```
 
-```python
-Tipos de target en Linux (systemd)
+```text
+TIPOS DE TARGET EN LIUX (SYSTEMD)
 
 basic.target → Servicios básicos del sistema, arranca primero.
 
@@ -1335,6 +1335,7 @@ Aquí deberíamos poder cambiar el target por el de servidor (multi-user.target)
 
 
 systemctl list-dependencies default.target
+
 
 
 
