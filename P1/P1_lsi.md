@@ -1104,6 +1104,14 @@ dpkg hace la “operación cruda” sobre paquetes, apt hace lo mismo pero adem�
 ---
 ### **Apartado C) Identifique la secuencia completa de arranque de una máquina basada en la distribución de referencia (desde la pulsación del botón de arranque hasta la pantalla de login). ¿Qué target por defecto tiene su máquina?. ¿Cómo podría cambiar el target de arranque?. ¿Qué targets tiene su sistema y en qué estado se encuentran?. ¿Y los services?. Obtenga la relación de servicios de su sistema y su estado. ¿Qué otro tipo de unidades existen?. Configure el sudo de su máquina.**
 
+Lo primero de todo (ya lo hemos hecho, pero por si no está hecho aún), vamos a configurar sudo:
+```bash
+su -
+apt install sudo
+usermod -aG sudo lsi
+```
+
+
 
 Breve resumen de la secuencia de arranque:
 La secuencia completa sería algo así:
@@ -1179,7 +1187,7 @@ journalctl -b
 <br>
 
 
-**systemd-analyze**
+**systemd-analyze**   -> Tiempo de botado de kernel (**APARTADO D**)
 
 Mide cuánto tarda cada parte del arranque de tu sistema. Te da un resumen de kernel + userspace (espacio de usuario).
 
@@ -1217,27 +1225,117 @@ Sirve para identificar qué servicios ralentizan el inicio de tu sistema.
 
 ###  💳 Target 
 
-Un target es como un “objetivo de arranque” del sistema.
+Un target es como un “objetivo de arranque” del sistema. Le dice a Linux qué servicios y programas debe iniciar cuando enciendes el ordenador. Es como elegir un “modo de arranque”: con pantalla, sin pantalla, modo recuperación
 
-Le dice a Linux qué servicios y programas debe iniciar cuando enciendes el ordenador.
+Piensa en tu ordenador como si fuera un coche. Cuando enciendes el coche, puedes arrancar de diferentes maneras:
 
-Es como elegir un “modo de arranque”: con pantalla, sin pantalla, modo recuperación…
+  - Modo normal → arranca todo (motor, luces, radio…).
+  
+  - Modo ahorro → solo arranca lo básico (motor y luces).
+  
+  - Modo mantenimiento → solo algunas cosas para revisar fallos.
 
 
-**Target por defecto**
+**Todos los targets del sistema: systemctl list-units --type=target**
+
+Muestra todos los targets cargados en tu sistema, es decir, los “modos de arranque” o conjuntos de servicios que se pueden iniciar.
+  - list-units → lista las unidades (units) cargadas actualmente en el sistema.
+  - --type=target  → filtra la lista solo mostrando las units que son targets.
+
+```bash
+root@ismael:/home/lsi# systemctl list-units --type=target
+  UNIT                   LOAD   ACTIVE SUB    DESCRIPTION
+  basic.target           loaded active active Basic System
+  cryptsetup.target      loaded active active Local Encrypted Volumes
+  getty.target           loaded active active Login Prompts
+  graphical.target       loaded active active Graphical Interface
+  integritysetup.target  loaded active active Local Integrity Protected Volumes
+  local-fs-pre.target    loaded active active Preparation for Local File Systems
+  local-fs.target        loaded active active Local File Systems
+  multi-user.target      loaded active active Multi-User System
+  network-online.target  loaded active active Network is Online
+  network.target         loaded active active Network
+  nss-user-lookup.target loaded active active User and Group Name Lookups
+  paths.target           loaded active active Path Units
+  remote-fs.target       loaded active active Remote File Systems
+  slices.target          loaded active active Slice Units
+  sockets.target         loaded active active Socket Units
+  swap.target            loaded active active Swaps
+  sysinit.target         loaded active active System Initialization
+  timers.target          loaded active active Timer Units
+  veritysetup.target     loaded active active Local Verity Protected Volumes
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+19 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use 'systemctl list-unit-files'.
+```
+
+```python
+Tipos de target en Linux (systemd)
+
+basic.target → Servicios básicos del sistema, arranca primero.
+
+cryptsetup.target → Volúmenes cifrados locales.
+
+getty.target → Consolas de login en modo texto.
+
+graphical.target → Interfaz gráfica / escritorio (GUI).
+
+integritysetup.target → Volúmenes con protección de integridad.
+
+local-fs-pre.target → Preparación antes de montar sistemas de archivos locales.
+
+local-fs.target → Montaje de sistemas de archivos locales.
+
+multi-user.target → Modo multiusuario sin GUI, incluye red y servicios básicos.
+
+network-online.target → Red completamente lista y funcionando.
+
+network.target → Servicios de red básicos inicializados.
+
+nss-user-lookup.target → Resolución de usuarios y grupos (nombre → ID).
+
+paths.target → Unidad que gestiona “path units” (supervisión de rutas de archivos).
+
+remote-fs.target → Montaje de sistemas de archivos remotos (NFS, etc.).
+
+slices.target → Gestión de “slices” de recursos del sistema (cgroups).
+
+sockets.target → Sockets de red o locales que activan servicios bajo demanda.
+
+swap.target → Activación de espacio de intercambio (swap).
+
+sysinit.target → Inicialización del sistema: dispositivos, reloj, etc.
+
+timers.target → Temporizadores para iniciar servicios automáticamente.
+
+veritysetup.target → Volúmenes con verificación de integridad (dm-verity).
+```
+
+**Target por defecto: systemctl get-default**
 
 Es el target que Linux usa automáticamente al encender.
 
-Normalmente:
+Existen distintos tipos de target en los sistemas Linux. Los más básicos son:
 
-- Escritorio → graphical.target
+- Escritorio e interfaz gráfica→ graphical.target
 
-- Servidor → multi-user.target
+- Modo multiusuario sin GUI, incluye red y servicios básicos → multi-user.target
 
+```bash
+root@ismael:/home/lsi# systemctl get-default
+graphical.target
+```
 
+Esto significa que tu ordenador arrancará con la pantalla de login y el escritorio, como un PC normal de uso diario.El problema es que tal y como estamos usando nuestra máquina (sin login y sin escritorio), esta opción no es la más recomendada porque consume recursos innecesarios como CPU y memoria.
+
+Aquí deberíamos poder cambiar el target por el de servidor (multi-user.target), ya que el que está por defecto no nos interesa ya que solo nos vamos a conectar a la máquina por ssh y no no necesitamos la interfaz gráfica.
 
 
 systemctl list-dependencies default.target
+
 
 
 
