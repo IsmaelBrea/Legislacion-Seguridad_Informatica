@@ -1168,7 +1168,7 @@ Otra forma de verlo paso por paso en vez de ver toda la salida de golpe:
 ```bash
 dmesg | less
 ```
- - | Esto le pasa la salida del comando dmesg al siguiente comando que es less
+ - | → Esto le pasa la salida del comando dmesg al siguiente comando que es less
  - less → es un visor de texto en Linux. Permite ver archivos o salidas de comandos de forma paginada, sin que todo salga de golpe en la pantalla. A diferencia de cat,que muestra todo y se va al final, less te deja moverte arriba y abajo para leer con calma.
 
 Para salir de less, presiona q.
@@ -1436,6 +1436,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
