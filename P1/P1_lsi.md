@@ -379,7 +379,6 @@ Los pasos básicos explicados por el profesor ya los hemos realizado:
   - Cambiar las contraseñas de los usuarios (lsi y root)
   - Instalar sudo
   - Ampliar el historial de comandos permitidos en ambos usuarios (lsi y root)
-  - 
 
 ### **ANÁLISIS DE LOS FICHEROS BÁSICOS DE CONFIGURACIÓN (/etc - archivos de configuración del sistema)**
 
@@ -1235,6 +1234,7 @@ Normalmente:
 
 
 systemctl list-dependencies default.target
+
 
 
 
