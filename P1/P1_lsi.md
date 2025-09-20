@@ -75,6 +75,7 @@ lsb_release -a       # Versión distro
 df -h                # Espacio en disco
 du -sh carpeta       # Tamaño carpeta
 free -h              # Memoria RAM
+systemctl            # Gestiona servicios, targets y el estado del sistema con systemd.
 uptime               # Tiempo encendido
 reboot               # Reiniciar
 shutdown now         # Apagar
@@ -1101,10 +1102,139 @@ dpkg hace la “operación cruda” sobre paquetes, apt hace lo mismo pero adem�
 
 
 
+---
+### **Apartado C) Identifique la secuencia completa de arranque de una máquina basada en la distribución de referencia (desde la pulsación del botón de arranque hasta la pantalla de login). ¿Qué target por defecto tiene su máquina?. ¿Cómo podría cambiar el target de arranque?. ¿Qué targets tiene su sistema y en qué estado se encuentran?. ¿Y los services?. Obtenga la relación de servicios de su sistema y su estado. ¿Qué otro tipo de unidades existen?. Configure el sudo de su máquina.**
+
+
+Breve resumen de la secuencia de arranque:
+La secuencia completa sería algo así:
+
+  1. Encender máquina → BIOS/UEFI hace comprobaciones.
+  
+  2. MBR/GRUB → carga el kernel.
+  
+  3. Kernel arranca → aquí es cuando puedes ver mensajes con dmesg.
+  
+  4. Systemd toma el control → aquí es cuando puedes ver todo con journalctl -b.
+  
+  5. Se levantan servicios (red, login, etc.) → también registrado en journalctl -b.
+
+  6. Llegas a la pantalla de login.
+
+
+#### Cómo verlo en Linux
+
+- dmesg → mensajes del kernel desde el arranque.
+
+- journalctl -b → todo lo que hizo systemd durante este arranque.
+
+- systemd-analyze → cuánto tardó cada parte del arranque.
+
+TODO ESTO HACERLO DENTRO DEL USUARIO ROOT!!
+
+<br>
+
+**mesg (display message o diagnostic message)**:
+Muestra los mensajes que el kernel va escribiendo desde que se arranca la máquina.
+
+Ejemplos de mensajes que muestra:
+
+      Memoria detectada
+            
+      CPU detectada
+            
+      Discos y particiones
+            
+      Tarjetas de red
+            
+      Errores de hardware o drivers
+
+```bash
+dmesg
+```
+
+Otra forma de verlo paso por paso en vez de ver toda la salida de golpe:
+```bash
+dmesg | less
+```
+ - | Esto le pasa la salida del comando dmesg al siguiente comando que es less
+ - less → es un visor de texto en Linux. Permite ver archivos o salidas de comandos de forma paginada, sin que todo salga de golpe en la pantalla. A diferencia de cat,que muestra todo y se va al final, less te deja moverte arriba y abajo para leer con calma.
+
+Para salir de less, presiona q.
+
+<br>
+
+
+** journalctl -b**
+Herramienta para leer los logs de systemd (que es el sistema de inicio moderno de Debian, Ubuntu, Fedora, etc.)
+
+La opción -b significa "desde el arranque actual".
+
+Te muestra todo lo que hizo systemd (y los servicios que maneja) desde que encendiste la máquina hasta ahora.
+
+```bash
+journalctl -b
+```
+
+<br>
+
+**systemd-analyze**
+
+Mide cuánto tarda cada parte del arranque de tu sistema. Te da un resumen de kernel + userspace (espacio de usuario).
+
+- Kernel time → tiempo que tardó el kernel en inicializar hardware y preparar el sistema de archivos raíz (/).
+
+- Userspace time → tiempo que tardó systemd en iniciar todos los servicios hasta que el sistema está listo (login gráfico o multiusuario).
+
+
+```bash
+root@ismael:/home/lsi# systemd-analyze
+Startup finished in 16.086s (kernel) + 1min 45.089s (userspace) = 2min 1.176s
+graphical.target reached after 1min 45.050s in userspace.
+```
+
+16.086s (kernel) → el kernel tardó 16 segundos en inicializar el hardware y montar el sistema de archivos.
+
+1min 45.089s (userspace) → systemd y todos los servicios tardaron 1 minuto 45 segundos en iniciarse.
+
+2min 1.176s → tiempo total desde que encendiste la máquina hasta que el sistema está listo.
+
+graphical.target reached after 1min 45.050s → la interfaz gráfica (login) estuvo lista justo después de los 1:45 min de userspace.
+
+En resumen: el kernel arranca rápido, lo que más tarda son los servicios del sistema y la interfaz gráfica.
+
+
+```bash
+systemd-analyze blame
+```
+Este comando muestra los servicios que se iniciaron durante el arranque, ordenados por el tiempo que tardó cada uno en arrancar.
+
+Sirve para identificar qué servicios ralentizan el inicio de tu sistema.
+
+
+###  💳 Target 
+
+Un target es como un “objetivo de arranque” del sistema.
+
+Le dice a Linux qué servicios y programas debe iniciar cuando enciendes el ordenador.
+
+Es como elegir un “modo de arranque”: con pantalla, sin pantalla, modo recuperación…
+
+
+**Target por defecto**
+
+Es el target que Linux usa automáticamente al encender.
+
+Normalmente:
+
+- Escritorio → graphical.target
+
+- Servidor → multi-user.target
 
 
 
 
+systemctl list-dependencies default.target
 
 
 
