@@ -1236,6 +1236,43 @@ Piensa en tu ordenador como si fuera un coche. Cuando enciendes el coche, puedes
   - Modo mantenimiento → solo algunas cosas para revisar fallos.
 
 
+**Target por defecto: systemctl get-default**
+
+Es el target que Linux usa automáticamente al encender.
+
+Existen distintos tipos de target en los sistemas Linux. Los más básicos son:
+
+- Escritorio e interfaz gráfica→ graphical.target
+
+- Modo multiusuario sin GUI, incluye red y servicios básicos → multi-user.target
+
+```bash
+root@ismael:/home/lsi# systemctl get-default
+graphical.target
+```
+
+Esto significa que tu ordenador arrancará con la pantalla de login y el escritorio, como un PC normal de uso diario.El problema es que tal y como estamos usando nuestra máquina (sin login y sin escritorio), esta opción no es la más recomendada porque consume recursos innecesarios como CPU y memoria.
+
+<br>
+
+**Cambiar el target de arranque: systemctl set-default multi-user.target**
+
+Aquí deberíamos poder cambiar el target por el de servidor (multi-user.target), ya que el que está por defecto no nos interesa ya que solo nos vamos a conectar a la máquina por ssh y no necesitamos la interfaz gráfica.
+```bash
+root@ismael:/home/lsi# systemctl set-default multi-user.target
+Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi-user.target.
+root@ismael:/home/lsi# reboot
+```
+
+Ahora nuestra máquina irá mejor. Podemos comprobar esto analizando el tiempo de botado de la máquina:
+```bash
+root@ismael:/home/lsi# systemd-analyze
+Startup finished in 12.532s (kernel) + 2min 14.466s (userspace) = 2min 26.998s
+multi-user.target reached after 2min 14.432s in userspace.
+```
+Vemos que el tiempo aquí ya se redujo respecto a la primera vez que lo hicimos. Paso de 16 segundos a 12 ya.
+<br>
+
 **Todos los targets del sistema: systemctl list-units --type=target**
 
 Muestra todos los targets cargados en tu sistema, es decir, los “modos de arranque” o conjuntos de servicios que se pueden iniciar.
@@ -1313,30 +1350,25 @@ timers.target → Temporizadores para iniciar servicios automáticamente.
 
 veritysetup.target → Volúmenes con verificación de integridad (dm-verity).
 ```
+<br>
 
-**Target por defecto: systemctl get-default**
 
-Es el target que Linux usa automáticamente al encender.
-
-Existen distintos tipos de target en los sistemas Linux. Los más básicos son:
-
-- Escritorio e interfaz gráfica→ graphical.target
-
-- Modo multiusuario sin GUI, incluye red y servicios básicos → multi-user.target
-
-```bash
-root@ismael:/home/lsi# systemctl get-default
-graphical.target
-```
-
-Esto significa que tu ordenador arrancará con la pantalla de login y el escritorio, como un PC normal de uso diario.El problema es que tal y como estamos usando nuestra máquina (sin login y sin escritorio), esta opción no es la más recomendada porque consume recursos innecesarios como CPU y memoria.
-
-Aquí deberíamos poder cambiar el target por el de servidor (multi-user.target), ya que el que está por defecto no nos interesa ya que solo nos vamos a conectar a la máquina por ssh y no no necesitamos la interfaz gráfica.
 
 
 systemctl list-dependencies default.target
 
 
+### RESUMEN FÁCIL SOBRE EL TIEMPO DE ARRANQUE Y LOS TARGETS
+
+- Para averiguar nuestro target por defecto -> systemctl get-default
+- Para cambiar el target de arranque -> systemctl set-default xxx.target (hemos puesto
+multi-user.target)
+- Para averiguar los targets en memoria -> systemctl list-units –type=target
+- Para averiguar los targets instalados -> systemctl list-unit-files –type=target
+- Para averiguar los servicios en memoria -> systemctl list-units –type=service
+- Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
+- Para averiguar todos los tipos de unidades -> systemctl list-units
+***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
 
 
 
