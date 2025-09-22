@@ -589,12 +589,12 @@ rtt min/avg/max/mdev = 0.337/0.374/0.434/0.037 ms
 ```
 
 #### CONCLUSIÓN:
-Tu IP estática 10.11.48.169 funciona correctamente.
+- Tu IP estática 10.11.48.169 funciona correctamente.
 
-La máquina puede comunicarse con el gateway.
+- La máquina puede comunicarse con el gateway.
 
-La interfaz ens33 está activa y lista para usar SSH o otras conexiones de red.
-```
+- La interfaz ens33 está activa y lista para usar SSH o otras conexiones de red.
+---
 
 
 **etc/hosts**
@@ -1579,6 +1579,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
