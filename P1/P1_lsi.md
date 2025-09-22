@@ -42,6 +42,12 @@ find . -name "archivo.txt"  # Buscar archivo
 grep "texto" archivo.txt    # Buscar texto
 grep -r "texto" /ruta       # Buscar en varios archivos
 
+# Redirección y tuberías (pipes)
+> sobreescribe el archivo
+>> añade al final del archivo
+
+| tubería. Envía la salida de un comando como entrada de otro comando, conectando procesos en serie.
+
 # Permisos
 ls -l               # Ver permisos
 chmod 755 archivo   # Cambiar permisos
@@ -487,11 +493,107 @@ En resumen:
 1. lo → interna, siempre encendida, no sale a Internet.
 
 2. ens33 → real, siempre encendida, obtiene IP automática para conectarse a la red.
+<br>
 
-**Añadir nuestra IP estática en ens33 y quitar el DHCP**
+**Añadir nuestra IP estática en ens33 y quitar el DHCP*
 
----
+Hacemos esto para que mi máquina siempre tenga la misma IP. Evitamos que DHCP nos dé otra IP diferente cada vez que reiniciamos. Necesario si vamos a usar /etc/hosts para nombres, porque los alias dependen de IP fija.
 
+```bash
+su -
+nano /etc/network/interfaces
+```
+
+Cambiamos el contenido por:
+```bash
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+#source /etc/network/interfaces.d/*
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# Primera interfaz
+auto ens33
+iface ens33 inet static
+    address 10.11.48.169
+    netmask 255.255.254.0
+    gateway 10.11.48.1
+
+```
+Y reiniciamos el servicio:
+```bash
+su -
+systemctl restart networking
+```
+
+Si hay cualquier fallo en el restart de las interfaes podemos usar esto para ver dodne está el fallo:
+```bash
+systemctl status networking.service
+```
+
+Tener la configuración con IP estática en ens33  permite que la máquina siempre tenga las mismas direcciones IP, a diferencia de la configuración anterior con DHCP, donde la IP podía cambiar cada vez que se reiniciaba. Esto es útil para:
+
+- Conectarse por SSH usando IP o alias en /etc/hosts sin preocuparse de que cambie la dirección.
+
+- Mantener varias interfaces de red con subredes distintas, por ejemplo una para laboratorio y otra para acceso general.
+
+- Garantizar estabilidad en la red y coordinación con compañeros o servicios que dependen de IP fija.
+
+<br>
+Para comprobar que todo funciona bien:
+```bash
+root@ismael:~# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute
+       valid_lft forever preferred_lft forever
+2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 00:50:56:97:9a:7f brd ff:ff:ff:ff:ff:ff
+    altname enp2s1
+    inet 10.11.48.169/23 brd 10.11.49.255 scope global ens33
+       valid_lft forever preferred_lft forever
+    inet6 fe80::250:56ff:fe97:9a7f/64 scope link
+       valid_lft forever preferred_lft forever
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
+    altname enp2s2
+```
+
+ Ahí podemos ver que la interfaz ens33 está correctamente configurada con mi Ip estática y que está activa. 
+ 
+ ens34 aparece aunque no la hayas configurado:
+
+- ip a muestra todas las interfaces físicas o virtuales detectadas por el sistema, no solo las que se hayan configurado en /etc/network/interfaces.
+
+- En mi caso, ens34 es otra tarjeta de red física o virtual de la máquina (por ejemplo, otra NIC de la máquina virtual o puerto adicional).
+
+- Aunque esté ahí, no tiene IP asignada, y como la dejé comentada en /etc/network/interfaces, no se levanta con IP
+
+
+Otra comprobación:
+```bash
+root@ismael:~# ping 10.11.48.1
+PING 10.11.48.1 (10.11.48.1) 56(84) bytes of data.
+64 bytes from 10.11.48.1: icmp_seq=1 ttl=64 time=0.337 ms
+64 bytes from 10.11.48.1: icmp_seq=2 ttl=64 time=0.351 ms
+64 bytes from 10.11.48.1: icmp_seq=3 ttl=64 time=0.434 ms
+64 bytes from 10.11.48.1: icmp_seq=4 ttl=64 time=0.375 ms
+^C
+--- 10.11.48.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3039ms
+rtt min/avg/max/mdev = 0.337/0.374/0.434/0.037 ms
+```
+
+###CONCLUSIÓN:
+Tu IP estática 10.11.48.169 funciona correctamente.
+
+La máquina puede comunicarse con el gateway.
+
+La interfaz ens33 está activa y lista para usar SSH o otras conexiones de red.
+```
 
 
 **etc/hosts**
@@ -1476,6 +1578,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
