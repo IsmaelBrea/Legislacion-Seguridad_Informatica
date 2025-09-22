@@ -1333,6 +1333,7 @@ Para salir de less, presiona q.
 
 
 **journalctl -b**
+
 Herramienta para leer los logs del último arranque de systemd (que es el sistema de inicio moderno de Debian, Ubuntu, Fedora, etc.)
 
 La opción -b significa "desde el arranque actual".
@@ -1592,6 +1593,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
