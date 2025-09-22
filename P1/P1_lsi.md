@@ -98,7 +98,7 @@ shutdown now         # Apagar
 
 - Usuario compañero_
   -  `lsi2.3.4`  
-  - IP: `10.11.49.175`  
+  - IP: `10.11.48.175`  
 
 
 ---
@@ -487,7 +487,11 @@ En resumen:
 1. lo → interna, siempre encendida, no sale a Internet.
 
 2. ens33 → real, siempre encendida, obtiene IP automática para conectarse a la red.
+
+**Añadir nuestra IP estática en ens33 y quitar el DHCP**
+
 ---
+
 
 
 **etc/hosts**
@@ -560,6 +564,30 @@ ff02::2 ip6-allrouters
 - ff02::1 → enviar mensaje a todos los PCs de tu red.. Es como si enviaras un mensaje al aire y todos los PCs de tu red pudieran leerlo.
 
 - ff02::2 → enviar mensaje a todos los routers de tu red. Sirve para enviar mensajes a los routers sin tener que escribir su IP exacta.
+
+
+**Añadir en hosts nuestra IP y la del compañero**
+```bash
+su -
+nano /etc/hosts
+```
+
+
+Añadir:
+```bash
+10.11.48.169  ismael
+10.11.48.175  lucas
+```
+
+
+- 10.11.48.169  ismael:
+   - -Esto hace que tu máquina se pueda referir a sí misma como ismael.
+
+   - -Opcional, no estrictamente necesario si ya estás dentro de tu máquina.
+ 
+- 10.11.48.175  lucas
+  - -Esto permite que desde tu máquina puedas hacer ssh lsi@pc-compañero en vez de escribir la IP.
+
 ---
 
 
@@ -1441,6 +1469,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
