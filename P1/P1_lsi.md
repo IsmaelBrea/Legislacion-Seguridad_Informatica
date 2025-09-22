@@ -289,9 +289,19 @@ reboot
 
 - **`su`**  
   Cambia de usuario (por defecto a root) pero **mantiene tu entorno actual**, incluyendo directorio y variables.
+  ```bash
+  lsi@ismael:~$ su
+  Contraseña:
+  root@ismael:/home/lsi#
+  ```
 
 - **`su -`**  
   Cambia de usuario **y carga el entorno completo** del nuevo usuario, incluyendo su PATH, variables y directorio inicial (`/root` si es root).
+  ```bash
+  lsi@ismael:~$ su -
+  Contraseña:
+  root@ismael:~#
+  ```
   
 ---
 ### 3-Activar sudo   (NO ES RECOMENDABLE. AYUDA A COMETER ERRORES)
@@ -1581,6 +1591,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
