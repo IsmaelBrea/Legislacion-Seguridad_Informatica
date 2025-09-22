@@ -3,7 +3,7 @@
 ## Defensas en clase
 - Traer papel y boli.  
 - Revisar siempre todo lo que aparezca en pantalla.  
-
+ - El viernes anterior a la semana de defensas se apagan las máquinas.  Antes de cerrar todo para la defensa hacer un poweroff de la máquina.
 <br>
 
 ## Repaso COMANDOS BÁSICOS útiles para las prácticas
@@ -1436,6 +1436,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
