@@ -1277,7 +1277,7 @@ La secuencia completa sería algo así:
   
   3. Kernel arranca → aquí es cuando puedes ver mensajes con dmesg.
   
-  4. Systemd toma el control → aquí es cuando puedes ver todo con journalctl -b.
+  4. Systemd (pid 1) toma el control → aquí es cuando puedes ver todo con journalctl -b.
   
   5. Se levantan servicios (red, login, etc.) → también registrado en journalctl -b.
 
@@ -1591,6 +1591,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
