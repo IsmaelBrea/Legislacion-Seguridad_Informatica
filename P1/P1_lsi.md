@@ -581,13 +581,20 @@ Añadir:
 
 
 - 10.11.48.169  ismael:
-   - -Esto hace que tu máquina se pueda referir a sí misma como ismael.
+   - Esto hace que tu máquina se pueda referir a sí misma como ismael.
 
-   - -Opcional, no estrictamente necesario si ya estás dentro de tu máquina.
+   - Opcional, no estrictamente necesario si ya estás dentro de tu máquina.
  
 - 10.11.48.175  lucas
-  - -Esto permite que desde tu máquina puedas hacer ssh lsi@pc-compañero en vez de escribir la IP.
+  - Esto permite que desde tu máquina puedas hacer ssh lsi@pc-compañero en vez de escribir la IP.
+  - Utilidades:
+     - SSH más fácil: ssh lsi@pc-compañero
 
+     - Ping más legible: ping lucas
+
+     - Copias de archivos más fáciles: scp archivo.txt lsi@lucas:/home/lsi/
+
+     - Evitas memorizar IPs: si cambian las IPs, solo actualizas /etc/hosts.
 ---
 
 
@@ -1469,6 +1476,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
