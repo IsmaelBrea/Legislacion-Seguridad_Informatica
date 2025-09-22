@@ -1671,7 +1671,57 @@ Startup finished in 35.876s (kernel) + 2min 9.427s (userspace) = 2min 45.304s
 multi-user.target reached after 2min 9.387s in userspace.
 ```
 
+Para obtener la relación de los tiempos de ejecución de los services de su sistema usamos -> **systemd-analyze blame**
+```bash
+root@ismael:~# systemd-analyze blame
+1min 522ms NetworkManager-wait-online.service
+   42.622s systemd-journal-flush.service
+   34.507s dev-sda1.device
+   33.000s ifupdown-pre.service
+   27.909s e2scrub_reap.service
+   25.282s user@1000.service
+   22.462s apparmor.service
+    7.072s cups.service
+    4.814s ssh.service
+    4.800s systemd-tmpfiles-clean.service
+    4.392s udisks2.service
+    4.192s NetworkManager.service
+    3.743s polkit.service
+    2.644s ModemManager.service
+```
 
+Nos devuelve una lista ordenada por tiempo. 
+
+
+Para ver las dependencias críticas en la secuencia de arranque -> **systemd-analyze critical-chain**
+```bash
+root@ismael:~# systemd-analyze critical-chain
+The time when unit became active or started is printed after the "@" character.
+The time the unit took to start is printed after the "+" character.
+
+multi-user.target @2min 9.387s
+└─cups-browsed.service @2min 9.384s
+  └─network-online.target @2min 9.373s
+    └─network.target @1min 8.834s
+      └─NetworkManager.service @1min 4.640s +4.192s
+        └─dbus.service @1min 2.395s +2.008s
+          └─basic.target @1min 2.277s
+            └─sockets.target @1min 2.275s
+              └─dbus.socket @1min 2.275s
+                └─sysinit.target @1min 2.255s
+                  └─systemd-update-utmp.service @1min 2.123s +129ms
+                    └─systemd-tmpfiles-setup.service @1min 1.792s +320ms
+                      └─systemd-journal-flush.service @19.159s +42.622s
+                        └─systemd-journald.service @18.045s +1.104s
+                          └─systemd-journald.socket @17.910s
+                            └─-.mount @17.881s
+```
+
+
+
+---
+
+### **Apartado E) Investigue si alguno de los servicios del sistema falla. Pruebe algunas de las opciones del sistema de registro journald. Obtenga toda la información journald referente al proceso de botado de la máquina. ¿Qué hace el systemd-timesyncd?**
 
 
 
