@@ -97,7 +97,7 @@ shutdown now         # Apagar
   - IP: `10.11.48.169`  
 
 - Usuario compañero_
--   - `lsi2.3.4`  
+  -   - `lsi2.3.4`  
   - IP: `10.11.49.175`  
 
 
@@ -1441,6 +1441,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
