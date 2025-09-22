@@ -1293,7 +1293,7 @@ La secuencia completa sería algo así:
 
 - systemd-analyze → cuánto tardó cada parte del arranque.  
 
-- systemctl list-dependencies default.target Lista todas →  las units (servicios y targets) que dependen del target por defecto, es decir, todo lo que se inicia automáticamente cuando arranca tu máquina.
+- systemctl list-dependencies default.target  →  Lista todas las units (servicios y targets) que dependen del target por defecto, es decir, todo lo que se inicia automáticamente cuando arranca tu máquina.
 
 
 TODO ESTO HACERLO DENTRO DEL USUARIO ROOT!!
@@ -1592,6 +1592,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
