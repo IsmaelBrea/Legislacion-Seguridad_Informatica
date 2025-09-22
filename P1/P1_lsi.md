@@ -96,6 +96,11 @@ shutdown now         # Apagar
   - `lsi2.3.4`  
   - IP: `10.11.48.169`  
 
+- Usuario compañero_
+-   - `lsi2.3.4`  
+  - IP: `10.11.49.175`  
+
+
 ---
 ## Redes para la realización de las prácticas
 - **Eduroam**: no permitido el tráfico a los puertos 80 y 443.  
@@ -1436,6 +1441,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
