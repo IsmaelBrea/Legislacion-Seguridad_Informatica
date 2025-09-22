@@ -1666,6 +1666,10 @@ El tiempo de botado(o tiempo de arranque) es simplemente el tiempo que tarda un 
 
 Para ver el tiempo de botado de nuestra máquina -> **systemd-analyze**
 ```bash
+root@ismael:~# systemd-analyze
+Startup finished in 35.876s (kernel) + 2min 9.427s (userspace) = 2min 45.304s
+multi-user.target reached after 2min 9.387s in userspace.
+```
 
 
 
