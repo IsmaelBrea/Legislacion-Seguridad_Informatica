@@ -829,15 +829,15 @@ sudo nano /etc/apt/sources.list
 
 #deb cdrom:[Debian GNU/Linux 10.4.0 _Buster_ - Official amd64 DVD Binary-1 20200509-10:26]/ buster contrib main
 
-deb http://deb.debian.org/debian bullseye main contrib non-free
-deb-src http://deb.debian.org/debian bullseye main contrib non-free
+deb http://archive.debian.org/debian buster main contrib non-free
+deb-src http://archive.debian.org/debian buster main contrib non-free
 
-deb http://security.debian.org/debian-security bullseye-security main contrib non-free
-deb-src http://security.debian.org/debian-security bullseye-security main contrib non-free
+deb http://archive.debian.org/debian-security buster/updates main contrib non-free
+deb-src http://archive.debian.org/debian-security buster/updates main contrib non-free
 
 # buster-updates, previously known as 'volatile'
-deb http://deb.debian.org/debian bullseye-updates main contrib non-free
-deb-src http://deb.debian.org/debian bullseye-updates main contrib non-free
+deb http://archive.debian.org/debian buster-updates main contrib non-free
+deb-src http://archive.debian.org/debian buster-updates main contrib non-free
 ```
 Guarda y cierra (Ctrl+O, Enter, Ctrl+X).
 
@@ -1441,6 +1441,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
