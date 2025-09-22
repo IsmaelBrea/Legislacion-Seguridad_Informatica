@@ -81,7 +81,8 @@ lsb_release -a       # Versión distro
 df -h                # Espacio en disco
 du -sh carpeta       # Tamaño carpeta
 free -h              # Memoria RAM
-systemctl            # Gestiona servicios, targets y el estado del sistema con systemd.
+systemctl            # Gestiona(inicia, detiene, reinicia...) servicios, targets y el estado del sistema con systemd
+journalctl           # Muestra los registros (logs) del sistema cuando usas systemd
 uptime               # Tiempo encendido
 reboot               # Reiniciar
 shutdown now         # Apagar
@@ -1332,7 +1333,7 @@ Para salir de less, presiona q.
 
 
 ** journalctl -b**
-Herramienta para leer los logs de systemd (que es el sistema de inicio moderno de Debian, Ubuntu, Fedora, etc.)
+Herramienta para leer los logs del último arranque de systemd (que es el sistema de inicio moderno de Debian, Ubuntu, Fedora, etc.)
 
 La opción -b significa "desde el arranque actual".
 
@@ -1591,6 +1592,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
