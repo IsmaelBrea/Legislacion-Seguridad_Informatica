@@ -588,7 +588,7 @@ PING 10.11.48.1 (10.11.48.1) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.337/0.374/0.434/0.037 ms
 ```
 
-###CONCLUSIÓN:
+#### CONCLUSIÓN:
 Tu IP estática 10.11.48.169 funciona correctamente.
 
 La máquina puede comunicarse con el gateway.
@@ -1579,6 +1579,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
