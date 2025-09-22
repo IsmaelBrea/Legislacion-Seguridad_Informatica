@@ -81,8 +81,11 @@ lsb_release -a       # Versión distro
 df -h                # Espacio en disco
 du -sh carpeta       # Tamaño carpeta
 free -h              # Memoria RAM
-systemctl            # Gestiona(inicia, detiene, reinicia...) servicios, targets y el estado del sistema con systemd
-journalctl           # Muestra los registros (logs) del sistema cuando usas systemd
+systemctl            # Gestiona el estado de los servicios del sistema
+   - list-units → “qué servicios están activos ahora”
+   - list-unit-files → “qué servicios existen y si arrancan al inicio”
+   - status → “estado de un servicio específico”
+journalctl           # Muestra lo que hacen los servicios del sistema cuando usas systemd. Muestra los logs
 uptime               # Tiempo encendido
 reboot               # Reiniciar
 shutdown now         # Apagar
@@ -1535,9 +1538,10 @@ SUB    = The low-level unit activation state, values depend on unit type.
 19 loaded units listed. Pass --all to see loaded but inactive units, too.
 To show all installed unit files use 'systemctl list-unit-files'.
 ```
+Como vemos, todos los targets están activos. Indica que el sistema arrancó correctamente y todos los grupos de servicios necesarios están funcionando.
 
 ```text
-TIPOS DE TARGET EN LIUX (SYSTEMD)
+TIPOS DE TARGET EN LINUX (SYSTEMD)
 
 basic.target → Servicios básicos del sistema, arranca primero.
 
@@ -1581,6 +1585,64 @@ veritysetup.target → Volúmenes con verificación de integridad (dm-verity).
 
 
 
+**Todos los servicios en memoria del sistema: systemctl list-units --type=service**
+```bash
+root@ismael:/home/lsi# systemctl list-units --type=service
+  UNIT                                LOAD   ACTIVE SUB     DESCRIPTION
+  apparmor.service                    loaded active exited  Load AppArmor profiles
+  avahi-daemon.service                loaded active running Avahi mDNS/DNS-SD Stack
+  console-setup.service               loaded active exited  Set console font and keymap
+  cron.service                        loaded active running Regular background program processing daemon
+  cups-browsed.service                loaded active running Make remote CUPS printers available locally
+  cups.service                        loaded active running CUPS Scheduler
+  dbus.service                        loaded active running D-Bus System Message Bus
+  getty@tty1.service                  loaded active running Getty on tty1
+  ifupdown-pre.service                loaded active exited  Helper to synchronize boot up for ifupdown
+  keyboard-setup.service              loaded active exited  Set the console keyboard layout
+  kmod-static-nodes.service           loaded active exited  Create List of Static Device Nodes
+  low-memory-monitor.service          loaded active running Low Memory Monitor
+  ModemManager.service                loaded active running Modem Manager
+  networking.service                  loaded active exited  Raise network interfaces
+● NetworkManager-wait-online.service  loaded failed failed  Network Manager Wait Online
+  NetworkManager.service              loaded active running Network Manager
+  open-vm-tools.service               loaded active running Service for virtual machines hosted on VMware
+  plymouth-quit-wait.service          loaded active exited  Hold until boot process finishes up
+  plymouth-quit.service               loaded active exited  Terminate Plymouth Boot Screen
+  plymouth-read-write.service         loaded active exited  Tell Plymouth To Write Out Runtime Data
+  plymouth-start.service              loaded active exited  Show Plymouth Boot Screen
+  polkit.service                      loaded active running Authorization Manager
+  pulseaudio-enable-autospawn.service loaded active exited  LSB: Enable pulseaudio autospawn
+  rsyslog.service                     loaded active running System Logging Service
+  rtkit-daemon.service                loaded active running RealtimeKit Scheduling Policy Service
+  ssh.service                         loaded active running OpenBSD Secure Shell server
+  systemd-binfmt.service              loaded active exited  Set Up Additional Binary Formats
+  systemd-journal-flush.service       loaded active exited  Flush Journal to Persistent Storage
+  systemd-journald.service            loaded active running Journal Service
+  systemd-logind.service              loaded active running User Login Management
+  systemd-modules-load.service        loaded active exited  Load Kernel Modules
+  systemd-random-seed.service         loaded active exited  Load/Save Random Seed
+  systemd-remount-fs.service          loaded active exited  Remount Root and Kernel File Systems
+  systemd-sysctl.service              loaded active exited  Apply Kernel Variables
+  systemd-sysusers.service            loaded active exited  Create System Users
+  systemd-tmpfiles-setup-dev.service  loaded active exited  Create Static Device Nodes in /dev
+  systemd-tmpfiles-setup.service      loaded active exited  Create System Files and Directories
+  systemd-udev-trigger.service        loaded active exited  Coldplug All udev Devices
+  systemd-udevd.service               loaded active running Rule-based Manager for Device Events and Files
+  systemd-update-utmp.service         loaded active exited  Record System Boot/Shutdown in UTMP
+lines 1-41
+...
+```
+
+**Todos los servicios instalados del sistema: systemctl list-unit-files --type=service**
+```bash
+systemctl list-unit-files --type=service
+```
+
+- list-units → servicios actualmente activos
+
+- list-unit-files → todos los servicios instalados y su configuración de arranque
+  
+
 ### RESUMEN FÁCIL SOBRE EL TIEMPO DE ARRANQUE Y LOS TARGETS
 
 - Para averiguar nuestro target por defecto -> systemctl get-default
@@ -1596,9 +1658,14 @@ multi-user.target)
 
 **Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies**
 
+---
 
+### **Apartado D) Determine los tiempos aproximados de botado de su kernel y del userspace. Obtenga la relación de los tiempos de ejecución de los services de su sistema.**
 
+El tiempo de botado(o tiempo de arranque) es simplemente el tiempo que tarda un ordenador desde que se enciende hasta que el sistema operativo está completamente cargado y listo para usar.
 
+Para ver el tiempo de botado de nuestra máquina -> **systemd-analyze**
+```bash
 
 
 
