@@ -1592,7 +1592,10 @@ multi-user.target)
 - Para averiguar los servicios en memoria -> systemctl list-units –type=service
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
-***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
+
+**Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies**
+
 
 
 
