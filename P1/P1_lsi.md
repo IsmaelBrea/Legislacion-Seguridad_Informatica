@@ -541,6 +541,7 @@ Tener la configuración con IP estática en ens33  permite que la máquina siemp
 - Garantizar estabilidad en la red y coordinación con compañeros o servicios que dependen de IP fija.
 
 <br>
+
 Para comprobar que todo funciona bien:
 ```bash
 root@ismael:~# ip a
@@ -1578,6 +1579,7 @@ multi-user.target)
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
 - Para averiguar todos los tipos de unidades -> systemctl list-units
 ***Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies
+
 
 
 
