@@ -1870,6 +1870,32 @@ root@ismael:~# systemctl list-units --type=service --state=failed
   UNIT LOAD ACTIVE SUB DESCRIPTION
 0 loaded units listed.
 ```
+Ahora el tiempo de botado del kernel se ha reducido un poco, unos 5 segundos aproximadamente.
+```bash
+root@ismael:~# systemd-analyze
+Startup finished in 30.277s (kernel) + 1min 48.687s (userspace) = 2min 18.965s
+multi-user.target reached after 1min 48.639s in userspace.
+```
+<br>
+
+
+**systemd-journald**
+
+- Es el sistema de logs centralizado de Linux con systemd.
+
+- Recoge mensajes de: kernel, servicios, usuarios y aplicaciones.
+
+- Los guarda por defecto en /run/log/journal, que no es permanente: se borra al reiniciar.
+
+- Para guardar logs permanentemente, se crea /var/log/journal.
+
+- Permite filtrar y consultar los logs fácilmente con journalctl:
+
+    - Por servicio: journalctl -u nombre-servicio
+
+    - Del último arranque: journalctl -b
+
+    - Solo errores: journalctl -p err
 
 
 
@@ -1886,6 +1912,7 @@ systemd-timesyncd -> sincroniza el reloj del sistema a través de la red
 timedarectl set-ntp true -> activa e inicializa systemd-timesyncd
 
 ---
+
 
 
 
