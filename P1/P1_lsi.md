@@ -1852,6 +1852,26 @@ Vamos a descativarlo mejor, porque no nos interesa.
 systemctl disable NetworkManager-wait-online.service
 ```
 
+ Systemd guarda un registro de todos los servicios que alguna vez fallaron al arrancar. Incluso si desactivas un servicio o ya no falla, ese fallo histórico sigue apareciendo en los comandos:
+ ```bash
+systemctl list-units --type=service --state=failed
+```
+
+Para borrar estos registros históricos, podemos usar:
+```bash
+systemctl reset-failed
+```
+
+
+Ahora si volvemos a ver los servicios que fallan, podemos ver que no hay ninguno:
+```bash
+root@ismael:~# systemctl reset-failed
+root@ismael:~# systemctl list-units --type=service --state=failed
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+0 loaded units listed.
+```
+
+
 
 #### Resumen fácil:
 Para filtrar los que tienen estado fallido -> systemctl list-units --type=service --state=failed
@@ -1866,6 +1886,7 @@ systemd-timesyncd -> sincroniza el reloj del sistema a través de la red
 timedarectl set-ntp true -> activa e inicializa systemd-timesyncd
 
 ---
+
 
 
 
