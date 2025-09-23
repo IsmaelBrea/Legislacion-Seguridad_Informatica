@@ -509,9 +509,9 @@ En resumen:
 2. ens33 → real, siempre encendida, obtiene IP automática para conectarse a la red.
 <br>
 
-**Añadir nuestra IP estática en ens33 y quitar el DHCP*
+**Añadir nuestra IP estática en ens33 y quitar el DHCP. Añadir también nuestra IP .50*
 
-Hacemos esto para que mi máquina siempre tenga la misma IP. Evitamos que DHCP nos dé otra IP diferente cada vez que reiniciamos. Necesario si vamos a usar /etc/hosts para nombres, porque los alias dependen de IP fija.
+Hacemos esto para que mi máquina siempre tenga la misma IP. Evitamos que DHCP nos dé otra IP diferente cada vez que reiniciamos. Necesario si vamos a usar /etc/hosts para nombres, porque los alias dependen de IP fija. También vamos a añadir la interfaz ens34 con mi IP cambiando .48 por .50. Esto va a servir para que mi compañero pueda conectarse a mi máquina desde su propia máquina.
 
 ```bash
 su -
@@ -534,8 +534,19 @@ iface ens33 inet static
     netmask 255.255.254.0
     gateway 10.11.48.1
 
+# Segunda interfaz
+auto ens34
+iface ens34 inet static
+    address 10.11.50.169
+    netmask 255.255.254.0
 ```
-Y reiniciamos el servicio:
+
+**IMPORTANTE**:
+
+Solo una interfaz puede tener gateway por defecto. Interfaces adicionales con IP en la misma red no necesitan gateway para que otros host se conecten.
+
+
+Y ahora reiniciamos el servicio:
 ```bash
 su -
 systemctl restart networking
@@ -575,20 +586,14 @@ root@ismael:~# ip a
 3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
     link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
     altname enp2s2
+    inet 10.11.50.169/23 brd 10.11.51.255 scope global ens34
+       valid_lft forever preferred_lft forever
 ```
 
  Ahí podemos ver que la interfaz ens33 está correctamente configurada con mi Ip estática y que está activa. 
  
- ens34 aparece aunque no la hayas configurado:
 
-- ip a muestra todas las interfaces físicas o virtuales detectadas por el sistema, no solo las que se hayan configurado en /etc/network/interfaces.
-
-- En mi caso, ens34 es otra tarjeta de red física o virtual de la máquina (por ejemplo, otra NIC de la máquina virtual o puerto adicional).
-
-- Aunque esté ahí, no tiene IP asignada, y como la dejé comentada en /etc/network/interfaces, no se levanta con IP
-
-
-Otra comprobación:
+Otra comprobación (ping al gateway y ambas ips configuradas):
 ```bash
 root@ismael:~# ping 10.11.48.1
 PING 10.11.48.1 (10.11.48.1) 56(84) bytes of data.
@@ -600,14 +605,34 @@ PING 10.11.48.1 (10.11.48.1) 56(84) bytes of data.
 --- 10.11.48.1 ping statistics ---
 4 packets transmitted, 4 received, 0% packet loss, time 3039ms
 rtt min/avg/max/mdev = 0.337/0.374/0.434/0.037 ms
+
+root@ismael:~# ping 10.11.48.169
+PING 10.11.48.169 (10.11.48.169) 56(84) bytes of data.
+64 bytes from 10.11.48.169: icmp_seq=1 ttl=64 time=0.047 ms
+64 bytes from 10.11.48.169: icmp_seq=2 ttl=64 time=0.052 ms
+^C
+--- 10.11.48.169 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1017ms
+rtt min/avg/max/mdev = 0.047/0.049/0.052/0.002 ms
+
+root@ismael:~# ping 10.11.50.169
+PING 10.11.50.169 (10.11.50.169) 56(84) bytes of data.
+64 bytes from 10.11.50.169: icmp_seq=1 ttl=64 time=0.028 ms
+64 bytes from 10.11.50.169: icmp_seq=2 ttl=64 time=0.053 ms
+^C
+--- 10.11.50.169 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1029ms
+rtt min/avg/max/mdev = 0.028/0.040/0.053/0.012 ms
 ```
 
 #### CONCLUSIÓN:
 - Tu IP estática 10.11.48.169 funciona correctamente.
 
+- La segunda interfaz ens34 con IP 10.11.50.169 está correctamente configurada sin gateway, lo que permite que otros dispositivos de la red (por ejemplo, tu compañero) se conecten a tu máquina sin generar conflictos de rutas.
+
 - La máquina puede comunicarse con el gateway.
 
-- La interfaz ens33 está activa y lista para usar SSH o otras conexiones de red.
+- La interfaz ens33 y ens34 están activaa y listaa para usar SSH o otras conexiones de red.
 ---
 
 
@@ -683,7 +708,13 @@ ff02::2 ip6-allrouters
 - ff02::2 → enviar mensaje a todos los routers de tu red. Sirve para enviar mensajes a los routers sin tener que escribir su IP exacta.
 
 
-**Añadir en hosts nuestra IP y la del compañero**
+**Cambios en el archivo /etc/hosts**
+
+En este archivo de configuración vamos a cambiar la IP 127.0.1.1 por nuestra IP. En este archivo de configuración se cambia la IP 127.0.1.1 por nuestra IP real para que el nombre de la máquina (hostname) se resuelva correctamente en la red local. Esto permite que la propia máquina se reconozca con su nombre usando su IP de red, que servicios como SSH, ping y otros programas funcionen sin problemas y que otros equipos puedan conectarse a ella utilizando un nombre en lugar de memorizar la dirección IP. En resumen, mejora la conectividad y evita conflictos de resolución de nombres dentro de la red.
+
+Vamos a llamarle a nuestra Ip de dos formas: ismael y debian.
+
+También vamos a añadir nuestra IP con .50 en vez de .48 que servirá para que nuestro compañero pueda conectarse a nuestra máquina debian desde la suya. A esta IP le llamaremos ismael-ssh
 ```bash
 su -
 nano /etc/hosts
@@ -692,26 +723,66 @@ nano /etc/hosts
 
 Añadir:
 ```bash
-10.11.48.169  ismael
-10.11.48.175  lucas
+  GNU nano 7.2                          /etc/hosts                                    127.0.0.1       localhost
+10.11.48.169    ismael debian
+10.11.50.169    ismael-ssh
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
 ```
 
 
-- 10.11.48.169  ismael:
-   - Esto hace que tu máquina se pueda referir a sí misma como ismael.
+- 10.11.48.169  ismael debian
+   - Esto hace que tu máquina se pueda referir a sí misma como ismael o debian.
 
    - Opcional, no estrictamente necesario si ya estás dentro de tu máquina.
  
-- 10.11.48.175  lucas
-  - Esto permite que desde tu máquina puedas hacer ssh lsi@pc-compañero en vez de escribir la IP.
+- 10.11.50.169  ismael-ssh
+  - Esto permite que desde la máquina de mi comapañero pueda hacer ssh lsi@pc-compañero en vez de escribir la IP.
   - Utilidades:
      - SSH más fácil: ssh lsi@pc-compañero
 
-     - Ping más legible: ping lucas
+     - Ping más legible: ping ismael-ssh
 
      - Copias de archivos más fáciles: scp archivo.txt lsi@lucas:/home/lsi/
 
      - Evitas memorizar IPs: si cambian las IPs, solo actualizas /etc/hosts.
+
+<br>
+
+Para comprobar que todo funciona bien:
+```bash
+root@ismael:~# ping -c 3 ismael
+PING ismael (10.11.48.169) 56(84) bytes of data.
+64 bytes from ismael (10.11.48.169): icmp_seq=1 ttl=64 time=0.028 ms
+64 bytes from ismael (10.11.48.169): icmp_seq=2 ttl=64 time=0.051 ms
+64 bytes from ismael (10.11.48.169): icmp_seq=3 ttl=64 time=0.049 ms
+
+--- ismael ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2054ms
+rtt min/avg/max/mdev = 0.028/0.042/0.051/0.010 ms
+root@ismael:~# ping -c 3 debian
+PING ismael (10.11.48.169) 56(84) bytes of data.
+64 bytes from ismael (10.11.48.169): icmp_seq=1 ttl=64 time=0.032 ms
+64 bytes from ismael (10.11.48.169): icmp_seq=2 ttl=64 time=0.051 ms
+64 bytes from ismael (10.11.48.169): icmp_seq=3 ttl=64 time=0.049 ms
+
+--- ismael ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2031ms
+rtt min/avg/max/mdev = 0.032/0.044/0.051/0.008 ms
+root@ismael:~# ping -c 3 ismael-ssh
+PING ismael-ssh (10.11.50.169) 56(84) bytes of data.
+64 bytes from ismael-ssh (10.11.50.169): icmp_seq=1 ttl=64 time=0.038 ms
+64 bytes from ismael-ssh (10.11.50.169): icmp_seq=2 ttl=64 time=0.050 ms
+64 bytes from ismael-ssh (10.11.50.169): icmp_seq=3 ttl=64 time=0.049 ms
+
+--- ismael-ssh ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2044ms
+rtt min/avg/max/mdev = 0.038/0.045/0.050/0.005 ms
+```
+
 ---
 
 
@@ -1722,6 +1793,7 @@ multi-user.target @2min 9.387s
 ---
 
 ### **Apartado E) Investigue si alguno de los servicios del sistema falla. Pruebe algunas de las opciones del sistema de registro journald. Obtenga toda la información journald referente al proceso de botado de la máquina. ¿Qué hace el systemd-timesyncd?**
+
 
 
 
