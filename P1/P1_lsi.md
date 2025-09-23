@@ -129,7 +129,8 @@ lsi      pts/0        10.30.12.189     Wed Sep 17 20:30   still logged in
 lsi      pts/0        10.20.37.81      Tue Sep 16 18:04 - 18:05  (00:00)
 ```
 
-Aquí podemos ver que en dos sesiones distintas a pesar de entrar con nuestra IP que es 10.11.48.169, al conectarnos tenemos distintas IP con las que salimos al exterior. Esto es por que tenemos asignado DHCP, el cuál tendremos que cambiar más adelante  por una ruta estática con nuestra IP de la máquina.
+Aquí podemos ver que, aunque nuestra máquina tenga la IP 10.11.48.169, en last aparece otra IP diferente para la sesión. Esto ocurre porque last muestra la IP desde la que nos conectamos a la máquina, es decir, la del equipo origen (nuestro PC). Si desde PowerShell comprobamos la IP de nuestra interfaz de red (ifconfig) y a la vez consultamos last en la máquina Debian, veremos que ambas coinciden, confirmando que es la IP desde la que se inició la sesión.
+
 
 **IP de los alumnos:** `10.11.48.0/23`  
 - `/23` porque con `/24` no alcanzan las IPs para todos los alumnos, ya que solo habría 256 direcciones posibles con /24. Con /23 hay 512 direcciones IPs disponibles, suficientes para todos.
@@ -1793,6 +1794,7 @@ multi-user.target @2min 9.387s
 ---
 
 ### **Apartado E) Investigue si alguno de los servicios del sistema falla. Pruebe algunas de las opciones del sistema de registro journald. Obtenga toda la información journald referente al proceso de botado de la máquina. ¿Qué hace el systemd-timesyncd?**
+
 
 
 
