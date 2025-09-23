@@ -1715,13 +1715,13 @@ systemctl list-unit-files --type=service
 - list-unit-files → todos los servicios instalados y su configuración de arranque
      - STATE: Indica cómo está configurado el servicio actualmente para el arranque:
 
-     - enabled → arranca automáticamente al iniciar el sistema.
+       - enabled → arranca automáticamente al iniciar el sistema.
      
-     - disabled → no arranca al inicio.
+       - disabled → no arranca al inicio.
      
-     - masked → no puede iniciarse nunca, ni automático ni manual.
+       - masked → no puede iniciarse nunca, ni automático ni manual.
      
-     - static → no tiene archivo de arranque propio; se activa solo como dependencia de otros servicios.
+       - static → no tiene archivo de arranque propio; se activa solo como dependencia de otros servicios.
 
     - PRESET: Indica la configuración que el sistema recomienda por defecto al instalar el servicio:
 
@@ -1866,6 +1866,7 @@ systemd-timesyncd -> sincroniza el reloj del sistema a través de la red
 timedarectl set-ntp true -> activa e inicializa systemd-timesyncd
 
 ---
+
 
 
 
