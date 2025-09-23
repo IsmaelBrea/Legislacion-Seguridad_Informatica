@@ -46,7 +46,7 @@ grep -r "texto" /ruta       # Buscar en varios archivos
 > sobreescribe el archivo
 >> añade al final del archivo
 
-| tubería. Envía la salida de un comando como entrada de otro comando, conectando procesos en serie.
+| tubería. Envía la salida de un comando como entrada de otro comando, conectando procesos en serie
 
 # Permisos
 ls -l               # Ver permisos
@@ -85,7 +85,7 @@ systemctl            # Gestiona el estado de los servicios del sistema
    - list-units → “qué servicios están activos ahora”
    - list-unit-files → “qué servicios existen y si arrancan al inicio”
    - status → “estado de un servicio específico”
-journalctl           # Muestra lo que hacen los servicios del sistema cuando usas systemd. Muestra los logs
+journalctl           # Muestra lo que hacen los servicios (historial de logs) del sistema
 uptime               # Tiempo encendido
 reboot               # Reiniciar
 shutdown now         # Apagar
@@ -1794,6 +1794,7 @@ multi-user.target @2min 9.387s
 ---
 
 ### **Apartado E) Investigue si alguno de los servicios del sistema falla. Pruebe algunas de las opciones del sistema de registro journald. Obtenga toda la información journald referente al proceso de botado de la máquina. ¿Qué hace el systemd-timesyncd?**
+
 
 
 
