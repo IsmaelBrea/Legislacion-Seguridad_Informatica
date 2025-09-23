@@ -1713,7 +1713,21 @@ systemctl list-unit-files --type=service
 - list-units → servicios actualmente activos
 
 - list-unit-files → todos los servicios instalados y su configuración de arranque
-  
+     - STATE: Indica cómo está configurado el servicio actualmente para el arranque:
+
+     - enabled → arranca automáticamente al iniciar el sistema.
+     
+     - disabled → no arranca al inicio.
+     
+     - masked → no puede iniciarse nunca, ni automático ni manual.
+     
+     - static → no tiene archivo de arranque propio; se activa solo como dependencia de otros servicios.
+
+    - PRESET: Indica la configuración que el sistema recomienda por defecto al instalar el servicio:
+
+      - enabled → el sistema sugiere que arranque automáticamente.
+         
+      - disabled → el sistema sugiere que no arranque automáticamente.
 
 ### RESUMEN FÁCIL SOBRE EL TIEMPO DE ARRANQUE Y LOS TARGETS
 
@@ -1795,9 +1809,63 @@ multi-user.target @2min 9.387s
 
 ### **Apartado E) Investigue si alguno de los servicios del sistema falla. Pruebe algunas de las opciones del sistema de registro journald. Obtenga toda la información journald referente al proceso de botado de la máquina. ¿Qué hace el systemd-timesyncd?**
 
+Antes de hacer nada con los servicios del sistema, tenemos que tener clara dos cosas que podemos hacer con ellos. Cuando hablamos de servicios en Linux (con systemd), hay dos cosas importantes que podemos hacer antes de tocar nada:
+ - Enmascarar (mask)
+   
+Impide que el servicio se inicie nunca, ni manualmente ni automáticamente. Es como ponerle un “bloqueo total”. Comando típico:
+ ```bash
+su -
+systemctl mask nombre-del-servicio
+```
+ - Eliminar (disable):
+
+Evita que el servicio arranque automáticamente al iniciar la máquina, pero todavía se puede iniciar manualmente si se necesita.
 
 
+Comando típico:
+```bash
+su -
+systemctl disable nombre-del-servicio
+```
 
+<br>
+
+Para ver que servicios del sistema fallan: **systemctl list-units --type=service --state=failed**
+```bash
+root@ismael:~# systemctl list-units --type=service --state=failed
+  UNIT                               LOAD   ACTIVE SUB    DESCRIPTION
+● NetworkManager-wait-online.service loaded failed failed Network Manager Wait Online
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+1 loaded units listed.
+```
+
+**NetworkManager-wait-online.service** es un servicio que espera a que la red esté completamente activa antes de arrancar otros servicios que dependen de la red.
+
+Falla cuando la red ya está activa antes de que termine de arrancar o si la interfaz tarda demasiado en levantarse. No afecta a la funcionalidad de la red si ya tienes IP estática o DHCP funcionando.
+Se puede quitar, desactivar o enmascarar si no lo necesitas.
+
+Vamos a descativarlo mejor, porque no nos interesa.
+```
+systemctl disable NetworkManager-wait-online.service
+```
+
+
+#### Resumen fácil:
+Para filtrar los que tienen estado fallido -> systemctl list-units --type=service --state=failed
+
+Con journald queda un registro de logs a la máquina que se ha configurado (en
+/run/log/journal).
+
+journalctl -b | grep erro | grep <dia= -> vemos los errores en el botado filtrados por día
+
+systemd-timesyncd -> sincroniza el reloj del sistema a través de la red
+
+timedarectl set-ntp true -> activa e inicializa systemd-timesyncd
+
+---
 
 
 
