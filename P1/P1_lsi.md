@@ -2236,7 +2236,7 @@ link-local      0.0.0.0         255.255.0.0     U     1000   0        0 ens33
 lsi@ismael:~$ route -n
 ```
 
-El comando route muestra cómo tu máquina envía el tráfico de red: qué red usa cada tarjeta y por qué puerta de enlace (gateway).
+El comando route muestra y gestiona la tabla de rutas de tu sistema. Muestra cómo tu máquina envía el tráfico de red: qué red usa cada tarjeta y por qué puerta de enlace (gateway).
 
 En mi caso:
 
@@ -2249,3 +2249,4 @@ En mi caso:
 - link-local → IP automática si no hay DHCP.
 
 En resumen: route te dice “qué camino sigue cada paquete desde tu PC”.
+
