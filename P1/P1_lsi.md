@@ -123,7 +123,7 @@ shutdown now         # Apagar
   - `lsi2.3.4`  
   - IP: `10.11.48.169`  
 
-- Usuario compañero_
+- Usuario compañero:
   -  `lsi2.3.4`  
   - IP: `10.11.48.175`  
 
@@ -2199,4 +2199,5 @@ Un interfaz lógico es básicamente una “IP extra” que se asigna sobre una t
 
 
 ### **Apartado G)¿Qué rutas (routing) están definidas en su sistema?. Incluya una nueva ruta estática a una determinada red.**
+
 
