@@ -82,10 +82,27 @@ df -h                # Espacio en disco
 du -sh carpeta       # Tamaño carpeta
 free -h              # Memoria RAM
 systemctl            # Gestiona el estado de los servicios del sistema
-   - list-units → “qué servicios están activos ahora”
-   - list-unit-files → “qué servicios existen y si arrancan al inicio”
-   - status → “estado de un servicio específico”
-journalctl           # Muestra lo que hacen los servicios (historial de logs) del sistema
+   - list-units → “lista las unidades que están activas ahora”
+   - list-unit-files → “lista todas las unidades que existen y su configuración de inicio”
+          ---type = service | target | socket | mount | device | timer | path | slice | automount | swap
+          --state = active | inactive | enabled | disabled | masked | static
+   - status <unidad> → “muestra el estado detallado de una unidad o servicio específico”
+   - start <unidad> → “inicia un servicio/unidad”
+   - stop <unidad> → “detiene un servicio/unidad”
+   - restart <unidad> → “reinicia un servicio/unidad”
+   - enable <unidad> → “configura la unidad para que arranque automáticamente”
+   - disable <unidad> → “desactiva el arranque automático de la unidad”
+   - get-default → “muestra el target por defecto del sistema”
+   - set-default <target> → “cambia el target por defecto del sistema (permanente)”
+   - isolate <target> → “cambia al target especificado inmediatamente (temporal)”
+journalctl           # Muestra los registros (logs) de los servicios y del sistema
+     -b → “muestra los logs desde el último arranque”
+     -a → “muestra todas las líneas completas, incluso las truncadas por pantalla”
+     -p err → Muestra solo los mensajes de error (y más graves) del sistema.
+     -u <unidad> → “filtra los logs de una unidad o servicio específico”
+     -f  → “muestra los logs en tiempo real (como tail -f)”
+     --since "YYYY-MM-DD HH:MM:SS" → “muestra logs desde una fecha/hora específica”
+     --until "YYYY-MM-DD HH:MM:SS" → “muestra logs hasta una fecha/hora específica”
 uptime               # Tiempo encendido
 reboot               # Reiniciar
 shutdown now         # Apagar
@@ -1777,8 +1794,8 @@ multi-user.target)
 
 
 **Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies**
-
 ---
+
 
 ### **Apartado D) Determine los tiempos aproximados de botado de su kernel y del userspace. Obtenga la relación de los tiempos de ejecución de los services de su sistema.**
 
@@ -1837,9 +1854,8 @@ multi-user.target @2min 9.387s
                             └─-.mount @17.881s
 ```
 
-
-
 ---
+
 
 ### **Apartado E) Investigue si alguno de los servicios del sistema falla. Pruebe algunas de las opciones del sistema de registro journald. Obtenga toda la información journald referente al proceso de botado de la máquina. ¿Qué hace el systemd-timesyncd?**
 
@@ -1961,27 +1977,226 @@ timedarectl set-ntp true -> activa e inicializa systemd-timesyncd
 ---
 
 
+### **Apartado F)Identifique y cambie los principales parámetros de su segundo interface de red (ens34). Configure su segundo interfaz lógico. Al terminar déjelo como estaba**
+
+Lo primero de todo vamos a visualizar como tenemos configurado ens34 (recordamos que lo configuramos en el apartado A) en /etc/network/interfaces):
+```bash
+lsi@ismael:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute
+       valid_lft forever preferred_lft forever
+2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 00:50:56:97:9a:7f brd ff:ff:ff:ff:ff:ff
+    altname enp2s1
+    inet 10.11.48.169/23 brd 10.11.49.255 scope global ens33
+       valid_lft forever preferred_lft forever
+    inet6 fe80::250:56ff:fe97:9a7f/64 scope link
+       valid_lft forever preferred_lft forever
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
+    altname enp2s2
+    inet 10.11.50.169/23 brd 10.11.51.255 scope global ens34
+       valid_lft forever preferred_lft forever
+    inet6 fe80::250:56ff:fe97:fa74/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+Si solo queremos ver ens34:
+```bash
+lsi@ismael:~$ ip a show ens34
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
+    altname enp2s2
+    inet 10.11.50.169/23 brd 10.11.51.255 scope global ens34
+       valid_lft forever preferred_lft forever
+    inet6 fe80::250:56ff:fe97:fa74/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+O asi:
+```bash
+ens34: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.11.50.169  netmask 255.255.254.0  broadcast 10.11.51.255
+        inet6 fe80::250:56ff:fe97:fa74  prefixlen 64  scopeid 0x20<link>
+        ether 00:50:56:97:fa:74  txqueuelen 1000  (Ethernet)
+        RX packets 139613  bytes 34797764 (33.1 MiB)
+        RX errors 0  dropped 1370  overruns 0  frame 0
+        TX packets 66  bytes 7330 (7.1 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 16  base 0x2080
+```
+
+Cosas a saber sobre las interfaces:
+
+- ens34 → tarjeta física.
+- <BROADCAST,MULTICAST,UP,LOWER_UP> → estados y capacidades:
+- MTU num → tamaño máximo de paquete que puede enviar (bytes).
+- inet → IP principal.
+- inet6 → IP local IPv6.
+- MAC → identificación física de la tarjeta.
+- RX/TX → datos recibidos y enviados.
+- Errores → si hay problemas al enviar o recibir.
 
 
+**CAMBIAR LOS PARÁMETROS DE LA INTERFAZ**:
+```bash
+su -
+```
+
+1-Cambiar temporalmente la IP de ens34
+
+La idea: vamos a cambiar la IP de tu tarjeta de red sin hacerlo permanente, para probar cosas o crear alias.
+
+  1.1 - Bajar la interfaz:
+
+  No se puede cambiar la IP mientras la interfaz está activa. Apaga la tarjeta de red ens34 temporalmente.
+
+```bash
+ifconfig ens34 down
+```
+
+  1.2-Cambiar la IP:
+  ```bash
+  ifconfig ens34 10.11.50.170 netmask 255.255.254.0
+ ```
+
+Ahora ens34 tiene otra ip temporalmente
 
 
+ 1.3-Subir la interfaz:
+
+ 
+ ```bash
+ifconfig ens34 up
+```
+
+```bash
+root@ismael:/home/lsi# ifconfig ens34
+ens34: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.11.50.170  netmask 255.255.254.0  broadcast 10.11.51.255
+        inet6 fe80::250:56ff:fe97:fa74  prefixlen 64  scopeid 0x20<link>
+        ether 00:50:56:97:fa:74  txqueuelen 1000  (Ethernet)
+        RX packets 142345  bytes 35500287 (33.8 MiB)
+        RX errors 0  dropped 1405  overruns 0  frame 0
+        TX packets 94  bytes 10765 (10.5 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 16  base 0x2080
+```
+ 
+
+ 1.4-Comprobar el cambio:
+ ```bash
+root@ismael:/home/lsi# ip a show ens34
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
+    altname enp2s2
+    inet 10.11.50.170/23 brd 10.11.51.255 scope global ens34
+       valid_lft forever preferred_lft forever
+    inet6 fe80::250:56ff:fe97:fa74/64 scope link
+       valid_lft forever preferred_lft forever
+
+root@ismael:/home/lsi# ping -c 3 10.11.50.170
+PING 10.11.50.170 (10.11.50.170) 56(84) bytes of data.
+64 bytes from 10.11.50.170: icmp_seq=1 ttl=64 time=0.028 ms
+64 bytes from 10.11.50.170: icmp_seq=2 ttl=64 time=0.050 ms
+64 bytes from 10.11.50.170: icmp_seq=3 ttl=64 time=0.063 ms
+
+--- 10.11.50.170 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2041ms
+rtt min/avg/max/mdev = 0.028/0.047/0.063/0.014 ms
+```
 
 
+2-Crear un interfaz lógico (alias) sobre ens34
+La idea: podemos darle a la misma tarjeta física (ens34) otra IP usando un alias llamado ens34:0. Esto se llama interfaz lógica.
+
+  2.1- Crear el alias con la IP:
+  ```bash
+  ifconfig ens34:0 192.168.1.1 netmask 255.255.255.0
+ ```
+
+- ens34:0 → nombre del alias (puede ser ens34:0, ens34:1, etc.)
+
+- 192.168.1.1 → IP que le asignamos al alias
+
+- netmask 255.255.255.0 → define la subred del alias
 
 
+```bash
+root@ismael:/home/lsi# ip a show ens34
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
+    altname enp2s2
+    inet 10.11.50.170/23 brd 10.11.51.255 scope global ens34
+       valid_lft forever preferred_lft forever
+    inet 192.168.1.1/24 brd 192.168.1.255 scope global ens34:0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::250:56ff:fe97:fa74/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+ 2.2-Activar la intefaz lógica:
+ ```bash
+ systemctl restart networking
+ ifup ens34:0
+```
+
+Comprobación:
+```bash
+root@ismael:/home/lsi# ping 192.168.1.1
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.033 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.055 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.048 ms
+^C
+
+--- 192.168.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2045ms
+rtt min/avg/max/mdev = 0.033/0.045/0.055/0.009 ms
+```
 
 
+Ahora la tarjeta física (ens34) y su alias (ens34:0) están activos al mismo tiempo.
+
+Si hacemos un reboot de lla máquina, la interfaz lógica desaparecerá por completo. La única manera de hacer que la interfaz lógica permanezca constante es añadiendola en el archivo de configuración de /etc/network/interfaces.
+
+ ```bash
+reboot
+```
+
+```bash
+lsi@ismael:~$ ifconfig ens34
+ens34: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.11.50.169  netmask 255.255.254.0  broadcast 10.11.51.255
+        inet6 fe80::250:56ff:fe97:fa74  prefixlen 64  scopeid 0x20<link>
+        ether 00:50:56:97:fa:74  txqueuelen 1000  (Ethernet)
+        RX packets 574  bytes 150832 (147.2 KiB)
+        RX errors 0  dropped 1  overruns 0  frame 0
+        TX packets 41  bytes 5154 (5.0 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 16  base 0x2080
+```
+La interfaz ens34 vuelve a estar como antes.
+
+### RESUMEN FÁCIL:
+Nuestra tarjeta de red física es ens34. Un interfaz lógico es como ponerle otra “puerta” a la misma tarjeta. Esto te permite tener más de una IP en la misma tarjeta física.
+
+**Interfaz física vs lógica**
+
+- ens34 → tarjeta real, IP principal (conecta a la red).
+
+- ens34:0 → alias, otra IP sobre la misma tarjeta.
+
+- Depende de la física: si apagas ens34, el alias también se apaga.
+
+Un interfaz lógico es básicamente una “IP extra” que se asigna sobre una tarjeta física de red. Depende de la física: si apagas la tarjeta física a la que está ligado (por ejemplo, ens34), el alias lógico también se apaga; sin embargo, apagar otra tarjeta diferente (como ens33) no afecta al alias. Es posible tener varias interfaces lógicas sobre la misma tarjeta física, pero cada una debe tener un identificador distinto (ens34:0, ens34:1, etc.). 
+
+**Para que las interfaces lógicas se mantengan tienen que añadirse en el archivo de configuración de /etc/network/interfaces. Si no, tras un reinicio ya NO se mantiene.**
+---
 
 
-
-
-
-
-
-
-
-
-
-
-
+### **Apartado G)¿Qué rutas (routing) están definidas en su sistema?. Incluya una nueva ruta estática a una determinada red.**
 
