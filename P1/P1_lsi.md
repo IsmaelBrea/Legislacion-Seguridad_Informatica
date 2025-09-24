@@ -2204,5 +2204,48 @@ Un interfaz lógico es básicamente una “IP extra” que se asigna sobre una t
 ---
 ### **Apartado G)¿Qué rutas (routing) están definidas en su sistema?. Incluya una nueva ruta estática a una determinada red.**
 
+**ip route**
+
+```bash
+lsi@ismael:~$ ip route show
+default via 10.11.48.1 dev ens33 onlink
+10.11.48.0/23 dev ens33 proto kernel scope link src 10.11.48.169
+10.11.50.0/23 dev ens34 proto kernel scope link src 10.11.50.169
+169.254.0.0/16 dev ens33 scope link metric 1000
+```
+
+ ens33 → red 10.11.48.x + puerta de enlace por defecto.
+
+- ens34 → red 10.11.50.x.
+
+- 169.254.x.x → IP de emergencia si falla DHCP.
+
+Todo tráfico que no sea 10.11.48.x o 10.11.50.x va por ens33 al router 10.11.48.1.
 
 
+**route**
+
+```bash
+lsi@ismael:~$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         _gateway        0.0.0.0         UG    0      0        0 ens33
+10.11.48.0      0.0.0.0         255.255.254.0   U     0      0        0 ens33
+10.11.50.0      0.0.0.0         255.255.254.0   U     0      0        0 ens34
+link-local      0.0.0.0         255.255.0.0     U     1000   0        0 ens33
+lsi@ismael:~$ route -n
+```
+
+El comando route muestra cómo tu máquina envía el tráfico de red: qué red usa cada tarjeta y por qué puerta de enlace (gateway).
+
+En mi caso:
+
+- default → todo lo que no es local va por ens33 al router.
+
+- 10.11.48.0/23 → tráfico local de ens33.
+
+- 10.11.50.0/23 → tráfico local de ens34.
+
+- link-local → IP automática si no hay DHCP.
+
+En resumen: route te dice “qué camino sigue cada paquete desde tu PC”.
