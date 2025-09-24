@@ -1729,8 +1729,41 @@ systemctl list-unit-files --type=service
          
       - disabled → el sistema sugiere que no arranque automáticamente.
 
+
+     
+**Otros tipos de unidades: systemctl list-units**
+
+Systemd no solo maneja services y targets, también existen:
+
++ **Unidades de montaje (mount units):** Estas unidades se utilizan para definir puntos de montaje para sistemas de archivos. Controlan el montaje y desmontaje de sistemas de archivos en el sistema.
++ **Unidades de dispositivo (device units):** Las unidades de dispositivo representan dispositivos de hardware individuales y se utilizan para configurar y controlar el comportamiento de hardware específico.
++ **Unidades de socket (socket units):** Estas unidades representan sockets de red o archivos de socket UNIX. Pueden utilizarse para configurar sockets de red y controlar la activación de servicios cuando se recibe tráfico en un socket.
++ **Unidades de timer (timer units):** Las unidades de timer se utilizan para programar tareas y ejecutar servicios o comandos en momentos específicos o con intervalos regulares.
++ **Unidades de snapshot (snapshot units):** Estas unidades permiten guardar y restaurar instantáneas del estado actual del sistema systemd. Son útiles para realizar copias de seguridad del estado del sistema o para revertir a estados anteriores.
++ **Unidades de slice (slice units):** Las unidades de slice se utilizan para agrupar procesos en "rebanadas" o "slices" con el fin de gestionar la asignación de recursos del sistema, como la CPU y la memoria, entre grupos de procesos.
++ **Unidades de scope (scope units):** Las unidades de scope son utilizadas para agrupar procesos relacionados y gestionar su ciclo de vida. Pueden ser útiles para crear entornos de ejecución aislados para aplicaciones.
++ **Unidades de path (path units):** Las unidades de path permiten activar servicios cuando se producen cambios en archivos o directorios específicos. Son útiles para automatizar acciones basadas en eventos de sistema de archivos.
++ **Unidades de swap (swap units):** Estas unidades se utilizan para configurar y controlar dispositivos de intercambio (swap) en el sistema.
+
+
 ### RESUMEN FÁCIL SOBRE EL TIEMPO DE ARRANQUE Y LOS TARGETS
 
+- Unidad (unit): Es la entidad básica que systemd maneja. Puede representar un servicio, un grupo de servicios, un punto de montaje, un socket, un timer, etc. Es como un “objeto” que systemd controla.
+
+   - Target: Es un tipo especial de UNIDAD que agrupa otras unidades para representar un estado del sistema. Por ejemplo:
+
+       - multi-user.target → sistema listo en modo consola.
+
+       - graphical.target → sistema listo con entorno gráfico.
+
+   - Servicio (service): Es un tipo de unidad que representa un programa o daemon que se ejecuta en segundo plano. Por ejemplo:
+
+     - sshd.service → servidor SSH.
+
+     - cron.service → ejecuta tareas programadas.
+
+<br>
+- Para averiguar todos los tipos de unidades -> systemctl list-units o  systemctl list-units -t help
 - Para averiguar nuestro target por defecto -> systemctl get-default
 - Para cambiar el target de arranque -> systemctl set-default xxx.target (hemos puesto
 multi-user.target)
@@ -1739,7 +1772,8 @@ multi-user.target)
 - Para averiguar los targets instalados -> systemctl list-unit-files –type=target
 - Para averiguar los servicios en memoria -> systemctl list-units –type=service
 - Para averiguar los servicios instalados -> systemctl list-unit-files –type=service
-- Para averiguar todos los tipos de unidades -> systemctl list-units
+
+  
 
 
 **Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies**
@@ -1898,6 +1932,19 @@ multi-user.target reached after 1min 48.639s in userspace.
     - Solo errores: journalctl -p err
 
 
+**systemd-timesyncd**
+Es el SERVICIO de sincronización de hora automática en sistemas Linux que usan systemd (como Debian 12). Su función principal es:
+
+- Conectar con servidores de hora en Internet (NTP, Network Time Protocol).
+
+- Ajustar la hora del sistema para que siempre sea correcta.
+
+- Mantener la hora precisa incluso si el equipo se reinicia o si la batería del reloj (RTC) pierde precisión.
+
+- En otras palabras, se asegura de que tu reloj del sistema esté siempre exacto sin que tengas que ajustarlo manualmente.
+
+ Nota: Esto no ralentiza el arranque de manera significativa; solo se activa para sincronizar la hora y luego se queda en segundo plano.
+
 
 #### Resumen fácil:
 Para filtrar los que tienen estado fallido -> systemctl list-units --type=service --state=failed
@@ -1912,6 +1959,7 @@ systemd-timesyncd -> sincroniza el reloj del sistema a través de la red
 timedarectl set-ntp true -> activa e inicializa systemd-timesyncd
 
 ---
+
 
 
 
