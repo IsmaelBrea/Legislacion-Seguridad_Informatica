@@ -956,6 +956,7 @@ Además, cada línea termina con main, contrib, etc.:
 
 ---
 
+
 ### **Apartado B) ¿Qué distro y versión tiene la máquina inicialmente entregada?. Actualice su máquina a la última versión estable disponible.**
 
 Distro = versión completa de Linux lista para usar. En nuestro caso Debian, y ya sabemos ques la versión 10.
@@ -1346,7 +1347,6 @@ neofetch          # Info completa de sistema y kernel (opcional)
 
 
 dpkg hace la “operación cruda” sobre paquetes, apt hace lo mismo pero además busca dependencias y repositorios automáticamente.
-
 
 
 ---
@@ -1794,9 +1794,10 @@ multi-user.target)
 
 
 **Para mostrar el árbol de dependencias de la máquina -> systemctl list-dependencies**
+
+
+
 ---
-
-
 ### **Apartado D) Determine los tiempos aproximados de botado de su kernel y del userspace. Obtenga la relación de los tiempos de ejecución de los services de su sistema.**
 
 El tiempo de botado(o tiempo de arranque) es simplemente el tiempo que tarda un ordenador desde que se enciende hasta que el sistema operativo está completamente cargado y listo para usar.
@@ -1854,9 +1855,9 @@ multi-user.target @2min 9.387s
                             └─-.mount @17.881s
 ```
 
+
+
 ---
-
-
 ### **Apartado E) Investigue si alguno de los servicios del sistema falla. Pruebe algunas de las opciones del sistema de registro journald. Obtenga toda la información journald referente al proceso de botado de la máquina. ¿Qué hace el systemd-timesyncd?**
 
 Antes de hacer nada con los servicios del sistema, tenemos que tener clara dos cosas que podemos hacer con ellos. Cuando hablamos de servicios en Linux (con systemd), hay dos cosas importantes que podemos hacer antes de tocar nada:
@@ -1974,9 +1975,10 @@ systemd-timesyncd -> sincroniza el reloj del sistema a través de la red
 
 timedarectl set-ntp true -> activa e inicializa systemd-timesyncd
 
+
+
+
 ---
-
-
 ### **Apartado F)Identifique y cambie los principales parámetros de su segundo interface de red (ens34). Configure su segundo interfaz lógico. Al terminar déjelo como estaba**
 
 Lo primero de todo vamos a visualizar como tenemos configurado ens34 (recordamos que lo configuramos en el apartado A) en /etc/network/interfaces):
@@ -2195,9 +2197,12 @@ Nuestra tarjeta de red física es ens34. Un interfaz lógico es como ponerle otr
 Un interfaz lógico es básicamente una “IP extra” que se asigna sobre una tarjeta física de red. Depende de la física: si apagas la tarjeta física a la que está ligado (por ejemplo, ens34), el alias lógico también se apaga; sin embargo, apagar otra tarjeta diferente (como ens33) no afecta al alias. Es posible tener varias interfaces lógicas sobre la misma tarjeta física, pero cada una debe tener un identificador distinto (ens34:0, ens34:1, etc.). 
 
 **Para que las interfaces lógicas se mantengan tienen que añadirse en el archivo de configuración de /etc/network/interfaces. Si no, tras un reinicio ya NO se mantiene.**
+
+
+
+
 ---
-
-
 ### **Apartado G)¿Qué rutas (routing) están definidas en su sistema?. Incluya una nueva ruta estática a una determinada red.**
+
 
 
