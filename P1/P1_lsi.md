@@ -2400,6 +2400,30 @@ lsi@ismael:~$ systemctl list-units --type=service --state=active
   vgauth.service                      loaded active running Authentication service for virtual machines hosted on VMware
 ```
 
+**Ver todos los servicios y sus estados**:
+```bash
+systemctl list-units-files --type=service --no-pager
+```
+
+Estados que salen en systemctl:
+
+-enabled:	Arranca automáticamente al inicio
+
+-disabled:	No arranca solo, solo manualmente
+
+-masked:	No puede iniciarse, ni manual ni automático
+
+-static:	No puede habilitarse/deshabilitarse, solo arranca si otro servicio lo llama
+
+-alias:	Nombre alternativo de otro servicio
+
+-generated:	Creado automáticamente por systemd, no tiene archivo real
+
+-indirect:	Solo se inicia como dependencia de otro servicio
+
+-bad:	Unidad con error o mala configuración
+
+<br>
 
 #### Servicios que han sido eliminados:
 1-accounts-daemon (ENMAMSCARADO): un servicio que guarda info de los usuarios para programas de escritorio (como GNOME). Si solo usas SSH, realmente no lo necesitas. Enmascararlo evita que se inicie, y casi nada se verá afectado en un servidor o máquina sin escritorio.
@@ -2514,8 +2538,9 @@ systemctl mask ModemManager
 ```
 
 **SERVICIOS DE RED**:
+
   - Dejar activo:
-      - networking servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
+      - networking: servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
 
    
   - Enmascarar:
@@ -2548,12 +2573,104 @@ systemctl stop open-vm-tools
 systemctl disable open-vm-tools
 ```
 
+12-plymouth: Plymouth se encarga de la animación gráfica del arranque y de mostrar mensajes bonitos mientras Linux arranca o se apaga.
+
+   - plymouth-halt (ENMASCARADO): Se ejecuta al apagar el sistema, mostrando animación de apagado. En mi máquina por ssh no hace nada útil.
+```bash
+systemctl stop plymouth-halt
+systemctl disable plymouth-halt
+systemctl mask plymouth-halt
+```
+
+  - plymouth-quit-wait (ENMASCARADO): Controla cuánto tiempo se muestra la pantalla de inicio o cierre antes de que el sistema continúe cargando o apagándose. Solo sirve para mostrar animaciones/tiempo de espera gráfico, irrelevante en una máquinar sin GUI.
+```bash
+systemctl stop plymouth-quit-wait
+systemctl disable plymouth-quit-wait
+systemctl mask plymouth-quit-wait
+```
+
+  - plymouth-quit (ENMASCARADO): Detiene Plymouth después de que el sistema se ha iniciado completamente y ha cargado el entorno gráfico. No hay entorno gráfico, así que nunca se usaría.
+
+```bash
+systemctl stop plymouth-quit
+systemctl disable plymouth-quit
+systemctl mask plymouth-quit
+```
+
+
+¡¡¡Quitar solo lo que controla pantallas gráficas o esperas visuales (halt, quit, quit-wait). Mantener lo que asegura el orden del arranque y acceso al disco (start, read-write, plymouth.service)!!!
+
+
+13-power-profiles-daemon (DESACTIVADO): Es el daemon de perfiles de energía. Permite cambiar automáticamente entre modos de consumo de energía en tu máquina (por ejemplo: “alto rendimiento”, “ahorro de energía” o “equilibrado”). Se usa sobre todo en laptops o equipos de escritorio para gestionar CPU, pantalla y periféricos según el perfil elegido. En mi máquina Debian al que solo accedo por SSH, no sirve para nada, porque la máquina está conectada por cable, probablemente
+enchufada siempre, y no me interesa ahorrar batería ni ajustar rendimiento automáticamente.
+```bash
+systemctl stop power-profiles-daemon
+systemctl disable power-profiles-daemon
+```
+
+
+14-pulseaudio-enable-autospawn.service (DESACTIVADO): Este servicio se encarga de permitir que PulseAudio (el servidor de sonido de Linux) se inicie automáticamente cuando una aplicación lo necesita. Mi máquina es un servidor al que solo accedo por SSH y no reproduzco sonido, este servicio no sirve para nada y se puede desactivar sin problemas.
+ ```bash
+systemctl stop pulseaudio-enable-autospawn
+systemctl disable pulseaudio-enable-autospawn
+```
+
+
+15-speech-dispatcher (ENMASCARADO): Servicio que permite que el sistema lea texto en voz alta. Se usa para programas que “hablan” o leen la pantalla, como lectores de pantalla. En un servidor al que solo accedes por SSH no hace falta, porque nadie va a necesitar que se lea nada.
+```bash
+systemctl stop speech-dispatcher
+systemctl stop speech-dispatcherd
+systemctl disable speech-dispatcher
+systemctl disable speech-dispatcherd
+systemctl mask speech-dispatcher
+systemctl mask speech-dispatcherd
+```
+
+
+16-switcheroo-control (DESACTIVADO): Servicio que gestiona la conmutación entre varias GPUs en laptops o PCs con más de una tarjeta gráfica (por ejemplo, integrada y dedicada). Permite cambiar automáticamente qué GPU usar según la carga o la aplicación. En un servidor al que solo accedes por SSH y sin múltiples GPUs, no sirve para nada.
+```bash
+systemctl stop switcheroo-control
+systemctl disable switcheroo-control
+```
+
+
+17-udisks2 (ENMASCARADO): ervicio que gestiona discos, particiones y unidades extraíbles (como USB, discos externos o CD/DVD). Permite montar y desmontar automáticamente, obtener información de discos, etc. En un servidor que solo se accede por SSH y donde no se conectan dispositivos externos, no es necesario.
+```bash
+systemctl stop udisks2
+systemctl disable udisks2
+systemctl mask udisks2
+```
+
+18-upower (ENMASCARADO): Servicio que gestiona información sobre la batería y la energía de los dispositivos (por ejemplo, laptops o UPS). En un servidor que solo usas por SSH y que está enchufado por cable, no aporta nada.
+```bash
+systemctl stop upower
+systemctl disable upower
+systemctl mask upower
+```
+
+19-vgauth (DESACTIVADO): Servicio usado por máquinas virtuales VMware para gestionar la autorización entre el host y el invitado (por ejemplo, para compartir credenciales de Windows con la VM). Si no estás usando VMware, no hace falta.
+```bash
+systemctl stop vgauth
+systemctl disable vgauth
+```
+
+
+20-wpa_supplicant (DESACTIVADO / ENMASCARADO): Es el servicio que gestiona conexiones Wi-Fi (autenticación y gestión de redes inalámbricas). Como mi máquina está solo por cable, no lo necesito.
+```bash
+systemctl stop wpa_supplicant
+systemctl disable wpa_supplicant
+systemctl mask wpa_supplicant
+```
+
+
 <br>
 #### Servicios activos
 
 1-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
 
+2- networking: servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
 
+3-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
 
 
 <br>
@@ -2617,6 +2734,7 @@ Para eliminar un servicio:
 6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
 6-Conviene reiniciar
+
 
 
 
