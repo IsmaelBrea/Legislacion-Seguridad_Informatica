@@ -1326,6 +1326,9 @@ sudo apt autoremove -y                              # Limpiar paquetes que ya no
 sudo apt autoclean                                  # Limpiar .deb descargados
 
 # Problemas con bloqueos
+ps -ef | grep apt                                  # Muestra si hay algún proceso relacionado con apt
+    -e → muestra todos los procesos del sistema (no solo los tuyos).
+    -f → usa formato "full", es decir, muestra más columnas con detalles (usuario, PID, PPID, hora, comando…).
 sudo kill -9 PID                                    # Matar procesos colgados (apt/dpkg)
 sudo rm /var/lib/dpkg/lock-frontend                 # Quitar lock de dpkg
 sudo rm /var/lib/dpkg/lock
@@ -2249,4 +2252,324 @@ En mi caso:
 - link-local → IP automática si no hay DHCP.
 
 En resumen: route te dice “qué camino sigue cada paquete desde tu PC”.
+
+
+**Añadir nueva ruta: ip route add <ip> via <gateway>**
+
+Ejemplo: quieres que tu PC llegue a la red 192.168.1.0/24 pasando por el router 10.11.50.1 por la interfaz ens34.
+
+Sirve para que, si quieres comunicarte con máquinas de la red 192.168.1.x, tu PC sepa a qué router enviar los paquetes.
+Sin esa ruta, tu PC no sabría cómo llegar y fallaría.
+
+ES TEMPORAL, se borra al reinicar.
+
+```bash
+su -
+ip route add 192.168.1.0/24 via 10.11.50.1 dev ens34
+```
+
+
+   - 192.168.1.0/24 → la red a la que quieres llegar.
+
+   - via 10.11.50.1 → el router/gateway que usas para llegar a esa red.
+
+   - dev ens34 → la interfaz de red que usará (opcional si no hay ambigüedad).
+
+
+```bash
+root@ismael:~# ip route
+default via 10.11.48.1 dev ens33 onlink
+10.11.48.0/23 dev ens33 proto kernel scope link src 10.11.48.169
+10.11.50.0/23 dev ens34 proto kernel scope link src 10.11.50.169
+169.254.0.0/16 dev ens33 scope link metric 1000
+192.168.1.0/24 via 10.11.50.1 dev ens34
+```
+
+
+### RESUMEN FÁCIL:
+¿Qué es una ruta por defecto (default gateway) y para qué sirve?
+
+→ Para enviar todo el tráfico a redes que no están en mi tabla, normalmente hacia el router.
+
+
+¿Qué diferencia hay entre route y ip route?
+
+→ route es más antiguo, ip route es la versión moderna y más completa.
+
+
+¿Qué pasa si no especifico dev ens34?
+
+→ Si el sistema puede deducir por qué interfaz enviar los paquetes, funciona igual; si hay ambigüedad, da error.
+
+
+¿Qué diferencia hay entre una ruta temporal y una permanente?
+
+→ Temporal = desaparece al reiniciar. Permanente = hay que ponerla en /etc/network/interfaces o en un archivo de configuración.
+
+
+¿Para qué sirve añadir una ruta estática manualmente?
+
+→ Para decirle a tu PC cómo llegar a una red que no conoce. Sin la ruta, el tráfico se perdería.
+
+
+
+---
+### **Apartado H) En el apartado d) se ha familiarizado con los services que corren en su sistema. ¿Son necesarios todos ellos?. Si identifica servicios no necesarios, proceda adecuadamente. Una limpieza no le vendrá mal a su equipo, tanto desde el punto de vista de la seguridad, como del rendimiento.*
+
+
+No todos los servicios son necesarios. Mantener servicios innecesarios es malo:
+
+- Seguridad → más procesos = más posibles vulnerabilidades.
+
+- Rendimiento → consumen memoria y CPU aunque no los uses.
+
+Lo correcto es revisar, y desactivar los que no se usan, pero nunca tocar los críticos del sistema.
+
+
+**Ver los servicios que tradan más en arrancar y cuales dependen de otros**
+```bash
+systemd-analyze critical-chain
+```
+
+- Servicios en rojo → son los que tardan más tiempo en arrancar y, por lo tanto, retrasan el inicio del sistema. Son críticos en cuanto al tiempo de arranque.
+
+- Servicios en blanco → arrancan rápido y no retrasan significativamente el inicio del sistema.
+
+Para ver el estado de un servicio junto a sus dependientes -> systemctl status <service_name> –with-dependencies. Si un servicio no tiene dependientes, se puede deshabilitar (incluso enmascarar)
+
+
+**Ver servicios activos**:
+```bash
+systemctl list-units --type=service --state=running
+```
+
+```bash
+lsi@ismael:~$ systemctl list-units --type=service --state=active
+  UNIT                                LOAD   ACTIVE SUB     DESCRIPTION
+  apparmor.service                    loaded active exited  Load AppArmor profiles
+  avahi-daemon.service                loaded active running Avahi mDNS/DNS-SD Stack
+  console-setup.service               loaded active exited  Set console font and keymap
+  cron.service                        loaded active running Regular background program processing daemon
+  cups-browsed.service                loaded active running Make remote CUPS printers available locally
+  cups.service                        loaded active running CUPS Scheduler
+  dbus.service                        loaded active running D-Bus System Message Bus
+  getty@tty1.service                  loaded active running Getty on tty1
+  ifupdown-pre.service                loaded active exited  Helper to synchronize boot up for ifupdown
+  keyboard-setup.service              loaded active exited  Set the console keyboard layout
+  cups-browsed.service                loaded active running Make remote CUPS printers available locally
+  cups.service                        loaded active running CUPS Scheduler
+  dbus.service                        loaded active running D-Bus System Message Bus
+  getty@tty1.service                  loaded active running Getty on tty1
+  ifupdown-pre.service                loaded active exited  Helper to synchronize boot up for ifupdown
+  keyboard-setup.service              loaded active exited  Set the console keyboard layout
+  kmod-static-nodes.service           loaded active exited  Create List of Static Device Nodes
+  low-memory-monitor.service          loaded active running Low Memory Monitor
+  ModemManager.service                loaded active running Modem Manager
+  networking.service                  loaded active exited  Raise network interfaces
+  NetworkManager.service              loaded active running Network Manager
+  open-vm-tools.service               loaded active running Service for virtual machines hosted on VMware
+  plymouth-quit-wait.service          loaded active exited  Hold until boot process finishes up
+  plymouth-quit.service               loaded active exited  Terminate Plymouth Boot Screen
+  plymouth-read-write.service         loaded active exited  Tell Plymouth To Write Out Runtime Data
+  plymouth-start.service              loaded active exited  Show Plymouth Boot Screen
+  polkit.service                      loaded active running Authorization Manager
+  pulseaudio-enable-autospawn.service loaded active exited  LSB: Enable pulseaudio autospawn
+  rsyslog.service                     loaded active running System Logging Service
+  rtkit-daemon.service                loaded active running RealtimeKit Scheduling Policy Service
+  ssh.service                         loaded active running OpenBSD Secure Shell server
+  systemd-binfmt.service              loaded active exited  Set Up Additional Binary Formats
+  systemd-journal-flush.service       loaded active exited  Flush Journal to Persistent Storage
+  systemd-journald.service            loaded active running Journal Service
+  systemd-logind.service              loaded active running User Login Management
+  systemd-modules-load.service        loaded active exited  Load Kernel Modules
+  systemd-random-seed.service         loaded active exited  Load/Save Random Seed
+  systemd-remount-fs.service          loaded active exited  Remount Root and Kernel File Systems
+  systemd-sysctl.service              loaded active exited  Apply Kernel Variables
+  systemd-sysusers.service            loaded active exited  Create System Users
+  systemd-tmpfiles-setup-dev.service  loaded active exited  Create Static Device Nodes in /dev
+  systemd-tmpfiles-setup.service      loaded active exited  Create System Files and Directories
+  systemd-udev-trigger.service        loaded active exited  Coldplug All udev Devices
+  systemd-udevd.service               loaded active running Rule-based Manager for Device Events and Files
+  systemd-update-utmp.service         loaded active exited  Record System Boot/Shutdown in UTMP
+  systemd-user-sessions.service       loaded active exited  Permit User Sessions
+  udisks2.service                     loaded active running Disk Manager
+  upower.service                      loaded active running Daemon for power management
+  user-runtime-dir@1000.service       loaded active exited  User Runtime Directory /run/user/1000
+  user@1000.service                   loaded active running User Manager for UID 1000
+  vgauth.service                      loaded active running Authentication service for virtual machines hosted on VMware
+```
+
+
+#### Servicios que han sido eliminados:
+1-accounts-daemon (ENMAMSCARADO): un servicio que guarda info de los usuarios para programas de escritorio (como GNOME). Si solo usas SSH, realmente no lo necesitas. Enmascararlo evita que se inicie, y casi nada se verá afectado en un servidor o máquina sin escritorio.
+```bash
+systemctl stop accounts-daemon
+systemctl disable accounts-daemon
+systemctl mask accounts-daemon
+```
+
+2-anacron (DESACTIVADO) y cron (DESACTIVADO):
+   - cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse. LO desactivamos porque no queremos NADA AUTOMÁTICO.
+
+   - anacron: Similar a cron, pero pensado para máquinas que no están siempre encendidas. Garantiza que las tareas “perdidas” mientras la máquina estaba apagada se ejecuten cuando enciendes. Con solo SSH, no lo necesitas si tu máquina está casi siempre encendida y no quieres esas tareas automáticas.
+
+ ```bash
+systemctl stop cron
+systemctl stop anacron
+systemctl stop anacron.timer
+systemctl disable cron
+systemctl disable anacron
+```
+
+Si quitamos el cron todas las actualizaciones se tienen que hacer de forma manual. Ya no se harán updates y upgrades en segundo plano, tendremos que relizarlas nosotros manualmente.
+
+
+3-apparmor (ENMAMSCARADO): es un sistema de seguridad que limita lo que puede hacer cada programa. Por ejemplo, dice “este programa solo puede leer esta carpeta, y no puede tocar otras cosas”. Ayuda a proteger tu máquina si algún programa intenta hacer algo raro o malicioso.acco
+
+```bash
+su -
+systemctl stop apparmor
+systemctl disable apparmor
+systemctl mask apparmor
+```
+
+4-avahi-daemon (ENMAMSCARADO): hace que tu ordenador se vea solo en la red local y pueda encontrar otros dispositivos automáticamente y que tú encuentre los suyos también, como impresoras o PCs, sin configurar nada. Permite basicamente, que otros dispositivos en la misma red encuentren tu máquina automáticamente sin usar IPs manuales. Si lo desactivamos, mi máquina ya no se anunciará automáticamente en la red local. Otros equipos no la verán sin poner su IP manualmente.
+
+```bash
+systemctl stop avahi-daemon.service
+systemctl stop avahi-daemon.socket
+```
+
+ Con un reboot ya no sale el servicio en la lista de servicio activos.
+
+
+5-bluetooth (ENMASCARADO): gestiona la conexión y comunicación con dispositivos Bluetooth en tu máquina. Esto incluye ratones, teclados, auriculares, altavoces, móviles, etc. Mi máquina no usa Bluetooth (ni periféricos ni transferencia de archivos), puedo enmascararlo sin problemas.
+```bash
+systemctl stop bluetooth
+systemctl disable bluetooth
+systemctl mask bluetooth
+```
+
+No afectará el SSH ni otras funciones básicas de red o servidor.
+
+**CUPS: Common Unix Printing System (IMPRESORAS)** → es el sistema de impresión estándar en Linux/Unix. Se encarga de gestionar trabajos de impresión, colas, controladores y comunicación con la impresora. Básicamente, si quieres imprimir algo desde tu máquina, necesitas CUPS.
+
+6-cups (ENMASCARADO) y cups-browsed (ENMASCARADO):
+
+   - cups: servicio de impresión en Linux. Gestiona trabajos de impresión y coordina las impresoras locales o de red.
+
+   - cups-browsed (ENMASCARADO): detecta impresoras en la red y las hace disponibles automáticamente en mi máquina. Al no usar impresoras (como en mi caso, solo SSH y terminal), este servicio no te sirve y solo consume recursos innecesarios.
+   
+```bash
+su -
+systemctl stop cups-browsed
+systemctl disable cups-browsed
+systemctl mask cups-browsed
+
+systemctl stop cups
+systemctl disable cups
+systemctl mask cups
+```
+
+
+**SERVICIOS DE CONSOLA LOCAL**: Servicios que afectan solo al acceso físico a la máquina (pantalla y teclado conectados directamente).
+
+7-console-setup (DESACTIVADO), getty@tty1 (DESACTIVADO) y keyboard-setup (DESACTIVADO)
+   - console.setup: configura la fuente (letras) y el teclado de la consola local (la pantalla y teclado directamente conectados a la máquina, no por SSH). Aunque no uses la consola local normalmente, si falla el SSH o la red, podrías necesitar acceder físicamente al equipo para solucionarlo.
+
+  - getty@tty1: Es el servicio que gestiona el inicio de sesión en la consola local. “tty1” es la primera terminal virtual que ves si presionas Ctrl+Alt+F1 en Linux (las TTY son esas pantallas de texto que puedes usar sin interfaz gráfica).
+ El getty es el programa que muestra el login prompt (usuario y contraseña) en esa terminal.
+
+ - keyboard-setup: se encarga de configurar el teclado en la consola local (las letras que escribimos y la distribución del teclado, por ejemplo, QWERTY o ISO). Si solo usamos SSH, este servicio no nos afecta porque SSH envía directamente lo que escribes desde tu teclado al servidor)
+
+```bash
+systemctl stop console-setup
+systemctl stop getty@tty1
+systemctl disable console-setup
+systemctl disable getty@tty1
+systemctl stop keyboard-setup
+systemctl disable keyboard-setup
+```
+
+8-e2scrub_reap (DESACTIVADO): pertenece al sistema de scrubbing de sistemas de ficheros ext4/ext3/ext2. En palabras sencillas:
+Sirve para revisar y reparar errores en discos/ext4 automáticamente, como una especie de “mantenimiento preventivo” de los sistemas de ficheros. Trabaja en segundo plano y normalmente no molesta.Como no queremos cosas automáticas y no nos interesa su funcionalidad podemos desactivarla por si caso.
+
+```bash
+systemctl stop e2scrub_reap
+systemctl disable e2scrub_reap
+```
+
+9-
+
+
+<br>
+#### Servicios activos
+
+1-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
+
+
+
+
+<br>
+### Otras formas de bajar tiempo
+Para bajar más el tiempo, miramos la secuencia de arranque -> journalctl -b . 
+
+No meu caso tiña servicios relacionados co GNOME(interfaz gráfica). Para quitalos facemos apt remove --purge SERVICIO:
+
+    pipewire.service -> simplifica a xestión de audio e video no sistema, así como proporcionar unha infraestructura para aplicacións multimedia -> apt remove --purge pipewire
+
+    plymouth -> eliminamos este servicio porque ten que ver co arranque para o escritorio e a pantalla da sesion de inico -> apt remove --purge plymouth
+
+    pulseaudio.service -> obtorga funcionalidad de audio. Actúa como unha capa intermedia entre as aplicacións de audio e o hardware de sonido do sistema -> apt remove --purge pulseaudio
+
+    GNOME -> algún servicio ou socket que teña GNOME ou chame a GNOME -> apt remove --purge 'gnome*' (o * indica que todo que teña gnome eliminase)
+
+    gvfs -> sistema de archivos virtual de GNOME -> apt  remove --purge gvfs
+
+    tracker-extract -> forma parte do GNOME, extrae e analiza metadatos contido textual de archivos para indexalos y buscalos mais facilmente e así máis accesibles para o usuario -> apt remove --purge tracker-extract
+
+Outras ferramentas/comandos para eliminar archivos basura:
+
+    Podemos eliminar o office -> apt remove --purge 'libreoffice*'
+
+    Eliminamos tamén o firefox -> apt remove --purge firefox-esr
+
+    Eliminei o mand-db -> apt remove --purge man-db
+
+    apt autoclean: Elimina da caché paquetes de versions antiguas.
+
+    apt clean: Elimina todos os paquetes da caché.
+
+    apt autoremove: Elimina aqueles paquetes perdidos, paquetes instalados como dependencias de outras instalacións, que xa non están.
+
+    apt autoremove --purge: a opción --purge sirve para outras chamadas de apt para borrar archivos de configuración.
+
+
+
+
+### RESUMEN FÁCIL:
+
+Ver todos los servicios y su estado (POR ORDEN ALFÁBETICO): **systemctl list-unit-files --type=service --no-pager**
+
+   - --no-pager: el no-pager se usa para ver todo la salida junta de golpe sin tener que ver el END abajo y que se corte la salida.
+
+Para ver los servicios activos (POR ORDEN ALFABÉTICO): **systemctl list-units --type=service --state=running**
+
+
+Para eliminar un servicio:
+
+1-Comprobar dependencias:  **systemctl status <nombre_del_servicio> --with-dependencies**
+
+2-Parar el servicio:    **systemctl stop <nombre_del_servicio>**
+
+3-Deshabilitar:         **systemctl disable <nombre_del_servicio>**
+
+4-Enmascar si es necesario:  **systemctl mask <nombre_del_servicio>**
+
+5-Comprobar que ya no está activo: **systemctl status <nombre_del_servicio>**
+                     
+6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
+
+6-Conviene reiniciar
+
 
