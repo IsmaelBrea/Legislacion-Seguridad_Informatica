@@ -2664,6 +2664,7 @@ systemctl mask wpa_supplicant
 
 
 <br>
+
 #### Servicios activos
 
 1-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
@@ -2734,6 +2735,7 @@ Para eliminar un servicio:
 6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
 6-Conviene reiniciar
+
 
 
 
