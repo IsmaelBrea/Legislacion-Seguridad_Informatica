@@ -1864,17 +1864,18 @@ multi-user.target @2min 9.387s
 ### **Apartado E) Investigue si alguno de los servicios del sistema falla. Pruebe algunas de las opciones del sistema de registro journald. Obtenga toda la información journald referente al proceso de botado de la máquina. ¿Qué hace el systemd-timesyncd?**
 
 Antes de hacer nada con los servicios del sistema, tenemos que tener clara dos cosas que podemos hacer con ellos. Cuando hablamos de servicios en Linux (con systemd), hay dos cosas importantes que podemos hacer antes de tocar nada:
+
  - Enmascarar (mask)
    
-Impide que el servicio se inicie nunca, ni manualmente ni automáticamente. Es como ponerle un “bloqueo total”. Comando típico:
+Impide que el servicio se inicie nunca, ni manualmente ni automáticamente. Es como ponerle un “bloqueo total”. Systemd crea un enlace simbólico de dicho servicio apuntando a /dev/null. Eso significa literalmente: “este servicio no existe / no tiene fichero de unidad válido”. Por eso, aunque intentes arrancarlo (systemctl start nombre), systemd no puede, porque se encuentra con un enlace vacío. Comando típico:
  ```bash
 su -
 systemctl mask nombre-del-servicio
 ```
- - Eliminar (disable):
+ - Desactivar (disable):
 
 Evita que el servicio arranque automáticamente al iniciar la máquina, pero todavía se puede iniciar manualmente si se necesita.
-
+Una vez desactivado, basta con hacer un start para que vuelva a estar enable dicho servicio.
 
 Comando típico:
 ```bash
@@ -1901,7 +1902,7 @@ SUB    = The low-level unit activation state, values depend on unit type.
 Falla cuando la red ya está activa antes de que termine de arrancar o si la interfaz tarda demasiado en levantarse. No afecta a la funcionalidad de la red si ya tienes IP estática o DHCP funcionando.
 Se puede quitar, desactivar o enmascarar si no lo necesitas.
 
-Vamos a descativarlo mejor, porque no nos interesa.
+Vamos a desactivarlo mejor, porque no nos interesa.
 ```
 systemctl disable NetworkManager-wait-online.service
 ```
@@ -2424,7 +2425,7 @@ systemctl disable anacron
 Si quitamos el cron todas las actualizaciones se tienen que hacer de forma manual. Ya no se harán updates y upgrades en segundo plano, tendremos que relizarlas nosotros manualmente.
 
 
-3-apparmor (ENMAMSCARADO): es un sistema de seguridad que limita lo que puede hacer cada programa. Por ejemplo, dice “este programa solo puede leer esta carpeta, y no puede tocar otras cosas”. Ayuda a proteger tu máquina si algún programa intenta hacer algo raro o malicioso.acco
+3-apparmor (ENMASCARADO): es un sistema de seguridad que limita lo que puede hacer cada programa. Por ejemplo, dice “este programa solo puede leer esta carpeta, y no puede tocar otras cosas”. Ayuda a proteger tu máquina si algún programa intenta hacer algo raro o malicioso.acco
 
 ```bash
 su -
@@ -2433,7 +2434,7 @@ systemctl disable apparmor
 systemctl mask apparmor
 ```
 
-4-avahi-daemon (ENMAMSCARADO): hace que tu ordenador se vea solo en la red local y pueda encontrar otros dispositivos automáticamente y que tú encuentre los suyos también, como impresoras o PCs, sin configurar nada. Permite basicamente, que otros dispositivos en la misma red encuentren tu máquina automáticamente sin usar IPs manuales. Si lo desactivamos, mi máquina ya no se anunciará automáticamente en la red local. Otros equipos no la verán sin poner su IP manualmente.
+4-avahi-daemon (ENMASCARADO): hace que tu ordenador se vea solo en la red local y pueda encontrar otros dispositivos automáticamente y que tú encuentre los suyos también, como impresoras o PCs, sin configurar nada. Permite basicamente, que otros dispositivos en la misma red encuentren tu máquina automáticamente sin usar IPs manuales. Si lo desactivamos, mi máquina ya no se anunciará automáticamente en la red local. Otros equipos no la verán sin poner su IP manualmente.
 
 ```bash
 systemctl stop avahi-daemon.service
@@ -2499,8 +2500,53 @@ systemctl stop e2scrub_reap
 systemctl disable e2scrub_reap
 ```
 
-9-
+9-low-memory-monitor (DESACTIVADO): monitoriza la memoria RAM. Detecta cuando la memoria disponible baja demasiado y puede avisar o tomar medidas para evitar que el sistema se quede colgado. Es útil en máquinas de escritorio o servidores críticos que necesitan estabilidad automática ante baja memoria. En nuestro caso podemos desactivarlo.
+```bash
+systemctl stop low-memory-monitor
+systemctl disable low-memory-monitor
+```
 
+10-ModemManager (ENMASCARADO): Es un demonio que gestiona modems de banda ancha móvil (3G, 4G, 5G, USB, tarjetas SIM, etc.). Permite que el sistema se conecte a Internet usando un módem (USB o integrado en el portátil). Lo usan aplicaciones de red y NetworkManager cuando hay un dispositivo de este tipo conectado. Las máquinas Debian de LSI están conectdas al cable Ethernet por tanto no usa modemos USB, ni tarjetas ni nada de eso por lo que podemos enmascararlo sin problema.
+```bash
+systemctl stop ModemManager
+systemctl disable ModemManager
+systemctl mask ModemManager
+```
+
+**SERVICIOS DE RED**:
+  - Dejar activo:
+      - networking servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
+
+   
+  - Enmascarar:
+      - NetworkManager: gestor moderno de redes (cable, wifi, VPN). Suele sustituir al networking
+   
+```bash
+systemctl stop NetworkManager
+systemctl disable NetworkManager
+systemctl mask NetworkManager
+```
+
+
+  - Desactivar:
+
+      - NetworkManager-dispatcher: ejecuta scripts automáticos cuando cambian las conexiones (ej: se conecta un cable).  Como no usamos NetworkManager ni Wi-Fi, no tiene sentido mantenerlo.
+
+      - NetworkManager-wait-online: hace que otros servicios esperen a que la red esté lista antes de arrancar. Hace que el arranque espere a que NetworkManager confirme que hay conexión. En servidores puede alargar mucho el boot innecesariamente. Como quitamos NetworkManager, este servicio tampoco se necesita.
+   
+```bash
+systemctl stop NetworkManager-dispatcher
+systemctl disable NetworkManager-dispatcher
+systemctl stop NetworkManager-wait-online
+systemctl disable NetworkManager-wait-online
+```
+
+
+11-open-vm-tools (DESACTIVADO): servicios de integración para máquinas virtuales VMware. Permite cosas como copiar/pegar entre host y VM, sincronizar la hora o apagar/reiniciar la máquina desde el host. Como nuestra máquina no usa VMware, no necesitamos estas funciones y podemos desactivarlo.
+```bash
+systemctl stop open-vm-tools
+systemctl disable open-vm-tools
+```
 
 <br>
 #### Servicios activos
@@ -2571,6 +2617,7 @@ Para eliminar un servicio:
 6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
 6-Conviene reiniciar
+
 
 
 
