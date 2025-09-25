@@ -2314,7 +2314,7 @@ default via 10.11.48.1 dev ens33 onlink
 
 
 ---
-### **Apartado H) En el apartado d) se ha familiarizado con los services que corren en su sistema. ¿Son necesarios todos ellos?. Si identifica servicios no necesarios, proceda adecuadamente. Una limpieza no le vendrá mal a su equipo, tanto desde el punto de vista de la seguridad, como del rendimiento.*
+### **Apartado H) En el apartado d) se ha familiarizado con los services que corren en su sistema. ¿Son necesarios todos ellos?. Si identifica servicios no necesarios, proceda adecuadamente. Una limpieza no le vendrá mal a su equipo, tanto desde el punto de vista de la seguridad, como del rendimiento.**
 
 
 No todos los servicios son necesarios. Mantener servicios innecesarios es malo:
@@ -2571,5 +2571,6 @@ Para eliminar un servicio:
 6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
 6-Conviene reiniciar
+
 
 
