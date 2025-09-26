@@ -374,6 +374,7 @@ Cada usuario puede tener configuraciones distintas en ~/.bashrc o /etc/profile q
 
 
 Por tanto, lo primero que debemos hacer es comprobar cuandos comandos tenemos permitidos en ambos usuarios:
+
 ```bash
 lsi@debian:~$ echo $HISTSIZE
 1000
@@ -390,6 +391,15 @@ root@debian:~# echo $HISTFILESIZE
 **echo**: muestra texto o variables en la terminal. Imprime texto o el contenido de ciertas variables ($variable) en la pantalla. 
 
 Para aumentar ambos historiales tenemos que hacer lo siguiente:
+
+- User normal:
+```bash
+echo "export HISTSIZE=1000000" >> ~/.bashrc
+echo "export HISTFILESIZE=1000000" >> ~/.bashrc
+source ~/.bashrc
+```
+
+- Root:
 ```bash
 echo "export HISTSIZE=1000000" >> /root/.bashrc
 echo "export HISTFILESIZE=1000000" >> /root/.bashrc
@@ -2775,6 +2785,7 @@ Para eliminar un servicio:
 6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
 6-Conviene reiniciar
+
 
 
 
