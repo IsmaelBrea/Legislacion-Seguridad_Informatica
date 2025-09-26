@@ -1994,17 +1994,17 @@ Es el SERVICIO de sincronización de hora automática en sistemas Linux que usan
  Nota: Esto no ralentiza el arranque de manera significativa; solo se activa para sincronizar la hora y luego se queda en segundo plano.
 
 
-#### Resumen fácil:
-Para filtrar los que tienen estado fallido -> systemctl list-units --type=service --state=failed
+#### RESUMEN FÁCIL:
+- Para filtrar los que tienen estado fallido -> systemctl list-units --type=service --state=failed
 
-Con journald queda un registro de logs a la máquina que se ha configurado (en
+- Con journald queda un registro de logs a la máquina que se ha configurado (en
 /run/log/journal).
 
-journalctl -b | grep erro | grep <dia= -> vemos los errores en el botado filtrados por día
+- journalctl -b | grep erro | grep <dia= -> vemos los errores en el botado filtrados por día
 
-systemd-timesyncd -> sincroniza el reloj del sistema a través de la red
+- systemd-timesyncd -> sincroniza el reloj del sistema a través de la red
 
-timedarectl set-ntp true -> activa e inicializa systemd-timesyncd
+- timedarectl set-ntp true -> activa e inicializa systemd-timesyncd
 
 
 
@@ -2802,6 +2802,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
