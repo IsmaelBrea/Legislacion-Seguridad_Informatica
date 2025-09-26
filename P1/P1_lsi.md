@@ -2597,8 +2597,21 @@ systemctl disable plymouth-quit
 systemctl mask plymouth-quit
 ```
 
+ - plymouth-start (ENMASCARADO): Es el servicio que gestiona la animación o pantalla de inicio durante el arranque (los “bootsplash” gráficos). En un servidor sin interfaz gráfica ni uso de consola gráfica, no es necesario.
+```bash
+systemctl stop plymouth-start.service
+systemctl disable plymouth-start.service
+systemctl mask plymouth-start.service
+```
 
-¡¡¡Quitar solo lo que controla pantallas gráficas o esperas visuales (halt, quit, quit-wait). Mantener lo que asegura el orden del arranque y acceso al disco (start, read-write, plymouth.service)!!!
+
+ - plymouth-read-write (ENMASCARADO): Se encarga de preparar el sistema de archivos para escritura y mostrar el progreso en la pantalla de inicio. Como no usamos interfaz gráfica ni bootsplash, se puede quitar.
+```bash
+systemctl stop plymouth-read-write.service
+systemctl disable plymouth-read-write.service
+systemctl mask plymouth-read-write.service
+```
+
 
 
 13-polkit (ENMASCARADO): (PolicyKit) gestiona permisos para programas que necesitan privilegios elevados sin que tengas que usar sudo todo el tiempo. Por ejemplo, cambiar la hora, montar discos, o instalar actualizaciones desde un entorno gráfico. Si solo accedes por SSH y usas sudo cuando hace falta, no hay programas de escritorio que dependan de polkit.
@@ -2664,15 +2677,63 @@ systemctl disable vgauth
 ```
 
 
-20-wpa_supplicant (DESACTIVADO / ENMASCARADO): Es el servicio que gestiona conexiones Wi-Fi (autenticación y gestión de redes inalámbricas). Como mi máquina está solo por cable, no lo necesito.
+20-wpa_supplicant (ENMASCARADO): Es el servicio que gestiona conexiones Wi-Fi (autenticación y gestión de redes inalámbricas). Como mi máquina está solo por cable, no lo necesito.
 ```bash
 systemctl stop wpa_supplicant
 systemctl disable wpa_supplicant
 systemctl mask wpa_supplicant
 ```
 
-
 <br>
+
+#### Servicios eliminados extra de **systemd-analyze-blame**
+
+1- rtkit-daemon (ENMASCARADO):
+Es el “RealtimeKit Daemon”, que gestiona prioridades de tiempo real para audio y procesos multimedia. En un servidor SSH sin audio, no tiene uso.
+```bash
+systemctl stop rtkit-daemon.service
+systemctl disable rtkit-daemon.service
+systemctl mask rtkit-daemon.service
+```
+
+
+2-user@1000 (ENMASCARADO): Gestiona la sesión de usuario con ID 1000 (el primer usuario creado). En un servidor sin GUI ni login local, no es necesario.
+```bash
+systemctl stop user@1000.service
+systemctl disable user@1000.service
+systemctl mask user@1000.service
+```
+
+3-user-runtime-dir@1000 (ENMASCARADO): Crea y mantiene el directorio de runtime (/run/user/1000) para el usuario 1000. Si no hay sesiones gráficas o locales, no se necesita.
+```bash
+systemctl stop user-runtime-dir@1000.service
+systemctl disable user-runtime-dir@1000.service
+systemctl mask user-runtime-dir@1000.service
+```
+
+
+4-systemd-user-sessions (ENMASCARADO): Gestiona las sesiones de usuario en general (login por consola o tty). En un servidor que solo se usa por SSH, este servicio se puede deshabilitar de forma segura.
+```bash
+systemctl stop systemd-user-sessions.service
+systemctl disable systemd-user-sessions.service
+systemctl mask systemd-user-sessions.service
+```
+
+
+5-modprobe@drm (ENMASCARADO): Carga módulos de DRM (Direct Rendering Manager) para soporte gráfico. En un servidor sin tarjeta gráfica activa ni interfaz de escritorio, no se necesita.
+```bash
+systemctl stop modprobe@drm.service
+systemctl disable modprobe@drm.service
+systemctl mask modprobe@drm.service
+```
+
+
+6-run-vmblock\x2dfuse.mount (ENMASCARADO): Es un montaje de VMware Tools para compartir carpetas entre host y máquina virtual (vmblock-fuse). Si no estás usando VMware o compartiendo carpetas, se puede quitar.
+```bash
+systemctl stop run-vmblock\x2dfuse.mount
+systemctl disable run-vmblock\x2dfuse.mount
+systemctl mask run-vmblock\x2dfuse.mount
+```
 
 #### Servicios activos
 
@@ -2744,6 +2805,7 @@ Para eliminar un servicio:
 6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
 6-Conviene reiniciar
+
 
 
 
