@@ -2742,6 +2742,12 @@ No meu caso tiña servicios relacionados co GNOME(interfaz gráfica). Para quita
 
     tracker-extract -> forma parte do GNOME, extrae e analiza metadatos contido textual de archivos para indexalos y buscalos mais facilmente e así máis accesibles para o usuario -> apt remove --purge tracker-extract
 
+
+  #### PRESETS
+
+
+  
+
 Outras ferramentas/comandos para eliminar archivos basura:
 
     Podemos eliminar o office -> apt remove --purge 'libreoffice*'
@@ -2794,6 +2800,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
