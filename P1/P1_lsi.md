@@ -366,7 +366,7 @@ Debería mostrar root
 ### 4-Comprobar el número máximo de comandos permitidos en el historial (history) y ampliarlo
 **El comando history es independiente para cada usuario, incluyendo root.**
 
-El historial del root en mi máquina empieza a partir del comando 148
+El historial del root en mi máquina empieza a partir del comando 145
 
 Cada usuario puede tener configuraciones distintas en ~/.bashrc o /etc/profile que afecten HISTSIZE y HISTFILESIZE:
 - HISTSIZE -> número máximo de comandos que se guardan en la sesión actual.
@@ -2775,6 +2775,7 @@ Para eliminar un servicio:
 6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
 6-Conviene reiniciar
+
 
 
 
