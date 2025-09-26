@@ -977,7 +977,7 @@ Kernel = es el núcleo del Sistema Operativo. Actúa como puente entre hardware 
 ### Versión del distro
 Según el source.list ya sabemos que estamos en un Debian 10. Esto se puede comprobar de varias maneras:
 
-1-lsb_relesase -a (Linux Standard Base release)
+1-lsb_release -a (Linux Standard Base release)
 Muestra información sobre nuestra distrubución de Linux.
 ```bash
 lsi@debian:~$ lsb_release -a
@@ -2794,6 +2794,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
