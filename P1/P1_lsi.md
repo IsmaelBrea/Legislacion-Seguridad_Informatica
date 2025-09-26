@@ -2577,13 +2577,7 @@ systemctl disable NetworkManager-wait-online
 ```
 
 
-11-open-vm-tools (ENMASCARADO): servicios de integración para máquinas virtuales VMware. Permite cosas como copiar/pegar entre host y VM, sincronizar la hora o apagar/reiniciar la máquina desde el host. Como nuestra máquina no usa VMware, no necesitamos estas funciones y podemos desactivarlo.
-```bash
-systemctl stop open-vm-tools
-systemctl disable open-vm-tools
-```
-
-12-plymouth: Plymouth se encarga de la animación gráfica del arranque y de mostrar mensajes bonitos mientras Linux arranca o se apaga.
+11-plymouth: Plymouth se encarga de la animación gráfica del arranque y de mostrar mensajes bonitos mientras Linux arranca o se apaga.
 
    - plymouth-halt (ENMASCARADO): Se ejecuta al apagar el sistema, mostrando animación de apagado. En mi máquina por ssh no hace nada útil.
 ```bash
@@ -2624,16 +2618,7 @@ systemctl mask plymouth-read-write.service
 
 
 
-13-polkit (ENMASCARADO): (PolicyKit) gestiona permisos para programas que necesitan privilegios elevados sin que tengas que usar sudo todo el tiempo. Por ejemplo, cambiar la hora, montar discos, o instalar actualizaciones desde un entorno gráfico. Si solo accedes por SSH y usas sudo cuando hace falta, no hay programas de escritorio que dependan de polkit.
-```bash
-systemctl stop polkit
-systemctl disable polkit
-systemctl mask polkit
-```
-
-
-
-14-power-profiles-daemon (DESACTIVADO): Es el daemon de perfiles de energía. Permite cambiar automáticamente entre modos de consumo de energía en tu máquina (por ejemplo: “alto rendimiento”, “ahorro de energía” o “equilibrado”). Se usa sobre todo en laptops o equipos de escritorio para gestionar CPU, pantalla y periféricos según el perfil elegido. En mi máquina Debian al que solo accedo por SSH, no sirve para nada, porque la máquina está conectada por cable, probablemente
+13-power-profiles-daemon (DESACTIVADO): Es el daemon de perfiles de energía. Permite cambiar automáticamente entre modos de consumo de energía en tu máquina (por ejemplo: “alto rendimiento”, “ahorro de energía” o “equilibrado”). Se usa sobre todo en laptops o equipos de escritorio para gestionar CPU, pantalla y periféricos según el perfil elegido. En mi máquina Debian al que solo accedo por SSH, no sirve para nada, porque la máquina está conectada por cable, probablemente
 enchufada siempre, y no me interesa ahorrar batería ni ajustar rendimiento automáticamente.
 ```bash
 systemctl stop power-profiles-daemon
@@ -2800,6 +2785,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
