@@ -1762,6 +1762,21 @@ systemctl list-unit-files --type=service
 
      
 **Otros tipos de unidades: systemctl list-units**
+```bash
+systemctl list-unit-files --all
+```
+
+Cada unidad aparece separada entre líneas y con un punto:
+-------------
+nombre.target
+
+
+--------
+nombre.service
+
+
+etc
+-------
 
 Systemd no solo maneja services y targets, también existen:
 
@@ -2785,6 +2800,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
