@@ -1776,6 +1776,7 @@ nombre.service
 
 
 etc
+
 -------
 
 Systemd no solo maneja services y targets, también existen:
@@ -2800,6 +2801,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
