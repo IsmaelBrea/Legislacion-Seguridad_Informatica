@@ -2093,7 +2093,7 @@ ifconfig ens34 down
 
   1.2-Cambiar la IP:
   ```bash
-  ifconfig ens34 10.11.50.170 netmask 255.255.254.0
+  ifconfig ens34 10.11.50.203 netmask 255.255.254.0
  ```
 
 Ahora ens34 tiene otra ip temporalmente
@@ -2109,7 +2109,7 @@ ifconfig ens34 up
 ```bash
 root@ismael:/home/lsi# ifconfig ens34
 ens34: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 10.11.50.170  netmask 255.255.254.0  broadcast 10.11.51.255
+        inet 10.11.50.203  netmask 255.255.254.0  broadcast 10.11.51.255
         inet6 fe80::250:56ff:fe97:fa74  prefixlen 64  scopeid 0x20<link>
         ether 00:50:56:97:fa:74  txqueuelen 1000  (Ethernet)
         RX packets 142345  bytes 35500287 (33.8 MiB)
@@ -2126,18 +2126,18 @@ root@ismael:/home/lsi# ip a show ens34
 3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
     link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
     altname enp2s2
-    inet 10.11.50.170/23 brd 10.11.51.255 scope global ens34
+    inet 10.11.50.203/23 brd 10.11.51.255 scope global ens34
        valid_lft forever preferred_lft forever
     inet6 fe80::250:56ff:fe97:fa74/64 scope link
        valid_lft forever preferred_lft forever
 
-root@ismael:/home/lsi# ping -c 3 10.11.50.170
-PING 10.11.50.170 (10.11.50.170) 56(84) bytes of data.
-64 bytes from 10.11.50.170: icmp_seq=1 ttl=64 time=0.028 ms
-64 bytes from 10.11.50.170: icmp_seq=2 ttl=64 time=0.050 ms
-64 bytes from 10.11.50.170: icmp_seq=3 ttl=64 time=0.063 ms
+root@ismael:/home/lsi# ping -c 3 10.11.50.203
+PING 10.11.50.203 (10.11.50.203) 56(84) bytes of data.
+64 bytes from 10.11.50.203: icmp_seq=1 ttl=64 time=0.028 ms
+64 bytes from 10.11.50.203: icmp_seq=2 ttl=64 time=0.050 ms
+64 bytes from 10.11.50.203: icmp_seq=3 ttl=64 time=0.063 ms
 
---- 10.11.50.170 ping statistics ---
+--- 10.11.50.203 ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2041ms
 rtt min/avg/max/mdev = 0.028/0.047/0.063/0.014 ms
 ```
@@ -2163,7 +2163,7 @@ root@ismael:/home/lsi# ip a show ens34
 3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
     link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
     altname enp2s2
-    inet 10.11.50.170/23 brd 10.11.51.255 scope global ens34
+    inet 10.11.50.203/23 brd 10.11.51.255 scope global ens34
        valid_lft forever preferred_lft forever
     inet 192.168.1.1/24 brd 192.168.1.255 scope global ens34:0
        valid_lft forever preferred_lft forever
@@ -2802,6 +2802,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
