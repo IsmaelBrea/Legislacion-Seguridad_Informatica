@@ -121,7 +121,7 @@ shutdown now         # Apagar
 
 - Usuario propio:  
   - `lsi2.3.4`  
-  - IP: `10.11.48.169`  
+  - IP: `10.11.48.202`  
 
 - Usuario compañero:
   -  `lsi2.3.4`  
@@ -146,7 +146,7 @@ lsi      pts/0        10.30.12.189     Wed Sep 17 20:30   still logged in
 lsi      pts/0        10.20.37.81      Tue Sep 16 18:04 - 18:05  (00:00)
 ```
 
-Aquí podemos ver que, aunque nuestra máquina tenga la IP 10.11.48.169, en last aparece otra IP diferente para la sesión. Esto ocurre porque last muestra la IP desde la que nos conectamos a la máquina, es decir, la del equipo origen (nuestro PC). Si desde PowerShell comprobamos la IP de nuestra interfaz de red (ifconfig) y a la vez consultamos last en la máquina Debian, veremos que ambas coinciden, confirmando que es la IP desde la que se inició la sesión.
+Aquí podemos ver que, aunque nuestra máquina tenga la IP 10.11.48.202, en last aparece otra IP diferente para la sesión. Esto ocurre porque last muestra la IP desde la que nos conectamos a la máquina, es decir, la del equipo origen (nuestro PC). Si desde PowerShell comprobamos la IP de nuestra interfaz de red (ifconfig) y a la vez consultamos last en la máquina Debian, veremos que ambas coinciden, confirmando que es la IP desde la que se inició la sesión.
 
 
 **IP de los alumnos:** `10.11.48.0/23`  
@@ -174,7 +174,7 @@ Aquí podemos ver que, aunque nuestra máquina tenga la IP 10.11.48.169, en last
 
 ### 1.Conexión por SSH:  
 ```bash
-ssh lsi@10.11.48.169
+ssh lsi@10.11.48.202
 ```
 
 Al conectarse por primera vez, se pide aceptar la huella digital (fingerprint), que es un mensaje del siguiente estilo:
@@ -229,8 +229,8 @@ type C:\Users\User\.ssh\known_hosts
 
 Podemos observar que nos da algo asi:
 ```bash
-10.11.48.169 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKQfI1ZugU31gRpgEwcUi6oAokkz8EELqtseoFLN0DsV
-10.11.48.169 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG51QMMMvwsB+NAdwvHfhR1jQ+UrzZ6MBXlOr6ENTfWcFTJldY69HnGKsyz1xNlF6/YAwxwq4otq321jSaakjcE=
+10.11.48.202 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKQfI1ZugU31gRpgEwcUi6oAokkz8EELqtseoFLN0DsV
+10.11.482.202 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG51QMMMvwsB+NAdwvHfhR1jQ+UrzZ6MBXlOr6ENTfWcFTJldY69HnGKsyz1xNlF6/YAwxwq4otq321jSaakjcE=
 ```
 Eso significa que tu cliente ha aceptado dos tipos de claves del servidor:
 
@@ -265,9 +265,9 @@ ECDSA → SHA256:fBaTUZzR9oa1B2VWLwurmhlCaeRhpr5uloGtThsikF8
 
 **Huellas en tu Windows (known_hosts):**
 
-10.11.48.169 (ED25519) → SHA256:Vergq/A8tdRdcdGu6VqvAo1LBIGEr1QN4FEudeG/R9g ✅
+10.11.48.202 (ED25519) → SHA256:Vergq/A8tdRdcdGu6VqvAo1LBIGEr1QN4FEudeG/R9g ✅
 
-10.11.48.169 (ECDSA) → SHA256:fBaTUZzR9oa1B2VWLwurmhlCaeRhpr5uloGtThsikF8 ✅
+10.11.48.202 (ECDSA) → SHA256:fBaTUZzR9oa1B2VWLwurmhlCaeRhpr5uloGtThsikF8 ✅
 
 
 ---
@@ -548,14 +548,14 @@ iface lo inet loopback
 # Primera interfaz
 auto ens33
 iface ens33 inet static
-    address 10.11.48.169
+    address 10.11.48.202
     netmask 255.255.254.0
     gateway 10.11.48.1
 
 # Segunda interfaz
 auto ens34
 iface ens34 inet static
-    address 10.11.50.169
+    address 10.11.50.202
     netmask 255.255.254.0
 ```
 
@@ -597,14 +597,14 @@ root@ismael:~# ip a
 2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
     link/ether 00:50:56:97:9a:7f brd ff:ff:ff:ff:ff:ff
     altname enp2s1
-    inet 10.11.48.169/23 brd 10.11.49.255 scope global ens33
+    inet 10.11.48.202/23 brd 10.11.49.255 scope global ens33
        valid_lft forever preferred_lft forever
     inet6 fe80::250:56ff:fe97:9a7f/64 scope link
        valid_lft forever preferred_lft forever
 3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
     link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
     altname enp2s2
-    inet 10.11.50.169/23 brd 10.11.51.255 scope global ens34
+    inet 10.11.50.202/23 brd 10.11.51.255 scope global ens34
        valid_lft forever preferred_lft forever
 ```
 
@@ -624,29 +624,29 @@ PING 10.11.48.1 (10.11.48.1) 56(84) bytes of data.
 4 packets transmitted, 4 received, 0% packet loss, time 3039ms
 rtt min/avg/max/mdev = 0.337/0.374/0.434/0.037 ms
 
-root@ismael:~# ping 10.11.48.169
-PING 10.11.48.169 (10.11.48.169) 56(84) bytes of data.
-64 bytes from 10.11.48.169: icmp_seq=1 ttl=64 time=0.047 ms
-64 bytes from 10.11.48.169: icmp_seq=2 ttl=64 time=0.052 ms
+root@ismael:~# ping 10.11.48.202
+PING 10.11.48.202 (10.11.48.202) 56(84) bytes of data.
+64 bytes from 10.11.48.202: icmp_seq=1 ttl=64 time=0.047 ms
+64 bytes from 10.11.48.202: icmp_seq=2 ttl=64 time=0.052 ms
 ^C
---- 10.11.48.169 ping statistics ---
+--- 10.11.48.202 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1017ms
 rtt min/avg/max/mdev = 0.047/0.049/0.052/0.002 ms
 
-root@ismael:~# ping 10.11.50.169
-PING 10.11.50.169 (10.11.50.169) 56(84) bytes of data.
-64 bytes from 10.11.50.169: icmp_seq=1 ttl=64 time=0.028 ms
-64 bytes from 10.11.50.169: icmp_seq=2 ttl=64 time=0.053 ms
+root@ismael:~# ping 10.11.50.202
+PING 10.11.50.202 (10.11.50.202) 56(84) bytes of data.
+64 bytes from 10.11.50.202: icmp_seq=1 ttl=64 time=0.028 ms
+64 bytes from 10.11.50.202: icmp_seq=2 ttl=64 time=0.053 ms
 ^C
---- 10.11.50.169 ping statistics ---
+--- 10.11.50.202 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1029ms
 rtt min/avg/max/mdev = 0.028/0.040/0.053/0.012 ms
 ```
 
 #### CONCLUSIÓN:
-- Tu IP estática 10.11.48.169 funciona correctamente.
+- Tu IP estática 10.11.48.202 funciona correctamente.
 
-- La segunda interfaz ens34 con IP 10.11.50.169 está correctamente configurada sin gateway, lo que permite que otros dispositivos de la red (por ejemplo, tu compañero) se conecten a tu máquina sin generar conflictos de rutas.
+- La segunda interfaz ens34 con IP 10.11.50.202 está correctamente configurada sin gateway, lo que permite que otros dispositivos de la red (por ejemplo, tu compañero) se conecten a tu máquina sin generar conflictos de rutas.
 
 - La máquina puede comunicarse con el gateway.
 
@@ -677,18 +677,18 @@ Obtiene una relación entre un nombre de máquina y una dirección IP: en cada l
 127.0.1.1   debian        #También “yo mismo”, pero usando el nombre de la máquina (debian).
 ```
 
-¿Y por qué no sale tu IP 10.11.48.169?
+¿Y por qué no sale tu IP 10.11.48.202?
 
 Porque 127.x.x.x no es tu IP real de la red, es una dirección especial solo para uso interno del ordenador.
 
-La 10.11.48.169 sí es tu IP real en la red (la que usan otros equipos para conectarse a tu máquina).
+La 10.11.48.202 sí es tu IP real en la red (la que usan otros equipos para conectarse a tu máquina).
 
 
 **Resumen fácil:**
 
 127.0.0.1 y 127.0.1.1 = tu PC hablando consigo mismo.
 
-10.11.48.169 = tu PC hablando con otros en la red.
+10.11.48.202 = tu PC hablando con otros en la red.
 
 
 Las últimas líneas que aparecen con comentario hacen referencia a IPv6:
@@ -742,8 +742,8 @@ nano /etc/hosts
 Añadir:
 ```bash
   GNU nano 7.2                          /etc/hosts                                    127.0.0.1       localhost
-10.11.48.169    ismael debian
-10.11.50.169    ismael-ssh
+10.11.48.202    ismael debian
+10.11.50.202    ismael-ssh
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
@@ -752,12 +752,12 @@ ff02::2 ip6-allrouters
 ```
 
 
-- 10.11.48.169  ismael debian
+- 10.11.48.202  ismael debian
    - Esto hace que tu máquina se pueda referir a sí misma como ismael o debian.
 
    - Opcional, no estrictamente necesario si ya estás dentro de tu máquina.
  
-- 10.11.50.169  ismael-ssh
+- 10.11.50.202  ismael-ssh
   - Esto permite que desde la máquina de mi comapañero pueda hacer ssh lsi@pc-compañero en vez de escribir la IP.
   - Utilidades:
      - SSH más fácil: ssh lsi@pc-compañero
@@ -773,28 +773,28 @@ ff02::2 ip6-allrouters
 Para comprobar que todo funciona bien:
 ```bash
 root@ismael:~# ping -c 3 ismael
-PING ismael (10.11.48.169) 56(84) bytes of data.
-64 bytes from ismael (10.11.48.169): icmp_seq=1 ttl=64 time=0.028 ms
-64 bytes from ismael (10.11.48.169): icmp_seq=2 ttl=64 time=0.051 ms
-64 bytes from ismael (10.11.48.169): icmp_seq=3 ttl=64 time=0.049 ms
+PING ismael (10.11.48.202) 56(84) bytes of data.
+64 bytes from ismael (10.11.48.202): icmp_seq=1 ttl=64 time=0.028 ms
+64 bytes from ismael (10.11.48.202): icmp_seq=2 ttl=64 time=0.051 ms
+64 bytes from ismael (10.11.48.202): icmp_seq=3 ttl=64 time=0.049 ms
 
 --- ismael ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2054ms
 rtt min/avg/max/mdev = 0.028/0.042/0.051/0.010 ms
 root@ismael:~# ping -c 3 debian
-PING ismael (10.11.48.169) 56(84) bytes of data.
-64 bytes from ismael (10.11.48.169): icmp_seq=1 ttl=64 time=0.032 ms
-64 bytes from ismael (10.11.48.169): icmp_seq=2 ttl=64 time=0.051 ms
-64 bytes from ismael (10.11.48.169): icmp_seq=3 ttl=64 time=0.049 ms
+PING ismael (10.11.48.202) 56(84) bytes of data.
+64 bytes from ismael (10.11.48.202): icmp_seq=1 ttl=64 time=0.032 ms
+64 bytes from ismael (10.11.48.202): icmp_seq=2 ttl=64 time=0.051 ms
+64 bytes from ismael (10.11.48.202): icmp_seq=3 ttl=64 time=0.049 ms
 
 --- ismael ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2031ms
 rtt min/avg/max/mdev = 0.032/0.044/0.051/0.008 ms
 root@ismael:~# ping -c 3 ismael-ssh
-PING ismael-ssh (10.11.50.169) 56(84) bytes of data.
-64 bytes from ismael-ssh (10.11.50.169): icmp_seq=1 ttl=64 time=0.038 ms
-64 bytes from ismael-ssh (10.11.50.169): icmp_seq=2 ttl=64 time=0.050 ms
-64 bytes from ismael-ssh (10.11.50.169): icmp_seq=3 ttl=64 time=0.049 ms
+PING ismael-ssh (10.11.50.202) 56(84) bytes of data.
+64 bytes from ismael-ssh (10.11.50.202): icmp_seq=1 ttl=64 time=0.038 ms
+64 bytes from ismael-ssh (10.11.50.202): icmp_seq=2 ttl=64 time=0.050 ms
+64 bytes from ismael-ssh (10.11.50.202): icmp_seq=3 ttl=64 time=0.049 ms
 
 --- ismael-ssh ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2044ms
@@ -1997,14 +1997,14 @@ lsi@ismael:~$ ip a
 2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
     link/ether 00:50:56:97:9a:7f brd ff:ff:ff:ff:ff:ff
     altname enp2s1
-    inet 10.11.48.169/23 brd 10.11.49.255 scope global ens33
+    inet 10.11.48.202/23 brd 10.11.49.255 scope global ens33
        valid_lft forever preferred_lft forever
     inet6 fe80::250:56ff:fe97:9a7f/64 scope link
        valid_lft forever preferred_lft forever
 3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
     link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
     altname enp2s2
-    inet 10.11.50.169/23 brd 10.11.51.255 scope global ens34
+    inet 10.11.50.202/23 brd 10.11.51.255 scope global ens34
        valid_lft forever preferred_lft forever
     inet6 fe80::250:56ff:fe97:fa74/64 scope link
        valid_lft forever preferred_lft forever
@@ -2016,7 +2016,7 @@ lsi@ismael:~$ ip a show ens34
 3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
     link/ether 00:50:56:97:fa:74 brd ff:ff:ff:ff:ff:ff
     altname enp2s2
-    inet 10.11.50.169/23 brd 10.11.51.255 scope global ens34
+    inet 10.11.50.202/23 brd 10.11.51.255 scope global ens34
        valid_lft forever preferred_lft forever
     inet6 fe80::250:56ff:fe97:fa74/64 scope link
        valid_lft forever preferred_lft forever
@@ -2025,7 +2025,7 @@ lsi@ismael:~$ ip a show ens34
 O asi:
 ```bash
 ens34: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 10.11.50.169  netmask 255.255.254.0  broadcast 10.11.51.255
+        inet 10.11.50.202  netmask 255.255.254.0  broadcast 10.11.51.255
         inet6 fe80::250:56ff:fe97:fa74  prefixlen 64  scopeid 0x20<link>
         ether 00:50:56:97:fa:74  txqueuelen 1000  (Ethernet)
         RX packets 139613  bytes 34797764 (33.1 MiB)
@@ -2176,7 +2176,7 @@ reboot
 ```bash
 lsi@ismael:~$ ifconfig ens34
 ens34: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 10.11.50.169  netmask 255.255.254.0  broadcast 10.11.51.255
+        inet 10.11.50.202  netmask 255.255.254.0  broadcast 10.11.51.255
         inet6 fe80::250:56ff:fe97:fa74  prefixlen 64  scopeid 0x20<link>
         ether 00:50:56:97:fa:74  txqueuelen 1000  (Ethernet)
         RX packets 574  bytes 150832 (147.2 KiB)
@@ -2213,16 +2213,16 @@ Un interfaz lógico es básicamente una “IP extra” que se asigna sobre una t
 ```bash
 lsi@ismael:~$ ip route show
 default via 10.11.48.1 dev ens33 onlink
-10.11.48.0/23 dev ens33 proto kernel scope link src 10.11.48.169
-10.11.50.0/23 dev ens34 proto kernel scope link src 10.11.50.169
-169.254.0.0/16 dev ens33 scope link metric 1000
+10.11.48.0/23 dev ens33 proto kernel scope link src 10.11.48.202
+10.11.50.0/23 dev ens34 proto kernel scope link src 10.11.50.202
+202.254.0.0/16 dev ens33 scope link metric 1000
 ```
 
  ens33 → red 10.11.48.x + puerta de enlace por defecto.
 
 - ens34 → red 10.11.50.x.
 
-- 169.254.x.x → IP de emergencia si falla DHCP.
+- 202.254.x.x → IP de emergencia si falla DHCP.
 
 Todo tráfico que no sea 10.11.48.x o 10.11.50.x va por ens33 al router 10.11.48.1.
 
@@ -2280,9 +2280,9 @@ ip route add 192.168.1.0/24 via 10.11.50.1 dev ens34
 ```bash
 root@ismael:~# ip route
 default via 10.11.48.1 dev ens33 onlink
-10.11.48.0/23 dev ens33 proto kernel scope link src 10.11.48.169
-10.11.50.0/23 dev ens34 proto kernel scope link src 10.11.50.169
-169.254.0.0/16 dev ens33 scope link metric 1000
+10.11.48.0/23 dev ens33 proto kernel scope link src 10.11.48.202
+10.11.50.0/23 dev ens34 proto kernel scope link src 10.11.50.202
+202.254.0.0/16 dev ens33 scope link metric 1000
 192.168.1.0/24 via 10.11.50.1 dev ens34
 ```
 
@@ -2697,43 +2697,13 @@ systemctl mask rtkit-daemon.service
 ```
 
 
-2-user@1000 (ENMASCARADO): Gestiona la sesión de usuario con ID 1000 (el primer usuario creado). En un servidor sin GUI ni login local, no es necesario.
-```bash
-systemctl stop user@1000.service
-systemctl disable user@1000.service
-systemctl mask user@1000.service
-```
-
-3-user-runtime-dir@1000 (ENMASCARADO): Crea y mantiene el directorio de runtime (/run/user/1000) para el usuario 1000. Si no hay sesiones gráficas o locales, no se necesita.
-```bash
-systemctl stop user-runtime-dir@1000.service
-systemctl disable user-runtime-dir@1000.service
-systemctl mask user-runtime-dir@1000.service
-```
-
-
-4-systemd-user-sessions (ENMASCARADO): Gestiona las sesiones de usuario en general (login por consola o tty). En un servidor que solo se usa por SSH, este servicio se puede deshabilitar de forma segura.
-```bash
-systemctl stop systemd-user-sessions.service
-systemctl disable systemd-user-sessions.service
-systemctl mask systemd-user-sessions.service
-```
-
-
-5-modprobe@drm (ENMASCARADO): Carga módulos de DRM (Direct Rendering Manager) para soporte gráfico. En un servidor sin tarjeta gráfica activa ni interfaz de escritorio, no se necesita.
+2-modprobe@drm (ENMASCARADO): Carga módulos de DRM (Direct Rendering Manager) para soporte gráfico. En un servidor sin tarjeta gráfica activa ni interfaz de escritorio, no se necesita.
 ```bash
 systemctl stop modprobe@drm.service
 systemctl disable modprobe@drm.service
 systemctl mask modprobe@drm.service
 ```
 
-
-6-run-vmblock\x2dfuse.mount (ENMASCARADO): Es un montaje de VMware Tools para compartir carpetas entre host y máquina virtual (vmblock-fuse). Si no estás usando VMware o compartiendo carpetas, se puede quitar.
-```bash
-systemctl stop run-vmblock\x2dfuse.mount
-systemctl disable run-vmblock\x2dfuse.mount
-systemctl mask run-vmblock\x2dfuse.mount
-```
 
 #### Servicios activos
 
@@ -2805,6 +2775,7 @@ Para eliminar un servicio:
 6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
 6-Conviene reiniciar
+
 
 
 
