@@ -1809,6 +1809,7 @@ Systemd no solo maneja services y targets, también existen:
      - cron.service → ejecuta tareas programadas.
 
 <br>
+
 - Para averiguar todos los tipos de unidades -> systemctl list-units o  systemctl list-units -t help
 - Para averiguar nuestro target por defecto -> systemctl get-default
 - Para cambiar el target de arranque -> systemctl set-default xxx.target (hemos puesto
@@ -2801,6 +2802,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
