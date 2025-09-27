@@ -63,6 +63,8 @@ sudo apt update           # Actualizar lista
 sudo apt upgrade          # Actualizar paquetes
 sudo apt install paquete  # Instalar
 sudo apt remove paquete   # Eliminar
+dpkg -l | wc -l           # Lista todos los paquetes instalados  y wc -l cuenta las líneas, es decir, el total de paquetes.
+
 
 # Red
 ping 8.8.8.8         # Probar conexión
@@ -1325,6 +1327,19 @@ Limpiar paquetes huérfanos:
 sudo apt autoremove --purge -y
 sudo apt autoclean
 ```
+
+```bash
+lsi@ismael:~$ dpkg --list | grep linux-image
+ii  linux-image-6.1.0-40-amd64            6.1.153-1                           amd64        Linux 6.1 for 64-bit PCs (signed)
+ii  linux-image-amd64                     6.1.153-1                           amd64        Linux for 64-bit PCs (meta-package)
+```
+
+Ahora mismo solo tengo:
+
+- linux-image-6.1.0-40-amd64 → el kernel actual (Debian 12 Bookworm).
+
+- linux-image-amd64 → el meta-paquete que asegura que siempre reciba la última versión estable del kernel.
+
 
 ### RESUMEN DE TODOS LOS COMANDOS UTILIZADOS PARA ACTUALIZAR DEBIAN:
 ```bash
@@ -2920,6 +2935,7 @@ sudo systemctl preset-all
 
 ---
 ### **Apartado I): **
+
 
 
 
