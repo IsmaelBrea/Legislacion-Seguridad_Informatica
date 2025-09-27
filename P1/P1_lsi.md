@@ -2246,7 +2246,7 @@ lsi@ismael:~$ ip route show
 default via 10.11.48.1 dev ens33 onlink
 10.11.48.0/23 dev ens33 proto kernel scope link src 10.11.48.202
 10.11.50.0/23 dev ens34 proto kernel scope link src 10.11.50.202
-202.254.0.0/16 dev ens33 scope link metric 1000
+169.254.0.0/16 dev ens33 scope link metric 1000
 ```
 
  ens33 → red 10.11.48.x + puerta de enlace por defecto.
@@ -2897,6 +2897,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
