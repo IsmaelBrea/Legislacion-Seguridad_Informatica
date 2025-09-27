@@ -68,8 +68,41 @@ dpkg -l | wc -l           # Lista todos los paquetes instalados  y wc -l cuenta 
 
 # Red
 ping 8.8.8.8         # Probar conexión
-ip a                 # Ver IP
-curl ifconfig.me     # Ver IP pública
+tracert ip           # Muestra el camino a seguir para alcanzar una IP
+
+ **IP moderno**
+ip a                         # Ver IP
+ip addr show                 # Igual que ip a
+ip addr add <IP>/<mask> dev <interfaz>   # Añadir dirección IP temporal
+ip addr del <IP>/<mask> dev <interfaz>   # Quitar dirección IP
+ip link show                 # Mostrar estado de interfaces
+ip link set <interfaz> up    # Activar interfaz
+ip link set <interfaz> down  # Desactivar interfaz
+ip route show                # Mostrar tabla de rutas
+ip route add <red> via <gateway> dev <interfaz>  # Añadir ruta
+ip route del <red>           # Eliminar ruta
+
+**ifconfig (antiguo)**
+ifconfig                     # Mostrar interfaces activas
+ifconfig <interfaz>          # Mostrar detalles de interfaz
+ifconfig <interfaz> up       # Activar interfaz
+ifconfig <interfaz> down     # Desactivar interfaz
+ifconfig <interfaz> <IP> netmask <mask>  # Asignar IP temporal
+ifconfig <interfaz>:<n> <IP> netmask <mask>  # Crear alias/interfaz lógica
+
+
+curl <url>                   # Probar conexión HTTP/HTTPS y obtener contenido
+curl -I <url>                # Solo encabezados HTTP
+curl -s <url>                # Silencioso, sin mostrar progreso
+curl -O <url>                # Descargar archivo
+curl -L <url>                # Seguir redirecciones
+
+**route (rutas)**
+route -n                     # Mostrar tabla de rutas
+route add default gw <gateway>        # Añadir puerta de enlace predeterminada
+route del default gw <gateway>        # Eliminar puerta de enlace predeterminada
+route add -net <red> gw <gateway>    # Añadir ruta específica
+route del -net <red> gw <gateway>    # Eliminar ruta específica
 
 # Usuarios
 whoami               # Usuario actual
@@ -2940,6 +2973,7 @@ sudo systemctl preset-all
 
 ---
 ### **Apartado I): **
+
 
 
 
