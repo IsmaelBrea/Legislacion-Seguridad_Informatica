@@ -4,6 +4,7 @@
 - Traer papel y boli.  
 - Revisar siempre todo lo que aparezca en pantalla.  
  - El viernes anterior a la semana de defensas se apagan las máquinas.  Antes de cerrar todo para la defensa hacer un poweroff de la máquina.
+ - 
 <br>
 
 ## Repaso COMANDOS BÁSICOS útiles para las prácticas
@@ -106,7 +107,11 @@ journalctl           # Muestra los registros (logs) de los servicios y del siste
 uptime               # Tiempo encendido
 reboot               # Reiniciar
 shutdown now         # Apagar
+
+# Flag de ayuda para ver comandos grandes de golpe
+--no-pager
 ```
+
 
 ---
 <br>
@@ -2476,16 +2481,7 @@ systemctl disable anacron
 Si quitamos el cron todas las actualizaciones se tienen que hacer de forma manual. Ya no se harán updates y upgrades en segundo plano, tendremos que relizarlas nosotros manualmente.
 
 
-3-apparmor (ENMASCARADO): es un sistema de seguridad que limita lo que puede hacer cada programa. Por ejemplo, dice “este programa solo puede leer esta carpeta, y no puede tocar otras cosas”. Ayuda a proteger tu máquina si algún programa intenta hacer algo raro o malicioso.acco
-
-```bash
-su -
-systemctl stop apparmor
-systemctl disable apparmor
-systemctl mask apparmor
-```
-
-4-avahi-daemon (ENMASCARADO): hace que tu ordenador se vea solo en la red local y pueda encontrar otros dispositivos automáticamente y que tú encuentre los suyos también, como impresoras o PCs, sin configurar nada. Permite basicamente, que otros dispositivos en la misma red encuentren tu máquina automáticamente sin usar IPs manuales. Si lo desactivamos, mi máquina ya no se anunciará automáticamente en la red local. Otros equipos no la verán sin poner su IP manualmente.
+3-avahi-daemon (ENMASCARADO): hace que tu ordenador se vea solo en la red local y pueda encontrar otros dispositivos automáticamente y que tú encuentre los suyos también, como impresoras o PCs, sin configurar nada. Permite basicamente, que otros dispositivos en la misma red encuentren tu máquina automáticamente sin usar IPs manuales. Si lo desactivamos, mi máquina ya no se anunciará automáticamente en la red local. Otros equipos no la verán sin poner su IP manualmente.
 
 ```bash
 systemctl stop avahi-daemon.service
@@ -2495,7 +2491,7 @@ systemctl stop avahi-daemon.socket
  Con un reboot ya no sale el servicio en la lista de servicio activos.
 
 
-5-bluetooth (ENMASCARADO): gestiona la conexión y comunicación con dispositivos Bluetooth en tu máquina. Esto incluye ratones, teclados, auriculares, altavoces, móviles, etc. Mi máquina no usa Bluetooth (ni periféricos ni transferencia de archivos), puedo enmascararlo sin problemas.
+4-bluetooth (ENMASCARADO): gestiona la conexión y comunicación con dispositivos Bluetooth en tu máquina. Esto incluye ratones, teclados, auriculares, altavoces, móviles, etc. Mi máquina no usa Bluetooth (ni periféricos ni transferencia de archivos), puedo enmascararlo sin problemas.
 ```bash
 systemctl stop bluetooth
 systemctl disable bluetooth
@@ -2506,7 +2502,7 @@ No afectará el SSH ni otras funciones básicas de red o servidor.
 
 **CUPS: Common Unix Printing System (IMPRESORAS)** → es el sistema de impresión estándar en Linux/Unix. Se encarga de gestionar trabajos de impresión, colas, controladores y comunicación con la impresora. Básicamente, si quieres imprimir algo desde tu máquina, necesitas CUPS.
 
-6-cups (ENMASCARADO) y cups-browsed (ENMASCARADO):
+5-cups (ENMASCARADO) y cups-browsed (ENMASCARADO):
 
    - cups: servicio de impresión en Linux. Gestiona trabajos de impresión y coordina las impresoras locales o de red.
 
@@ -2526,7 +2522,7 @@ systemctl mask cups
 
 **SERVICIOS DE CONSOLA LOCAL**: Servicios que afectan solo al acceso físico a la máquina (pantalla y teclado conectados directamente).
 
-7-console-setup (DESACTIVADO), getty@tty1 (DESACTIVADO) y keyboard-setup (DESACTIVADO)
+6-console-setup (DESACTIVADO), getty@tty1 (DESACTIVADO) y keyboard-setup (DESACTIVADO)
    - console.setup: configura la fuente (letras) y el teclado de la consola local (la pantalla y teclado directamente conectados a la máquina, no por SSH). Aunque no uses la consola local normalmente, si falla el SSH o la red, podrías necesitar acceder físicamente al equipo para solucionarlo.
 
   - getty@tty1: Es el servicio que gestiona el inicio de sesión en la consola local. “tty1” es la primera terminal virtual que ves si presionas Ctrl+Alt+F1 en Linux (las TTY son esas pantallas de texto que puedes usar sin interfaz gráfica).
@@ -2543,7 +2539,7 @@ systemctl stop keyboard-setup
 systemctl disable keyboard-setup
 ```
 
-8-e2scrub_reap (DESACTIVADO): pertenece al sistema de scrubbing de sistemas de ficheros ext4/ext3/ext2. En palabras sencillas:
+7-e2scrub_reap (DESACTIVADO): pertenece al sistema de scrubbing de sistemas de ficheros ext4/ext3/ext2. En palabras sencillas:
 Sirve para revisar y reparar errores en discos/ext4 automáticamente, como una especie de “mantenimiento preventivo” de los sistemas de ficheros. Trabaja en segundo plano y normalmente no molesta.Como no queremos cosas automáticas y no nos interesa su funcionalidad podemos desactivarla por si caso.
 
 ```bash
@@ -2551,13 +2547,13 @@ systemctl stop e2scrub_reap
 systemctl disable e2scrub_reap
 ```
 
-9-low-memory-monitor (DESACTIVADO): monitoriza la memoria RAM. Detecta cuando la memoria disponible baja demasiado y puede avisar o tomar medidas para evitar que el sistema se quede colgado. Es útil en máquinas de escritorio o servidores críticos que necesitan estabilidad automática ante baja memoria. En nuestro caso podemos desactivarlo.
+8-low-memory-monitor (DESACTIVADO): monitoriza la memoria RAM. Detecta cuando la memoria disponible baja demasiado y puede avisar o tomar medidas para evitar que el sistema se quede colgado. Es útil en máquinas de escritorio o servidores críticos que necesitan estabilidad automática ante baja memoria. En nuestro caso podemos desactivarlo.
 ```bash
 systemctl stop low-memory-monitor
 systemctl disable low-memory-monitor
 ```
 
-10-ModemManager (ENMASCARADO): Es un demonio que gestiona modems de banda ancha móvil (3G, 4G, 5G, USB, tarjetas SIM, etc.). Permite que el sistema se conecte a Internet usando un módem (USB o integrado en el portátil). Lo usan aplicaciones de red y NetworkManager cuando hay un dispositivo de este tipo conectado. Las máquinas Debian de LSI están conectdas al cable Ethernet por tanto no usa modemos USB, ni tarjetas ni nada de eso por lo que podemos enmascararlo sin problema.
+9-ModemManager (ENMASCARADO): Es un demonio que gestiona modems de banda ancha móvil (3G, 4G, 5G, USB, tarjetas SIM, etc.). Permite que el sistema se conecte a Internet usando un módem (USB o integrado en el portátil). Lo usan aplicaciones de red y NetworkManager cuando hay un dispositivo de este tipo conectado. Las máquinas Debian de LSI están conectdas al cable Ethernet por tanto no usa modemos USB, ni tarjetas ni nada de eso por lo que podemos enmascararlo sin problema.
 ```bash
 systemctl stop ModemManager
 systemctl disable ModemManager
@@ -2594,7 +2590,7 @@ systemctl disable NetworkManager-wait-online
 ```
 
 
-11-plymouth: Plymouth se encarga de la animación gráfica del arranque y de mostrar mensajes bonitos mientras Linux arranca o se apaga.
+10-plymouth: Plymouth se encarga de la animación gráfica del arranque y de mostrar mensajes bonitos mientras Linux arranca o se apaga.
 
    - plymouth-halt (ENMASCARADO): Se ejecuta al apagar el sistema, mostrando animación de apagado. En mi máquina por ssh no hace nada útil.
 ```bash
@@ -2635,7 +2631,7 @@ systemctl mask plymouth-read-write.service
 
 
 
-13-power-profiles-daemon (DESACTIVADO): Es el daemon de perfiles de energía. Permite cambiar automáticamente entre modos de consumo de energía en tu máquina (por ejemplo: “alto rendimiento”, “ahorro de energía” o “equilibrado”). Se usa sobre todo en laptops o equipos de escritorio para gestionar CPU, pantalla y periféricos según el perfil elegido. En mi máquina Debian al que solo accedo por SSH, no sirve para nada, porque la máquina está conectada por cable, probablemente
+11-power-profiles-daemon (DESACTIVADO): Es el daemon de perfiles de energía. Permite cambiar automáticamente entre modos de consumo de energía en tu máquina (por ejemplo: “alto rendimiento”, “ahorro de energía” o “equilibrado”). Se usa sobre todo en laptops o equipos de escritorio para gestionar CPU, pantalla y periféricos según el perfil elegido. En mi máquina Debian al que solo accedo por SSH, no sirve para nada, porque la máquina está conectada por cable, probablemente
 enchufada siempre, y no me interesa ahorrar batería ni ajustar rendimiento automáticamente.
 ```bash
 systemctl stop power-profiles-daemon
@@ -2643,14 +2639,14 @@ systemctl disable power-profiles-daemon
 ```
 
 
-14-pulseaudio-enable-autospawn.service (DESACTIVADO): Este servicio se encarga de permitir que PulseAudio (el servidor de sonido de Linux) se inicie automáticamente cuando una aplicación lo necesita. Mi máquina es un servidor al que solo accedo por SSH y no reproduzco sonido, este servicio no sirve para nada y se puede desactivar sin problemas.
+12-pulseaudio-enable-autospawn.service (DESACTIVADO): Este servicio se encarga de permitir que PulseAudio (el servidor de sonido de Linux) se inicie automáticamente cuando una aplicación lo necesita. Mi máquina es un servidor al que solo accedo por SSH y no reproduzco sonido, este servicio no sirve para nada y se puede desactivar sin problemas.
  ```bash
 systemctl stop pulseaudio-enable-autospawn
 systemctl disable pulseaudio-enable-autospawn
 ```
 
 
-15-speech-dispatcher (ENMASCARADO): Servicio que permite que el sistema lea texto en voz alta. Se usa para programas que “hablan” o leen la pantalla, como lectores de pantalla. En un servidor al que solo accedes por SSH no hace falta, porque nadie va a necesitar que se lea nada.
+13-speech-dispatcher (ENMASCARADO): Servicio que permite que el sistema lea texto en voz alta. Se usa para programas que “hablan” o leen la pantalla, como lectores de pantalla. En un servidor al que solo accedes por SSH no hace falta, porque nadie va a necesitar que se lea nada.
 ```bash
 systemctl stop speech-dispatcher
 systemctl stop speech-dispatcherd
@@ -2661,35 +2657,36 @@ systemctl mask speech-dispatcherd
 ```
 
 
-16-switcheroo-control (DESACTIVADO): Servicio que gestiona la conmutación entre varias GPUs en laptops o PCs con más de una tarjeta gráfica (por ejemplo, integrada y dedicada). Permite cambiar automáticamente qué GPU usar según la carga o la aplicación. En un servidor al que solo accedes por SSH y sin múltiples GPUs, no sirve para nada.
+14-switcheroo-control (DESACTIVADO): Servicio que gestiona la conmutación entre varias GPUs en laptops o PCs con más de una tarjeta gráfica (por ejemplo, integrada y dedicada). Permite cambiar automáticamente qué GPU usar según la carga o la aplicación. En un servidor al que solo accedes por SSH y sin múltiples GPUs, no sirve para nada.
 ```bash
 systemctl stop switcheroo-control
 systemctl disable switcheroo-control
 ```
 
 
-17-udisks2 (ENMASCARADO): ervicio que gestiona discos, particiones y unidades extraíbles (como USB, discos externos o CD/DVD). Permite montar y desmontar automáticamente, obtener información de discos, etc. En un servidor que solo se accede por SSH y donde no se conectan dispositivos externos, no es necesario.
+15-udisks2 (ENMASCARADO): ervicio que gestiona discos, particiones y unidades extraíbles (como USB, discos externos o CD/DVD). Permite montar y desmontar automáticamente, obtener información de discos, etc. En un servidor que solo se accede por SSH y donde no se conectan dispositivos externos, no es necesario.
 ```bash
 systemctl stop udisks2
 systemctl disable udisks2
 systemctl mask udisks2
 ```
 
-18-upower (ENMASCARADO): Servicio que gestiona información sobre la batería y la energía de los dispositivos (por ejemplo, laptops o UPS). En un servidor que solo usas por SSH y que está enchufado por cable, no aporta nada.
+
+16-upower (ENMASCARADO): Servicio que gestiona información sobre la batería y la energía de los dispositivos (por ejemplo, laptops o UPS). En un servidor que solo usas por SSH y que está enchufado por cable, no aporta nada.
 ```bash
 systemctl stop upower
 systemctl disable upower
 systemctl mask upower
 ```
 
-19-vgauth (DESACTIVADO): Servicio usado por máquinas virtuales VMware para gestionar la autorización entre el host y el invitado (por ejemplo, para compartir credenciales de Windows con la VM). Si no estás usando VMware, no hace falta.
+17-vgauth (DESACTIVADO): Servicio usado por máquinas virtuales VMware para gestionar la autorización entre el host y el invitado (por ejemplo, para compartir credenciales de Windows con la VM). Si no estás usando VMware, no hace falta.
 ```bash
 systemctl stop vgauth
 systemctl disable vgauth
 ```
 
 
-20-wpa_supplicant (ENMASCARADO): Es el servicio que gestiona conexiones Wi-Fi (autenticación y gestión de redes inalámbricas). Como mi máquina está solo por cable, no lo necesito.
+18-wpa_supplicant (ENMASCARADO): Es el servicio que gestiona conexiones Wi-Fi (autenticación y gestión de redes inalámbricas). Como mi máquina está solo por cable, no lo necesito.
 ```bash
 systemctl stop wpa_supplicant
 systemctl disable wpa_supplicant
@@ -2719,11 +2716,13 @@ systemctl mask modprobe@drm.service
 
 #### Servicios activos
 
-1-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
+1-apparmor: es un sistema de seguridad que limita lo que puede hacer cada programa. Por ejemplo, dice “este programa solo puede leer esta carpeta, y no puede tocar otras cosas”. Ayuda a proteger tu máquina si algún programa intenta hacer algo raro o malicioso.
 
-2- networking: servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
+2-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
 
-3-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
+3- networking: servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
+
+4-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
 
 
 <br>
@@ -2768,6 +2767,95 @@ Outras ferramentas/comandos para eliminar archivos basura:
 
 
 
+### LIMPIEZA DE PAQUETES
+
+Una vez eliminado los servicios inútiles del sistema, podemos hacer una limpieza final de paquetes preinstalados que no sirven para nada en nuestra máquina.
+
+Podemos ver todos los paquetes instalados manualmente con la actualización a debian 12.
+```bash
+apt-mark showman
+```
+
+1-gdm3:
+
+Es el GNOME Display Manager, el gestor de login gráfico. Si lo quitas, ya no podrás iniciar sesión en interfaz gráfica, pero el acceso SSH sigue funcionando. Solo necesitas SSH, no escritorio. No toca servicios de red ni librerías críticas.
+
+```bash
+su -
+sudo apt remove --purge df -h
+gdm3
+```
+
+
+2-gnome-shell:
+
+Es el núcleo del escritorio GNOME: controla ventanas, barra superior, efectos, escritorio.  Solo sirve si vas a usar GNOME. No toca ssh, systemd, cron ni librerías esenciales. Servicios afectados: gnome-session (solo relacionados con GNOME).
+```bash
+su -
+apt remove --purge gnome-shell
+```
+
+
+3-Aplicaciones de GNOME: Elimina varias aplicaciones gráficas de GNOME-
+
+- gnome-calculator → calculadora
+
+- gnome-calendar → calendario
+
+- gnome-characters → visor de caracteres/emojis
+
+- gnome-clocks → reloj/alarmas
+
+- gnome-color-manager → gestión de colores
+
+- gnome-contacts → libreta de contactos
+
+
+```bash
+sudo apt remove --purge gnome-calculator gnome-calendar gnome-characters gnome-clocks gnome-color-manager gnome-contacts
+```
+
+
+4-Aplicaciones multimedia y utilidades gráficas
+
+- cheese → cámara/webcam
+
+- eog → visor de imágenes
+
+- evince → lector de PDFs
+
+- shotwell → gestor de fotos
+
+- simple-scan → escáner
+
+- rhythmbox → reproductor de música
+
+- transmission-gtk → cliente de torrents
+
+- totem y totem-plugins → reproductor de vídeo
+
+
+```bash
+sudo apt remove --purge cheese eog evince shotwell simple-scan rhythmbox transmission-gtk totem totem-plugins
+```
+
+5-LibreOffice y complementos GNOME
+
+Suite ofimática y complementos para integrar con GNOME. No se usa en SSH. No rompe ningún servicio base del sistema. Libera bastante espacio.
+
+```bash
+sudo apt remove --purge libreoffice-calc libreoffice-gnome libreoffice-impress libreoffice-writer
+```
+
+
+6-Paquetes de iconos y fondos:
+
+Iconos, fuentes y temas del escritorio GNOME.
+
+```bash
+sudo apt remove --purge adwaita-icon-theme fonts-cantarell gnome-backgrounds gnome-themes-extra desktop-base
+```
+
 
 ### RESUMEN FÁCIL:
 
@@ -2802,6 +2890,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
