@@ -130,6 +130,7 @@ systemctl            # Gestiona el estado de los servicios del sistema
    - get-default → “muestra el target por defecto del sistema”
    - set-default <target> → “cambia el target por defecto del sistema (permanente)”
    - isolate <target> → “cambia al target especificado inmediatamente (temporal)”
+   - daemon-reload  →  e dice a systemd que recargue todas las unidades y servicios.
 journalctl           # Muestra los registros (logs) de los servicios y del sistema
      -b → “muestra los logs desde el último arranque”
      -a → “muestra todas las líneas completas, incluso las truncadas por pantalla”
@@ -2739,7 +2740,7 @@ systemctl disable systemd-timesyncd.service
 
 **SERVICIOS DE CONSOLA LOCAL**: Servicios que afectan solo al acceso físico a la máquina (pantalla y teclado conectados directamente).
 
-4-getty@tty1 (DESACTIVADO)
+4-getty@tty1 (DESACTIVADO), console-setup (DESACTIVADO) y keyboard-setup (DESACTIVADO)
 
   - getty@tty1: Es el servicio que gestiona el inicio de sesión en la consola local. “tty1” es la primera terminal virtual que ves si presionas Ctrl+Alt+F1 en Linux (las TTY son esas pantallas de texto que puedes usar sin interfaz gráfica).
  El getty es el programa que muestra el login prompt (usuario y contraseña) en esa terminal.
@@ -2748,8 +2749,19 @@ systemctl disable systemd-timesyncd.service
  systemctl disable getty@tty1.service
 ```
 
-Tty trabaja con terminales tty
-Ssh crea terminales pts
+- console-setup:  Este servicio solo configura la consola local (fuente, codificación y teclado). No afecta al arranque, la red ni SSH. La única diferencia es que si luego intentas usar la consola física, puede que la pantalla se vea con una fuente distinta o el teclado tenga un layout incorrecto. El sistema seguirá funcionando perfectamente y podrás acceder por SSH sin problemas.
+```bash
+systemctl stop console-setup
+systemctl disable console-setup
+```
+
+- keyboard-setup: se encarga de configurar el teclado en la consola local (las letras que escribimos y la distribución del teclado, por ejemplo, QWERTY o ISO). Si solo usamos SSH, este servicio no nos afecta porque SSH envía directamente lo que escribes desde tu teclado al servidor).
+```bash
+ systemctl stop keyboard-setup
+ systemctl disable keyboard-setup
+```
+
+Tty trabaja con terminales tty  ||    Ssh crea terminales pts
 
 #### Servicios activos
 
@@ -2757,6 +2769,13 @@ Ssh crea terminales pts
    
 
 2- cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse. LO desactivamos porque no queremos NADA AUTOMÁTICO. !! **cron no lo quito**
+
+Podemos ver si hay tareas programadas con los siguientes comandos (1 por usuario):
+```bash
+crontab -l
+sudo crontab -l
+```
+
 
 3-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
 
@@ -2773,9 +2792,6 @@ Ssh crea terminales pts
 7-polkit:  Es un servicio de control de permisos en Linux. Permite que usuarios normales hagan acciones que normalmente requieren root, sin tener que usar sudo directamente. Por ejemplo: cambiar la hora del sistema, montar discos, gestionar redes, configurar impresoras, etc.
 
 8-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
-
-
-9-keyboard-setup: se encarga de configurar el teclado en la consola local (las letras que escribimos y la distribución del teclado, por ejemplo, QWERTY o ISO). Si solo usamos SSH, este servicio no nos afecta porque SSH envía directamente lo que escribes desde tu teclado al servidor)
 
 
 <br>
@@ -2972,26 +2988,147 @@ sudo systemctl preset-all
 <br>
 
 ---
-### **Apartado I): **
+### **Apartado I):Diseñe y configure un pequeño “script” y defina la correspondiente unidad de tipo service para que se ejecute en el proceso de botado de su máquina**
+
+
+Para crear un script tenemos que crear un servicio para que se ejecuta ese script de forma automática. Para ello vamos a hacer lo siguiente:
+
+1-Abrimos un archivo para escribir en en script:  **/usr/local/bin**
+
+Es la carpeta estándar para scripts y programas instalados por el usuario, no por el sistema.
+  
+  - No se mezcla con archivos del sistema (/bin, /usr/bin).
+
+  - Está en la ruta PATH, así que se puede ejecutar desde cualquier lugar con solo escribir su nombre.
+
+  - Mantiene tu script seguro y organizado.
+
+```bash
+sudo nano /usr/local/bin/script.sh
+```
+
+Escribimos dentro algo simple que indique por ejemplo el inicio de la máquina.
+
+```bash
+#!/bin/bash
+
+# Carpeta donde se guardarán los logs de inicio
+LOG_DIR="/var/log/inicio_logs"
+
+# Nombre del archivo de log
+LOG_FILE="inicio.txt"
+
+# Crear carpeta si no existe
+mkdir -p "$LOG_DIR"
+
+# Ruta completa del log
+LOG_PATH="$LOG_DIR/$LOG_FILE"
+
+# Mensaje con fecha y hora
+FECHA=$(date +"%d/%m/%Y %H:%M:%S")
+MENSAJE="Sistema iniciado correctamente el $FECHA"
+
+# Guardar mensaje en el archivo
+echo "$MENSAJE" >> "$LOG_PATH"
+
+# Fin del script
+exit 0
+```
+
+
+
+**Explicación línea por línea:**
+
+#!/bin/bash → indica que se ejecuta con bash.
+
+LOG_DIR="/var/log/inicio_logs" → carpeta donde se guardarán los logs; /var/log es estándar para registros del sistema.
+
+LOG_FILE="inicio.txt" → nombre del archivo donde se guarda cada mensaje de inicio.
+
+mkdir -p "$LOG_DIR" → crea la carpeta si no existe.
+
+LOG_PATH="$LOG_DIR/$LOG_FILE" → ruta completa del archivo.
+
+FECHA=$(date +"%d/%m/%Y %H:%M:%S") → obtiene la fecha y hora actuales.
+
+MENSAJE="Sistema iniciado correctamente el $FECHA" → mensaje que escribiremos.
+
+echo "$MENSAJE" >> "$LOG_PATH" → escribe el mensaje al final del archivo.
+
+exit 0 → termina el script correctamente.
+
+Cada vez que arranque la máquina, se añadirá una nueva línea al log con la fecha y hora.
 
 
 
 
+2-Crear la unidad systemd:
+
+#### 📂Carpetas de systemd
+
+| Ruta                   | Para qué sirve                                                                                                                                            |
+|------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `/lib/systemd/system/` | Servicios instalados por **paquetes del sistema** (por ejemplo, `ssh.service`, `cron.service`). No deberías tocar estos archivos directamente.            |
+| `/etc/systemd/system/` | Servicios **personalizados o modificados por el usuario o administrador**. Systemd da **prioridad** a estos sobre los que están en `/lib/systemd/system/`. |
+| `/run/systemd/system/` | Servicios generados **temporalmente en memoria** (cambian tras reinicio).                                                                                 |
+
+
+Creamos un archivo de unidad en la siguiente ruta: 
+```bash
+sudo nano /etc/systemd/system/inicio_log.service
+```
+
+Y escribimos:
+```bash
+[Unit]
+Description=Registro de inicio del sistema
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/inicio_log.sh
+RemainAfterExit=yes
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+
+
+**Explicación de la unidad:**
+
+[Unit]
+
+Description → descripción del servicio.
+
+After=network.target → espera a que la red esté activa (opcional, útil si tu script depende de la red).
+
+<br>
+
+[Service]
+
+Type=oneshot → se ejecuta una vez y termina.
+
+ExecStart → ruta del script.
+
+RemainAfterExit=yes → systemd considera el servicio activo aunque el script haya terminado.
+
+StandardOutput=journal → cualquier salida del script va al log del sistema (journalctl).
+
+<br>
+
+[Install]
+
+WantedBy=multi-user.target → se ejecuta en el arranque normal del sistema (modo multiusuario, sin GUI).
 
 
 
+3-Activar y probar
 
-
-
-
-
-
-
-
-
-
-
-
+sudo systemctl daemon-reload                # le dice a systemd que recargue todas las unidades y servicios
+sudo systemctl enable inicio_log.service    # Se ejecuta al arrancar
+sudo systemctl start inicio_log.service     # Ejecuta ahora mismo
+sudo cat /var/log/inicio_logs/inicio.txt    # Verifica el log
 
 
 
