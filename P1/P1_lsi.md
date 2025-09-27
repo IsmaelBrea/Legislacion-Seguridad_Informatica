@@ -3260,7 +3260,7 @@ cat /var/log/inicio_logs/inicio.txt
 ---
 ### **Apartado J) Identifique las conexiones de red abiertas a y desde su equipo**
 
-Esto significa que tenemos que ver qué conexiones de red (Cuando tu equipo se comunica con otro  se crea un “canal” de comunicación entre los dos llamado conexión de red) hay activas en tu equipo, tanto:
+Esto significa que tenemos que ver qué conexiones de red (cuando mi equipo se comunica con otro  se crea un “canal” de comunicación entre los dos llamado conexión de red) hay activas en tu equipo, tanto:
 
 - Entrantes: conexiones que otros equipos intentan abrir hacia tu máquina.
 
@@ -3366,11 +3366,11 @@ ss -tuln         # LISTEN (puertos abiertos)
 
 ss -tunap        # LISTEN + ESTABLISHED + procesos
 
-# Entrantes: busca LISTEN o ESTABLISHED con tu IP en "Local Address"
+  - Entrantes: busca LISTEN o ESTABLISHED con tu IP en "Local Address"
 ss -tulnp | grep LISTEN
 ss -tulnp | grep ESTABLISHED
 
-# Salientes: busca ESTABLISHED donde tu IP está en "Local Address" y la remota en "Peer Address"
+  - Salientes: busca ESTABLISHED donde tu IP está en "Local Address" y la remota en "Peer Address"
 ss -tupn | grep ESTABLISHED
 
 <br>
@@ -3387,3 +3387,4 @@ netstat -netua
 
 
 Podemos ver los procesos:  top  ||  ps aux
+
