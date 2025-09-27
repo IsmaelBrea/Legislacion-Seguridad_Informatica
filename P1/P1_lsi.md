@@ -2748,22 +2748,6 @@ No meu caso tiña servicios relacionados co GNOME(interfaz gráfica). Para quita
 
   
 
-Outras ferramentas/comandos para eliminar archivos basura:
-
-    Podemos eliminar o office -> apt remove --purge 'libreoffice*'
-
-    Eliminamos tamén o firefox -> apt remove --purge firefox-esr
-
-    Eliminei o mand-db -> apt remove --purge man-db
-
-    apt autoclean: Elimina da caché paquetes de versions antiguas.
-
-    apt clean: Elimina todos os paquetes da caché.
-
-    apt autoremove: Elimina aqueles paquetes perdidos, paquetes instalados como dependencias de outras instalacións, que xa non están.
-
-    apt autoremove --purge: a opción --purge sirve para outras chamadas de apt para borrar archivos de configuración.
-
 
 
 ### LIMPIEZA DE PAQUETES
@@ -2858,14 +2842,15 @@ sudo apt remove --purge adwaita-icon-theme fonts-cantarell gnome-backgrounds gno
 
 ### RESUMEN FÁCIL:
 
-Ver todos los servicios y su estado (POR ORDEN ALFÁBETICO): **systemctl list-unit-files --type=service --no-pager**
+1- Ver todos los servicios y su estado (POR ORDEN ALFÁBETICO): **systemctl list-unit-files --type=service --no-pager**
 
    - --no-pager: el no-pager se usa para ver todo la salida junta de golpe sin tener que ver el END abajo y que se corte la salida.
 
-Para ver los servicios activos (POR ORDEN ALFABÉTICO): **systemctl list-units --type=service --state=running**
+
+2-Para ver los servicios activos (POR ORDEN ALFABÉTICO): **systemctl list-units --type=service --state=running**
 
 
-Para eliminar un servicio:
+3-Para eliminar un servicio:
 
 1-Comprobar dependencias:  **systemctl status <nombre_del_servicio> --with-dependencies**
 
@@ -2876,6 +2861,24 @@ Para eliminar un servicio:
 4-Enmascar si es necesario:  **systemctl mask <nombre_del_servicio>**
 
 5-Comprobar que ya no está activo: **systemctl status <nombre_del_servicio>**
+
+
+4-Limpieza de paquetes:
+
+- apt autoclean: Elimina da caché paquetes de versions antiguas.
+
+- apt clean: Elimina todos os paquetes da caché.
+
+- apt autoremove: Elimina aqueles paquetes perdidos, paquetes instalados como dependencias de outras instalacións, que xa non están.
+
+- apt autoremove --purge: a opción --purge sirve para outras chamadas de apt para borrar archivos de configuración.
+
+
+
+
+
+
+
                      
 6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
@@ -2889,6 +2892,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
