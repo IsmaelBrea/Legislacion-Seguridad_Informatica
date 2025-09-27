@@ -2288,7 +2288,7 @@ En resumen: route te dice “qué camino sigue cada paquete desde tu PC”.
 
 **Añadir nueva ruta: ip route add <ip> via <gateway>**
 
-Ejemplo: quieres que tu PC llegue a la red 192.168.1.0/24 pasando por el router 10.11.50.1 por la interfaz ens34.
+Ejemplo: quieres que tu PC llegue a la red 192.168.1.1/24 pasando por el router 10.11.50.1 por la interfaz ens34.
 
 Sirve para que, si quieres comunicarte con máquinas de la red 192.168.1.x, tu PC sepa a qué router enviar los paquetes.
 Sin esa ruta, tu PC no sabría cómo llegar y fallaría.
@@ -2297,11 +2297,11 @@ ES TEMPORAL, se borra al reinicar.
 
 ```bash
 su -
-ip route add 192.168.1.0/24 via 10.11.50.1 dev ens34
+ip route add 192.168.1.1/24 via 10.11.50.1 dev ens34
 ```
 
 
-   - 192.168.1.0/24 → la red a la que quieres llegar.
+   - 192.168.1.1/24 → la red a la que quieres llegar.
 
    - via 10.11.50.1 → el router/gateway que usas para llegar a esa red.
 
@@ -2314,7 +2314,7 @@ default via 10.11.48.1 dev ens33 onlink
 10.11.48.0/23 dev ens33 proto kernel scope link src 10.11.48.202
 10.11.50.0/23 dev ens34 proto kernel scope link src 10.11.50.202
 202.254.0.0/16 dev ens33 scope link metric 1000
-192.168.1.0/24 via 10.11.50.1 dev ens34
+192.168.1.1/24 via 10.11.50.1 dev ens34
 ```
 
 
@@ -2897,6 +2897,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
