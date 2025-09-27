@@ -2464,16 +2464,14 @@ systemctl disable accounts-daemon
 systemctl mask accounts-daemon
 ```
 
-2-anacron (DESACTIVADO) y cron (DESACTIVADO):
-   - cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse. LO desactivamos porque no queremos NADA AUTOMÁTICO.
+2-anacron (DESACTIVADO):
+   - cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse. LO desactivamos porque no queremos NADA AUTOMÁTICO. !! **cron no lo quito**
 
    - anacron: Similar a cron, pero pensado para máquinas que no están siempre encendidas. Garantiza que las tareas “perdidas” mientras la máquina estaba apagada se ejecuten cuando enciendes. Con solo SSH, no lo necesitas si tu máquina está casi siempre encendida y no quieres esas tareas automáticas.
 
  ```bash
-systemctl stop cron
 systemctl stop anacron
 systemctl stop anacron.timer
-systemctl disable cron
 systemctl disable anacron
 ```
 
@@ -2519,26 +2517,7 @@ systemctl mask cups
 ```
 
 
-**SERVICIOS DE CONSOLA LOCAL**: Servicios que afectan solo al acceso físico a la máquina (pantalla y teclado conectados directamente).
-
-6-console-setup (DESACTIVADO), getty@tty1 (DESACTIVADO) y keyboard-setup (DESACTIVADO)
-   - console.setup: configura la fuente (letras) y el teclado de la consola local (la pantalla y teclado directamente conectados a la máquina, no por SSH). Aunque no uses la consola local normalmente, si falla el SSH o la red, podrías necesitar acceder físicamente al equipo para solucionarlo.
-
-  - getty@tty1: Es el servicio que gestiona el inicio de sesión en la consola local. “tty1” es la primera terminal virtual que ves si presionas Ctrl+Alt+F1 en Linux (las TTY son esas pantallas de texto que puedes usar sin interfaz gráfica).
- El getty es el programa que muestra el login prompt (usuario y contraseña) en esa terminal.
-
- - keyboard-setup: se encarga de configurar el teclado en la consola local (las letras que escribimos y la distribución del teclado, por ejemplo, QWERTY o ISO). Si solo usamos SSH, este servicio no nos afecta porque SSH envía directamente lo que escribes desde tu teclado al servidor)
-
-```bash
-systemctl stop console-setup
-systemctl stop getty@tty1
-systemctl disable console-setup
-systemctl disable getty@tty1
-systemctl stop keyboard-setup
-systemctl disable keyboard-setup
-```
-
-7-e2scrub_reap (DESACTIVADO): pertenece al sistema de scrubbing de sistemas de ficheros ext4/ext3/ext2. En palabras sencillas:
+6-e2scrub_reap (DESACTIVADO): pertenece al sistema de scrubbing de sistemas de ficheros ext4/ext3/ext2. En palabras sencillas:
 Sirve para revisar y reparar errores en discos/ext4 automáticamente, como una especie de “mantenimiento preventivo” de los sistemas de ficheros. Trabaja en segundo plano y normalmente no molesta.Como no queremos cosas automáticas y no nos interesa su funcionalidad podemos desactivarla por si caso.
 
 ```bash
@@ -2546,13 +2525,9 @@ systemctl stop e2scrub_reap
 systemctl disable e2scrub_reap
 ```
 
-8-low-memory-monitor (DESACTIVADO): monitoriza la memoria RAM. Detecta cuando la memoria disponible baja demasiado y puede avisar o tomar medidas para evitar que el sistema se quede colgado. Es útil en máquinas de escritorio o servidores críticos que necesitan estabilidad automática ante baja memoria. En nuestro caso podemos desactivarlo.
-```bash
-systemctl stop low-memory-monitor
-systemctl disable low-memory-monitor
-```
 
-9-ModemManager (ENMASCARADO): Es un demonio que gestiona modems de banda ancha móvil (3G, 4G, 5G, USB, tarjetas SIM, etc.). Permite que el sistema se conecte a Internet usando un módem (USB o integrado en el portátil). Lo usan aplicaciones de red y NetworkManager cuando hay un dispositivo de este tipo conectado. Las máquinas Debian de LSI están conectdas al cable Ethernet por tanto no usa modemos USB, ni tarjetas ni nada de eso por lo que podemos enmascararlo sin problema.
+**En la sesión actual ModemManager está borrado** 
+7-ModemManager (ENMASCARADO): Es un demonio que gestiona modems de banda ancha móvil (3G, 4G, 5G, USB, tarjetas SIM, etc.). Permite que el sistema se conecte a Internet usando un módem (USB o integrado en el portátil). Lo usan aplicaciones de red y NetworkManager cuando hay un dispositivo de este tipo conectado. Las máquinas Debian de LSI están conectdas al cable Ethernet por tanto no usa modemos USB, ni tarjetas ni nada de eso por lo que podemos enmascararlo sin problema.
 ```bash
 systemctl stop ModemManager
 systemctl disable ModemManager
@@ -2644,6 +2619,8 @@ systemctl stop pulseaudio-enable-autospawn
 systemctl disable pulseaudio-enable-autospawn
 ```
 
+En la última sesión este aparece como generated. Como solo usas SSH y no tienes sesión gráfica ni audio activo, nunca se va a iniciar. No necesitas hacer nada. Puedes ignorar este servicio sin riesgo alguno. Tu VM seguirá funcionando perfectamente, y tu red seguirá activa mientras networking.service esté habilitado.
+
 
 13-speech-dispatcher (ENMASCARADO): Servicio que permite que el sistema lea texto en voz alta. Se usa para programas que “hablan” o leen la pantalla, como lectores de pantalla. En un servidor al que solo accedes por SSH no hace falta, porque nadie va a necesitar que se lea nada.
 ```bash
@@ -2678,14 +2655,7 @@ systemctl disable upower
 systemctl mask upower
 ```
 
-17-vgauth (DESACTIVADO): Servicio usado por máquinas virtuales VMware para gestionar la autorización entre el host y el invitado (por ejemplo, para compartir credenciales de Windows con la VM). Si no estás usando VMware, no hace falta.
-```bash
-systemctl stop vgauth
-systemctl disable vgauth
-```
-
-
-18-wpa_supplicant (ENMASCARADO): Es el servicio que gestiona conexiones Wi-Fi (autenticación y gestión de redes inalámbricas). Como mi máquina está solo por cable, no lo necesito.
+17-wpa_supplicant (ENMASCARADO): Es el servicio que gestiona conexiones Wi-Fi (autenticación y gestión de redes inalámbricas). Como mi máquina está solo por cable, no lo necesito.
 ```bash
 systemctl stop wpa_supplicant
 systemctl disable wpa_supplicant
@@ -2713,44 +2683,54 @@ systemctl mask modprobe@drm.service
 ```
 
 
+3-systemd-timesyncd (DESACTIVARLO): Sincroniza la hora de tu sistema con servidores NTP (Internet).
+```bash
+systemctl stop systemd-timesyncd.service
+systemctl disable systemd-timesyncd.service
+```
+
+**SERVICIOS DE CONSOLA LOCAL**: Servicios que afectan solo al acceso físico a la máquina (pantalla y teclado conectados directamente).
+
+4-getty@tty1 (DESACTIVADO)
+
+  - getty@tty1: Es el servicio que gestiona el inicio de sesión en la consola local. “tty1” es la primera terminal virtual que ves si presionas Ctrl+Alt+F1 en Linux (las TTY son esas pantallas de texto que puedes usar sin interfaz gráfica).
+ El getty es el programa que muestra el login prompt (usuario y contraseña) en esa terminal.
+```bash
+ systemctl stop getty@tty1.service
+ systemctl disable getty@tty1.service
+```
+
+Tty trabaja con terminales tty
+Ssh crea terminales pts
+
 #### Servicios activos
 
-1-apparmor: es un sistema de seguridad que limita lo que puede hacer cada programa. Por ejemplo, dice “este programa solo puede leer esta carpeta, y no puede tocar otras cosas”. Ayuda a proteger tu máquina si algún programa intenta hacer algo raro o malicioso.
+1-apparmor: es un sistema de seguridad que limita lo que puede hacer cada programa. Por ejemplo, dice “este programa solo puede leer esta carpeta, y no puede tocar otras cosas”. Ayuda a proteger tu máquina si algún programa intenta hacer algo raro o malicioso. Mejor no tocarlo, no afecta mucho el arranque y es recomendable mantenerlo por seguridad.
+   
 
-2-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
+2- cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse. LO desactivamos porque no queremos NADA AUTOMÁTICO. !! **cron no lo quito**
 
-3- networking: servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
+3-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
 
-4-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
+4- networking: servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
+
+
+**SERVICIOS DE VMWare**:
+5-open-vm-tools: Son las herramientas de integración de VMware: sincronización de tiempo, copias de seguridad, gestión de red virtual, etc. Permite que la VM funcione mejor dentro de VMware. No afecta mucho, pero mejor no tocarla por si hay errores en mi máquina.
+
+6-vgauth: Servicio usado por máquinas virtuales VMware para gestionar la autorización entre el host y el invitado (por ejemplo, para compartir credenciales de Windows con la VM). 
+
+
+7-polkit:  Es un servicio de control de permisos en Linux. Permite que usuarios normales hagan acciones que normalmente requieren root, sin tener que usar sudo directamente. Por ejemplo: cambiar la hora del sistema, montar discos, gestionar redes, configurar impresoras, etc.
+
+8-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
+
+
+9-keyboard-setup: se encarga de configurar el teclado en la consola local (las letras que escribimos y la distribución del teclado, por ejemplo, QWERTY o ISO). Si solo usamos SSH, este servicio no nos afecta porque SSH envía directamente lo que escribes desde tu teclado al servidor)
 
 
 <br>
-### Otras formas de bajar tiempo
-Para bajar más el tiempo, miramos la secuencia de arranque -> journalctl -b . 
-
-No meu caso tiña servicios relacionados co GNOME(interfaz gráfica). Para quitalos facemos apt remove --purge SERVICIO:
-
-    pipewire.service -> simplifica a xestión de audio e video no sistema, así como proporcionar unha infraestructura para aplicacións multimedia -> apt remove --purge pipewire
-
-    plymouth -> eliminamos este servicio porque ten que ver co arranque para o escritorio e a pantalla da sesion de inico -> apt remove --purge plymouth
-
-    pulseaudio.service -> obtorga funcionalidad de audio. Actúa como unha capa intermedia entre as aplicacións de audio e o hardware de sonido do sistema -> apt remove --purge pulseaudio
-
-    GNOME -> algún servicio ou socket que teña GNOME ou chame a GNOME -> apt remove --purge 'gnome*' (o * indica que todo que teña gnome eliminase)
-
-    gvfs -> sistema de archivos virtual de GNOME -> apt  remove --purge gvfs
-
-    tracker-extract -> forma parte do GNOME, extrae e analiza metadatos contido textual de archivos para indexalos y buscalos mais facilmente e así máis accesibles para o usuario -> apt remove --purge tracker-extract
-
-
-  #### PRESETS
-
-
-  
-
-
-
-### LIMPIEZA DE PAQUETES
+#### LIMPIEZA DE PAQUETES
 
 Una vez eliminado los servicios inútiles del sistema, podemos hacer una limpieza final de paquetes preinstalados que no sirven para nada en nuestra máquina.
 
@@ -2843,7 +2823,52 @@ Iconos, fuentes y temas del escritorio GNOME.
 ```bash
 sudo apt remove --purge adwaita-icon-theme fonts-cantarell gnome-backgrounds gnome-themes-extra desktop-base
 ```
+<br>
 
+
+#### PRESETS
+  
+En Debian 12, un preset indica si un servicio debe estar habilitado o deshabilitado por defecto según las políticas del sistema. Cambiar el estado de un preset no cambia el servicio directamente, sino la configuración por defecto para cuando se aplica el preset.
+
+ 1-Ver los presets disponibles:
+ ```bash
+systemctl list-unit-files --type=service
+systemctl preset-list
+```
+
+2-Aplicar un preset a todos los servicios según la política:
+```bash
+ systemctl preset servicio
+```
+
+3-Cambiar el preset de un servicio:
+
+Debian usa archivos en /usr/lib/systemd/system-preset/ o /etc/systemd/system-preset/. Por ejemplo, si quieres que un servicio se habilite por defecto, creas un archivo en /etc/systemd/system-preset/50-my.preset con:
+
+```bash
+enable servicio
+```
+
+```bash
+disable servicio
+```
+
+4-Aplicar cambios:
+```bash
+sudo systemctl preset-all
+```
+
+<br>
+
+#### **Comprobación de errores**
+
+- **journalctl -b -p err**: Muestra los errores graves (err) del arranque actual (-b).
+
+- **journalctl -xe | grep fail**: muestra logs recientes de systemd con detalle y filtra solo las líneas que contienen la palabra fail.
+
+- **journactl -p warning -b**: Muestra advertencias (warning) del arranque actual (-b).
+
+<br>
 
 ### RESUMEN FÁCIL:
 
@@ -2857,16 +2882,17 @@ sudo apt remove --purge adwaita-icon-theme fonts-cantarell gnome-backgrounds gno
 
 3-Para eliminar un servicio:
 
-1-Comprobar dependencias:  **systemctl status <nombre_del_servicio> --with-dependencies**
+  1-Comprobar dependencias:  **systemctl status <nombre_del_servicio> --with-dependencies**
 
-2-Parar el servicio:    **systemctl stop <nombre_del_servicio>**
+  2-Parar el servicio:    **systemctl stop <nombre_del_servicio>**
+ 
+  3-Deshabilitar:         **systemctl disable <nombre_del_servicio>**
 
-3-Deshabilitar:         **systemctl disable <nombre_del_servicio>**
+  4-Enmascar si es necesario:  **systemctl mask <nombre_del_servicio>**
 
-4-Enmascar si es necesario:  **systemctl mask <nombre_del_servicio>**
+  5-Comprobar que ya no está activo: **systemctl status <nombre_del_servicio>**
 
-5-Comprobar que ya no está activo: **systemctl status <nombre_del_servicio>**
-
+<br>
 
 4-Limpieza de paquetes:
 
@@ -2882,25 +2908,18 @@ sudo apt remove --purge adwaita-icon-theme fonts-cantarell gnome-backgrounds gno
 
 
 
+5-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
 
 
-                     
-6-Filtrar el servicio que hemos desactivado en la lista de servicios instalados y ver su estado: **systemctl list-unit-files | grep <service>**
-
-6-Conviene reiniciar
-
-
-
-
-journalctl -b -p err
-
-journalctl -xe | grep fail
-
-journactl -p warning -b
+6-Conviene reiniciar siempre
 
 
 
 
+<br>
+
+---
+### **Apartado I): **
 
 
 
