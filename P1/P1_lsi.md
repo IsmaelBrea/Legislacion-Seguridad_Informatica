@@ -3086,7 +3086,7 @@ After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/inicio_log.sh
+ExecStart=/usr/local/bin/script.sh
 RemainAfterExit=yes
 StandardOutput=journal
 
@@ -3132,10 +3132,94 @@ sudo cat /var/log/inicio_logs/inicio.txt    # Verifica el log
 ```
 
 
+Si se produce algún fallo se puede ver con:
+```bash
+jornalctl -xeu inicio_log.service
+```
 
 
+En mi caso tiene un problema y es el siguiente:
+```swift
+Failed to locate executable /usr/local/bin/script.sh: Permission denied
+```
+
+Es decir, systemd no puede ejecutar el script porque no tiene permisos de ejecución. Esto es un problema de permisos, no de ruta ni de contenido del script.
+
+Podemos observar que systemd no tiene los permisos de ejecución con lo siguiente:
+```bash
+ls -l /usr/local/bin/script.sh
+```
+
+Salida: -rw-r--r-- 1 root root 452 sep 27 20:18 /usr/local/bin/script.sh
+
+Como vemos Systemd necesita que tenga la “x” para poder ejecutarlo y nuestro archivo no la tiene.
 
 
+Usamos esto:
+```bash
+chmod +x /usr/local/bin/script.sh
+```
+
+Esto añade permisos de ejecución para el propietario, grupo y otros (+x).
 
 
+Y ya estaría:
+```bash
+root@ismael:~# systemctl daemon-reload
+root@ismael:~# systemctl restart inicio_log.service
+root@ismael:~# systemctl status inicio_log.service
+● inicio_log.service - Registro de inicio del sistema
+     Loaded: loaded (/etc/systemd/system/inicio_log.service; enabled; preset: enabled)
+     Active: active (exited) since Sat 2025-09-27 20:31:03 CEST; 3s ago
+    Process: 978 ExecStart=/usr/local/bin/script.sh (code=exited, status=0/SUCCESS)
+   Main PID: 978 (code=exited, status=0/SUCCESS)
+        CPU: 10ms
 
+sep 27 20:31:03 ismael systemd[1]: Starting inicio_log.service - Registro de inicio del sistema...
+sep 27 20:31:03 ismael systemd[1]: Finished inicio_log.service - Registro de inicio del sistema.
+```
+
+Por último vamos a ver los logs con lo siguiente:
+```bash
+cat /var/log/inicio_logs/inicio.txt
+```
+
+Ejemplo:
+```bash
+root@ismael:~# cat /var/log/inicio_logs/inicio.txt
+Sistema iniciado correctamente el 27/09/2025 20:31:03
+```
+
+
+Revisar con journal:
+```bash
+journalctl -u inicio_log.service
+```
+
+### RESUMEN FÁCIL
+
+1-Crear script
+
+- Script ubicado en: `/usr/local/bin/script.sh`  
+   - Logs guardados en: `/var/log/inicio_logs/inicio.txt`
+
+```bash
+sudo nano /usr/local/bin/script.sh
+chmod +x /usr/local/bin/script.sh
+```
+
+2-Crear unidad systemd: 
+```bash
+sudo nano /etc/systemd/system/inicio_log.service
+```
+
+
+3-Activar y probar:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable inicio_log.service
+sudo systemctl start inicio_log.service
+systemctl status inicio_log.service
+journalctl -u inicio_log.service
+cat /var/log/inicio_logs/inicio.txt
+```
