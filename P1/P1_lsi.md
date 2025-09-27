@@ -17,7 +17,7 @@ ls                  # Listar
 ls -l               # Listar con detalles
 ls -a               # Incluir ocultos
 cd /ruta            # Cambiar carpeta
-cd ~                # Ir al home
+cd ~                # Ir al home (~ es el directorio home del usuario actual)
 cd ..               # Subir un nivel
 
 # Archivos y directorios
@@ -3223,3 +3223,4 @@ systemctl status inicio_log.service
 journalctl -u inicio_log.service
 cat /var/log/inicio_logs/inicio.txt
 ```
+
