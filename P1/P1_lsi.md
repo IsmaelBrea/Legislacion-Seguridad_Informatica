@@ -3060,7 +3060,7 @@ exit 0 → termina el script correctamente.
 Cada vez que arranque la máquina, se añadirá una nueva línea al log con la fecha y hora.
 
 
-
+<br>
 
 2-Crear la unidad systemd:
 
@@ -3121,14 +3121,15 @@ StandardOutput=journal → cualquier salida del script va al log del sistema (jo
 
 WantedBy=multi-user.target → se ejecuta en el arranque normal del sistema (modo multiusuario, sin GUI).
 
-
+<br>
 
 3-Activar y probar
-
+```bash
 sudo systemctl daemon-reload                # le dice a systemd que recargue todas las unidades y servicios
 sudo systemctl enable inicio_log.service    # Se ejecuta al arrancar
 sudo systemctl start inicio_log.service     # Ejecuta ahora mismo
 sudo cat /var/log/inicio_logs/inicio.txt    # Verifica el log
+```
 
 
 
