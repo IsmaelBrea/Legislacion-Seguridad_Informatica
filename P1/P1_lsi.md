@@ -54,7 +54,14 @@ chmod 755 archivo   # Cambiar permisos
 chown usr:grp arch  # Cambiar propietario
 
 # Procesos
-ps aux              # Listar procesos
+ps               # Procesos ligados a tu terminal actual
+   -e            # Muestra todos los procesos del sistema 
+   -a            # Procesos de todos los usuarios (excepto los sin terminal)
+   -u            # Procesos con info del usuario, CPU, memoria, etc.
+   -x            # Incluye procesos sin terminal (daemons, servicios)
+ps aux           # Vista clásica estilo BSD, muestra todos los procesos con detalles
+ps -ef           # Vista estilo Unix System V, alternativa a aux
+
 top                 # Procesos en tiempo real
 kill PID            # Terminar proceso
 
@@ -90,6 +97,35 @@ ifconfig <interfaz> down     # Desactivar interfaz
 ifconfig <interfaz> <IP> netmask <mask>  # Asignar IP temporal
 ifconfig <interfaz>:<n> <IP> netmask <mask>  # Crear alias/interfaz lógica
 
+**route (rutas)**
+route -n                     # Mostrar tabla de rutas
+route add default gw <gateway>        # Añadir puerta de enlace predeterminada
+route del default gw <gateway>        # Eliminar puerta de enlace predeterminada
+route add -net <red> gw <gateway>    # Añadir ruta específica
+route del -net <red> gw <gateway>    # Eliminar ruta específica
+
+**sockets**
+1-Alternativa nueva
+ss           # Muestra todos los sockets
+   -t        # TCP
+   -u        # UDP
+   -l        # Solo sockets escuchando (listening)
+   -n        # Mostrar IPs y puertos en números (no nombres)
+   -p        # Mostrar PID y proceso que usa el socket
+   -a        # Mostrar todos los sockets (escuchando y conectados)
+   -s        # Resumen de conexiones por tipo
+
+2-Alternativa clásica (más lento que ss, pero muy usada)
+netstat
+   -t        # TCP
+   -u        # UDP
+   -l        # Solo escuchando
+   -n        # Números en lugar de nombres
+   -p        # PID/Nombre del proceso
+   -a        # Todas las conexiones y puertos escuchando
+   -r        # Tabla de rutas
+   -s        # Estadísticas de protocolos
+   -i        # Interfaces de red
 
 curl <url>                   # Probar conexión HTTP/HTTPS y obtener contenido
 curl -I <url>                # Solo encabezados HTTP
@@ -97,12 +133,7 @@ curl -s <url>                # Silencioso, sin mostrar progreso
 curl -O <url>                # Descargar archivo
 curl -L <url>                # Seguir redirecciones
 
-**route (rutas)**
-route -n                     # Mostrar tabla de rutas
-route add default gw <gateway>        # Añadir puerta de enlace predeterminada
-route del default gw <gateway>        # Eliminar puerta de enlace predeterminada
-route add -net <red> gw <gateway>    # Añadir ruta específica
-route del -net <red> gw <gateway>    # Eliminar ruta específica
+
 
 # Usuarios
 whoami               # Usuario actual
@@ -2988,7 +3019,7 @@ sudo systemctl preset-all
 <br>
 
 ---
-### **Apartado I):Diseñe y configure un pequeño “script” y defina la correspondiente unidad de tipo service para que se ejecute en el proceso de botado de su máquina**
+### **Apartado I) Diseñe y configure un pequeño “script” y defina la correspondiente unidad de tipo service para que se ejecute en el proceso de botado de su máquina**
 
 
 Para crear un script tenemos que crear un servicio para que se ejecuta ese script de forma automática. Para ello vamos a hacer lo siguiente:
@@ -3224,3 +3255,135 @@ journalctl -u inicio_log.service
 cat /var/log/inicio_logs/inicio.txt
 ```
 
+<br>
+
+---
+### **Apartado J) Identifique las conexiones de red abiertas a y desde su equipo**
+
+Esto significa que tenemos que ver qué conexiones de red (Cuando tu equipo se comunica con otro  se crea un “canal” de comunicación entre los dos llamado conexión de red) hay activas en tu equipo, tanto:
+
+- Entrantes: conexiones que otros equipos intentan abrir hacia tu máquina.
+
+   - Ejemplo: alguien se conecta por SSH a tu servidor.
+
+- Salientes: conexiones que tu equipo ha abierto hacia otros equipos.
+
+   - Ejemplo: tu navegador accediendo a Google.
+
+Básicamente, debemos listar los sockets (IP + puerto + protocolo) de red abiertos, ver qué protocolos usan (TCP/UDP), qué puertos están abiertos, y si es posible, qué procesos los están usando. 
+
+
+
+**Opción 1: ss (sockets)**
+
+- ss
+
+  - t → solo TCP
+ 
+  - u → solo UDP
+ 
+  - l → mostrar solo sockets que están escuchando (entrantes)
+ 
+  - n → mostrar IPs y puertos como números (no nombres)
+
+ - p  →  procesos asociados a los sockets
+
+ - a  →  todos los sockets (escuchando y conectados)
+
+- Ver sockets en escucha TCP/UDP: **ss -tuln**
+```bash
+root@ismael:~# ss -tuln
+Netid                State                 Recv-Q                Send-Q                               Local Address:Port                                 Peer Address:Port                Process
+tcp                  LISTEN                0                     128                                        0.0.0.0:22                                        0.0.0.0:*
+tcp                  LISTEN                0                     128                                           [::]:22                                           [::]:*
+```
+
+
+- Ver conexiones de red usando ss: **ss -tulnp**
+```bash
+root@ismael:~# ss -tulnp
+Netid             State               Recv-Q              Send-Q                           Local Address:Port                           Peer Address:Port             Process
+tcp               LISTEN              0                   128                                    0.0.0.0:22                                  0.0.0.0:*                 users:(("sshd",pid=756,fd=3))
+tcp               LISTEN              0                   128                                       [::]:22                                     [::]:*                 users:(("sshd",pid=756,fd=4))
+```
+
+Esa salida significa que en tu equipo hay un servicio SSH (sshd) escuchando en el puerto 22, tanto en IPv4 (0.0.0.0:22) como en IPv6 ([::]:22).
+
+
+<br>
+
+**Opción 2: netstat (como ss pero más antigua)**
+
+netstat 
+
+   - t → TCP
+   - u  → UDP
+   - l → Solo escuchando
+   - n → Números en lugar de nombres
+   - p → PID/Nombre del proceso
+   - a → Todas las conexiones y puertos escuchando
+   - r → Tabla de rutas
+   - s → Estadísticas de protocolos
+   - i → Interfaces de red
+
+Conexiones TCP y UDP, tanto las activas como las en escucha, mostrando direcciones y puertos numéricos, y algo de información adicional sobre cada socket: **netstat -netua**
+
+```bash
+root@ismael:~# netstat -netua
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       User       Inode
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      0          15157
+tcp        0    356 10.11.48.202:22         10.30.12.208:50800      ESTABLISHED 0          15377
+tcp6       0      0 :::22                   :::*                    LISTEN      0          15168
+```
+
+
+Mi máquina tiene SSH activo (port 22) en IPv4 y IPv6. Hay una conexión activa desde 10.30.12.208 hacia tu SSH (ESTABLISHED). LISTEN indica puertos esperando clientes, ESTABLISHED indica conexiones ya abiertas.
+
+<br>
+
+**Opción 3: lsof (List Open Files)**
+
+Programa que lista archivos abiertos en el sistema. En Linux todo es un archivo: ficheros normales, sockets de red, dispositivos, pipes, etc. Por eso también sirve para ver conexiones de red activas. Muestra qué proceso está usando qué archivo o socket. Útil para encontrar procesos que bloquean archivos o puertos.
+
+Flags básicas
+
+-i →	Muestra conexiones de red (TCP/UDP)
+-i :22	→ Filtra por puerto, ejemplo puerto 22
+-i TCP	→ Filtra solo conexiones TCP
+-i UDP	→ Filtra solo conexiones UDP
+-p PID	→ Muestra archivos abiertos por un proceso específico
+-n	→ No resuelve nombres de host o servicio, muestra IP y puerto en números
+-P	→ No resuelve puertos a nombres de servicio (ej. ssh, http)
++D /ruta	→ Lista archivos abiertos dentro de un directorio específico
+
+
+### RESUMEN FÁCIL
+
+1- Todos los sockets TCP/UDP con ss
+
+ss -tuln         # LISTEN (puertos abiertos)
+
+ss -tunap        # LISTEN + ESTABLISHED + procesos
+
+# Entrantes: busca LISTEN o ESTABLISHED con tu IP en "Local Address"
+ss -tulnp | grep LISTEN
+ss -tulnp | grep ESTABLISHED
+
+# Salientes: busca ESTABLISHED donde tu IP está en "Local Address" y la remota en "Peer Address"
+ss -tupn | grep ESTABLISHED
+
+<br>
+
+2- Todos los sockets TCP/UDP con netstat
+
+netstat -netua
+
+<br>
+
+3- lsof
+
+
+
+
+Podemos ver los procesos:  top  ||  ps aux
