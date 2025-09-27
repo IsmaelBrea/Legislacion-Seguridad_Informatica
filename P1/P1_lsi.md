@@ -4,7 +4,6 @@
 - Traer papel y boli.  
 - Revisar siempre todo lo que aparezca en pantalla.  
  - El viernes anterior a la semana de defensas se apagan las máquinas.  Antes de cerrar todo para la defensa hacer un poweroff de la máquina.
- - 
 <br>
 
 ## Repaso COMANDOS BÁSICOS útiles para las prácticas
@@ -2890,6 +2889,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
