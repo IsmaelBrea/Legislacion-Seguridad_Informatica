@@ -2793,9 +2793,14 @@ apt remove --purge gnome-shell
 
 - gnome-contacts → libreta de contactos
 
+- gnome-menus → Menús de GNOME
+
+- gnome-online-miners → Integración de búsquedas en línea de GNOME (solo útil en el escritorio)
+
+- gnome-user-share → Compartición de archivos desde GNOME
 
 ```bash
-sudo apt remove --purge gnome-calculator gnome-calendar gnome-characters gnome-clocks gnome-color-manager gnome-contacts
+sudo apt remove --purge gnome-calculator gnome-calendar gnome-characters gnome-clocks gnome-color-manager gnome-contacts gnome-menus gnome-online-miners gnome-user-share
 ```
 
 
@@ -2827,7 +2832,7 @@ sudo apt remove --purge cheese eog evince shotwell simple-scan rhythmbox transmi
 Suite ofimática y complementos para integrar con GNOME. No se usa en SSH. No rompe ningún servicio base del sistema. Libera bastante espacio.
 
 ```bash
-sudo apt remove --purge libreoffice-calc libreoffice-gnome libreoffice-impress libreoffice-writer
+sudo apt remove --purge libreoffice-calc libreoffice-gnome libreoffice-impress libreoffice-writer libreoffice-base-core libreoffice-math libreofficekit-data
 ```
 
 
@@ -2873,7 +2878,7 @@ sudo apt remove --purge adwaita-icon-theme fonts-cantarell gnome-backgrounds gno
 
 - apt autoremove --purge: a opción --purge sirve para outras chamadas de apt para borrar archivos de configuración.
 
-
+   - --dry-run: para simular que se eliminaría sin tocar nada
 
 
 
@@ -2892,6 +2897,7 @@ journalctl -b -p err
 journalctl -xe | grep fail
 
 journactl -p warning -b
+
 
 
 
