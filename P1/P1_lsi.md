@@ -2731,6 +2731,7 @@ Ssh crea terminales pts
 
 
 **SERVICIOS DE VMWare**:
+
 5-open-vm-tools: Son las herramientas de integración de VMware: sincronización de tiempo, copias de seguridad, gestión de red virtual, etc. Permite que la VM funcione mejor dentro de VMware. No afecta mucho, pero mejor no tocarla por si hay errores en mi máquina.
 
 6-vgauth: Servicio usado por máquinas virtuales VMware para gestionar la autorización entre el host y el invitado (por ejemplo, para compartir credenciales de Windows con la VM). 
@@ -2745,6 +2746,7 @@ Ssh crea terminales pts
 
 
 <br>
+
 #### LIMPIEZA DE PAQUETES
 
 Una vez eliminado los servicios inútiles del sistema, podemos hacer una limpieza final de paquetes preinstalados que no sirven para nada en nuestra máquina.
@@ -2935,6 +2937,7 @@ sudo systemctl preset-all
 
 ---
 ### **Apartado I): **
+
 
 
 
