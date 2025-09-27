@@ -2885,6 +2885,8 @@ sudo systemctl preset-all
 
 - **journactl -p warning -b**: Muestra advertencias (warning) del arranque actual (-b).
 
+- **systemctl --failed**: comprobar que no hay uniades dando errores
+
 <br>
 
 ### RESUMEN FÁCIL:
@@ -2900,6 +2902,7 @@ sudo systemctl preset-all
 3-Para eliminar un servicio:
 
   1-Comprobar dependencias:  **systemctl status <nombre_del_servicio> --with-dependencies**
+  o **systemctl list-dependencies servicio**
 
   2-Parar el servicio:    **systemctl stop <nombre_del_servicio>**
  
@@ -2937,6 +2940,7 @@ sudo systemctl preset-all
 
 ---
 ### **Apartado I): **
+
 
 
 
