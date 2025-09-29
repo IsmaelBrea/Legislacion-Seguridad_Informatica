@@ -3722,11 +3722,13 @@ ALL: ALL: spawn (/bin/echo "$(date) $(hostname) %d[%p]: conexión denegada desde
 
 ⚠️ ALL: ALL significa que todo lo demás se bloquea.
 
-Cuando una conexión SSH es denegada, spawn ejecuta un comando que escribe en /var/log/denegados la fecha, nombre del servidor, proceso (y PID) e IP de origen.
-Así, cada intento fallido queda registrado automáticamente en ese fichero.
+Cuando una conexión SSH es denegada, spawn ejecuta un comando que escribe en /var/log/denegados la fecha, nombre del servidor, proceso (y PID) e IP de origen. Así, cada intento fallido queda registrado automáticamente en ese fichero.
 
 
-Para probar el deny, necesitamos que alguien esté dentro de la red de la universidad si no nuestra máquina no puede guardar dicho registro. Por tanto, lo que podemos hacer es poner en deny la IP del compañero, que intente entrar y así al no dejarle se me guardará el registro de acceso no autorizado en /var/log/denegados. Luego ya podremos volver a poner en allow la IP del compañero.
+Para probar el deny, necesitamos que alguien esté dentro de la red de la universidad si no nuestra máquina no puede guardar dicho registro. Por tanto, lo que podemos hacer es poner en deny la IP del compañero, que intente entrar y así al no dejarle se me guardará el registro de acceso no autorizado en /var/log/denegados. Luego ya podremos volver a poner en allow la IP del compañero. Podemos verlo con este comando:
+```bash
+sudo tail -f /var/log/denegados
+```
 
 
 
@@ -3746,6 +3748,7 @@ Para probar el deny, necesitamos que alguien esté dentro de la red de la univer
 
 ---
 ### **Apartado M) Existen múltiples paquetes para la gestión de logs (syslog, syslog-ng, rsyslog). Utilizando el rsyslog pruebe su sistema de log local. Pruebe también el journald.**
+
 
 
 
