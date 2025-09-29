@@ -504,7 +504,7 @@ Familiarizarse con el **funcionamiento básico y la configuración de la máquin
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
 
 ---
-## PARTE 1
+## PARTE 1 - Individual
 
 <br>
 
@@ -3564,5 +3564,6 @@ Salida de top:
 
 <br>
 #### RESUMEN FÁCIL
+
 
 
