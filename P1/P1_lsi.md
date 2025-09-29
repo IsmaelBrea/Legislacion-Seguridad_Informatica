@@ -178,6 +178,8 @@ journalctl           # Muestra los registros (logs) de los servicios y del siste
      -b → “muestra los logs desde el último arranque”
      -a → “muestra todas las líneas completas, incluso las truncadas por pantalla”
      -p err → Muestra solo los mensajes de error (y más graves) del sistema.
+     -x → Explica los mensajes del log con información extra si está disponible.
+     -e → Va directamente al final de los logs (útil para ver los últimos errores).
      -u <unidad> → “filtra los logs de una unidad o servicio específico”
      -f  → “muestra los logs en tiempo real (como tail -f)”
      --since "YYYY-MM-DD HH:MM:SS" → “muestra logs desde una fecha/hora específica”
@@ -3608,6 +3610,7 @@ watch ejecuta un comando repetidamente, mostrando la salida en pantalla y actual
 
 <br>
 #### RESUMEN FÁCIL
+
 
 
 
