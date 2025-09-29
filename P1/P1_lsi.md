@@ -63,6 +63,10 @@ ps aux           # Vista clásica estilo BSD, muestra todos los procesos con det
 ps -ef           # Vista estilo Unix System V, alternativa a aux
 
 top                 # Procesos en tiempo real
+sudo systemd-cgtop  # Procesos en tiempo real de los grupos de control
+watch               # Ejecuta un comando repetidamente
+   -n <segundos>    # Intervalo de actualización (por defecto 2 segundos)
+   -d               # Resalta los cambios en cada actualización
 kill PID            # Terminar proceso
 
 # Paquetes (Debian/Ubuntu)
@@ -3561,9 +3565,48 @@ Salida de top:
 
 
 
+**Opción 2: systemd-cgtop**  
+
+- Cgtop: control groups top. Es como un top pero para grupos de procesos controlados por systemd (cgroups). Muestra en tiempo real el consumo de CPU, memoria y I/O de disco de cada servicio o grupo de procesos. Es útil para ver qué servicios están usando más recursos.
+
+**Los cgroups son una funcionalidad del kernel de Linux que permite organizar procesos en grupos y controlar qué recursos pueden usar.**
+
+
+2-Monitorizar conexiones en tiempo real:
+
+Para monitorizar las conexiones en tiempo real basta con usar los comandos del apartado anterior añadiendoles cosas para que se puedan ver de forma continua. Antes los comandos ss, netstat y lsof mostraban las conexiones de red activas pero las mostraban durante el momento en que el que ejecutamos el comando solamente, es decir al ejecutar el comando toman un snapshot de las conexiones en dicho instante.
+
+Para ver las conexiones de red activas podemos usar:
+
+1-Watch:
+
+watch ejecuta un comando repetidamente, mostrando la salida en pantalla y actualizándola automáticamente. Sirve para monitorizar cosas en tiempo real desde la consola, sin tener que volver a escribir el comando.
+
+**watch -n 1 "ss -tn"**: Muestra conexiones TCP activas cada segundo.
+
+ **watch -n 1 "lsof -i"**
+
+2- Netstat usando -c
+
+-c en netstat actualiza continuamente, similar a watch, mostrando la salida cada segundo.
+
+**netstat -netac**: 
+
+| Flag | Significado                                                                             |
+| ---- | --------------------------------------------------------------------------------------- |
+| `-n` | Muestra **IP y puertos en formato numérico**, sin resolver nombres de host o servicios. |
+| `-e` | Muestra **información extendida**, como número de bytes enviados/recibidos.             |
+| `-t` | Solo **conexiones TCP**.                                                                |
+| `-u` | Solo **conexiones UDP**.                                                                |
+| `-a` | Muestra **todas las conexiones**, incluidas las que están **en escucha** (LISTEN).      |
+| `-c` | **Actualiza continuamente**, similar a `watch`, mostrando la salida **cada segundo**.   |
+
+
+3-Herramienta de tráfico en tiempo real:
 
 <br>
 #### RESUMEN FÁCIL
+
 
 
 
