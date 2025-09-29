@@ -3610,17 +3610,142 @@ watch ejecuta un comando repetidamente, mostrando la salida en pantalla y actual
 | `-c` | **Actualiza continuamente**, similar a `watch`, mostrando la salida **cada segundo**.   |
 
 
-3-Herramienta de tráfico en tiempo real:
+
 
 <br>
+
 #### RESUMEN FÁCIL
 
+1-Monitorizar recursos en tiempo real: **top** y **systemd-cgtop**
+
+2-Monitorizar conexiones en tiempo real: **watch** -> ss/lsof y **netstat -c**
+
+<br>
+
+
+---
+### **Apartado L) Un primer nivel de filtrado de servicios los constituyen los tcp-wrappers. Configure el tcp-wrapper de su sistema (basado en los ficheros hosts.allow y hosts.deny) para permitir conexiones SSH a un determinado conjunto de IPs y denegar al resto. ¿Qué política general de filtrado ha aplicado?. ¿Es lo mismo el tcp-wrapper que un firewall?. Obtenga la relación de servicios que utilizan los wrappers de su sistema. Deje únicamente registro de los intentos fallidos-no autorizados de acceso en /var/log/denegados incluyendo el nombre de la máquina, nombre del proceso que atiende la conexión e id del proceso, IP de la máquina origen de la conexión, fecha y hora de la misma. Procure en este proceso no perder conectividad con su máquina. No se olvide que trabaja contra ella en remoto por ssh.**
+
+Linux tiene algo llamado tcp-wrappers qu permite controlar que IPs pueden conectarse a un servicio. Se basa en dos ficheros:
+
+- /etc/hosts.allow → aquí pones quién sí puede entrar.
+
+- /etc/hosts.deny → aquí pones quién NO puede entrar.
+
+
+**¿Cómo funcionan juntas?**
+
+1. Primero se mira hosts.allow → si tu IP está permitida, pasa.
+
+2. Si no está permitida, se mira hosts.deny → si tu IP está allí, se bloquea.
+
+3. Si no coincide con ninguno → normalmente pasa, dependiendo del servicio
+
+
+El objetivo de esta parte es permitir SSH solo a un conjunto de IPs autorizadas y denegar SSH al resto de IPs.
+
+Respecto a la pregunta de indicar la política general de filtrado, consiste en indicar si por defecto vamos a permitir y negar solo algunos o por defecto vamos a denegar y permitir solo unos pocos. Lo más adecuado es negar todo y permitir solo lo que queremos → más seguro.
+
+<br>
+
+**DIFERENCIA TCP-WRAPPERS VS FIREWALL**:
+
+- tcp-wrappers → controla acceso a servicios específicos (SSH, FTP, etc.)
+
+- firewall → controla tráfico a nivel de red, bloquea o permite puertos, IPs, protocolos. El firewall es más amplio, puede proteger una red completa, un sistema contra amenazas o controlar el tráfico de red. 
+
+No son lo mismo, aunque ambos filtran conexiones.
+
+<br>
+
+### **NEGAR TODO Y PERMITIR SOLO LO QUE QUEREMOS**
+
+**/etc/hosts.allow**
+```bash
+# /etc/hosts.allow: list of hosts that are allowed to access the system.
+#                   See the manual pages hosts_access(5) and hosts_options(5).
+#
+# Example:    ALL: LOCAL @some_netgroup
+#             ALL: .foobar.edu EXCEPT terminalserver.foobar.edu
+#
+# If you're going to protect the portmapper use the name "rpcbind" for the
+# daemon name. See rpcbind(8) and rpc.mountd(8) for further information.
+#
+
+# localhost (loopback)
+sshd: 127.0.0.1
+
+# IPs
+sshd: 10.11.48.202, 10.11.50.202, 10.11.48.175, 10.11.50.175
+
+
+# VPN
+sshd: 10.20.0.0/16, 10.25.0.0/16, 10.30.0.0/16
+
+# Eduroam
+sshd: 10.20.32.0/21
+```
+
+- 127.0.0.1 → permite que la propia máquina se conecte a SSH (loopback).
+
+- IPs →
+  - Mis IPs: 10.11.48.202 y 10.11.50.202 → te permiten conectarte desde tu máquina local. (NO ES OBLIGATORIA PORQUE SIEMPRE QUE ME CONECTO POR SSH A MI MÁQUINA ESTOY USANDO UNA IP DE LA VPN. NO HACE FATA PONERLA PORQUE NO VOY CONECTARME A MI IP UNA VEZ DENTRO DE LA MÁQUINA YA).
+ - IP de tu compañero → 10.11.48.175 y 10.11.50.175 → permite que él también se conecte.
+
+- VPN → 10.20.0.0/16, 10.25.0.0/16, 10.30.0.0/16 → permite cualquier IP dentro de esos rangos de la VPN.
+
+- Eduroam → 10.20.32.0/21 → permite el rango de Eduroam de la universidad.
 
 
 
+**/etc/hosts.deny**
+```bash
+root@ismael:~# cat /etc/hosts.deny
+# /etc/hosts.deny: list of hosts that are _not_ allowed to access the system.
+#                  See the manual pages hosts_access(5) and hosts_options(5).
+#
+# Example:    ALL: some.host.name, .some.domain
+#             ALL EXCEPT in.fingerd: other.host.name, .other.domain
+#
+# If you're going to protect the portmapper use the name "rpcbind" for the
+# daemon name. See rpcbind(8) and rpc.mountd(8) for further information.
+#
+# The PARANOID wildcard matches any host whose name does not match its
+# address.
+#
+# You may wish to enable this to ensure any programs that don't
+# validate looked up hostnames still leave understandable logs. In past
+# versions of Debian this has been the default.
+# ALL: PARANOID
+ALL: ALL: spawn (/bin/echo "$(date) $(hostname) %d[%p]: conexión denegada desde %h (%a)" >> /var/log/denegados)
+```
+
+⚠️ ALL: ALL significa que todo lo demás se bloquea.
+
+Cuando una conexión SSH es denegada, spawn ejecuta un comando que escribe en /var/log/denegados la fecha, nombre del servidor, proceso (y PID) e IP de origen.
+Así, cada intento fallido queda registrado automáticamente en ese fichero.
+
+
+Para probar el deny, necesitamos que alguien esté dentro de la red de la universidad si no nuestra máquina no puede guardar dicho registro. Por tanto, lo que podemos hacer es poner en deny la IP del compañero, que intente entrar y así al no dejarle se me guardará el registro de acceso no autorizado en /var/log/denegados. Luego ya podremos volver a poner en allow la IP del compañero.
 
 
 
+<br>
+
+#### RESUMEN FÁCIL
+- Primero se revisa hosts.allow:
+
+  - Si la IP coincide con algún rango permitido (VPN, loopback, Eduroam), la conexión se permite y se registra como [PERMITIDO].
+
+- Si no coincide, entra en hosts.deny:
+
+  - La conexión se bloquea automáticamente y se registra como [DENEGADA].
+
+<br>
+
+
+---
+### **Apartado M) Existen múltiples paquetes para la gestión de logs (syslog, syslog-ng, rsyslog). Utilizando el rsyslog pruebe su sistema de log local. Pruebe también el journald.**
 
 
 
