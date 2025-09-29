@@ -127,6 +127,14 @@ netstat
    -s        # Estadísticas de protocolos
    -i        # Interfaces de red
 
+ 
+wget <url>                    # Descarga el contenido en un archivo con el mismo nombre que en el servidor.
+wget -o <url>                 # Para verlo por pantalla ya que lo manda a stdout
+wget --server-response --spider <url>  # Hace la petición y muestra únicamente los headers HTTP, sin guardar nada.
+wget -q <url>                 # Descarga sin mostrar barras ni mensajes, solo errores.
+
+
+
 curl <url>                   # Probar conexión HTTP/HTTPS y obtener contenido
 curl -I <url>                # Solo encabezados HTTP
 curl -s <url>                # Silencioso, sin mostrar progreso
@@ -3260,6 +3268,26 @@ cat /var/log/inicio_logs/inicio.txt
 ---
 ### **Apartado J) Identifique las conexiones de red abiertas a y desde su equipo**
 
+**Antes de nada, vamos a comprobar si nuestra red sale a Internet. Aunque hayamos quitado todos los servicios de Wifi esto no implica que no podamos llegar a Internet. Para ello vamos a usar wget (ping no es del todo fiable).**
+```bash
+wget --spider --timeout=10 https://www.google.com
+```
+
+```bash
+lsi@ismael:~$ wget --spider --timeout=10 https://www.google.com
+Modo arácnido activado. Comprobar si el fichero remoto existe.
+--2025-09-29 10:26:21--  https://www.google.com/
+Resolviendo www.google.com (www.google.com)... 142.250.178.164, 2a00:1450:4003:803::2004
+Conectando con www.google.com (www.google.com)[142.250.178.164]:443... conectado.
+Petición HTTP enviada, esperando respuesta... 200 OK
+Longitud: no especificado [text/html]
+El fichero remoto existe y podría contener todavía más enlaces,
+pero la recursión está desactivada -- no se recupera
+```
+
+Mi máquina resolvió la IP de Google, se conectó bien por HTTPS y el servidor respondió con un “200 OK”, lo que significa que tengo conexión a Internet y la página existe.
+
+
 Esto significa que tenemos que ver qué conexiones de red (cuando mi equipo se comunica con otro  se crea un “canal” de comunicación entre los dos llamado conexión de red) hay activas en tu equipo, tanto:
 
 - Entrantes: conexiones que otros equipos intentan abrir hacia tu máquina.
@@ -3290,7 +3318,9 @@ Básicamente, debemos listar los sockets (IP + puerto + protocolo) de red abiert
 
  - a  →  todos los sockets (escuchando y conectados)
 
-- Ver sockets en escucha TCP/UDP: **ss -tuln**
+
+- Entrantes: Son servicios que están escuchando en un puerto, esperando que alguien se conecte. (tuln o tulnp)
+    - Ver sockets en escucha TCP/UDP: **ss -tuln**
 ```bash
 root@ismael:~# ss -tuln
 Netid                State                 Recv-Q                Send-Q                               Local Address:Port                                 Peer Address:Port                Process
@@ -3299,7 +3329,7 @@ tcp                  LISTEN                0                     128            
 ```
 
 
-- Ver conexiones de red usando ss: **ss -tulnp**
+   - Ver conexiones de red usando ss: **ss -tulnp**
 ```bash
 root@ismael:~# ss -tulnp
 Netid             State               Recv-Q              Send-Q                           Local Address:Port                           Peer Address:Port             Process
@@ -3308,6 +3338,17 @@ tcp               LISTEN              0                   128                   
 ```
 
 Esa salida significa que en tu equipo hay un servicio SSH (sshd) escuchando en el puerto 22, tanto en IPv4 (0.0.0.0:22) como en IPv6 ([::]:22).
+
+
+- Salientes: Son conexiones que tu máquina abre hacia fuera (ej: navegar, usar wget, etc):  **ss -tn*
+
+Sin -l, así ves las conexiones activas
+
+```bash
+lsi@ismael:~$ ss -tn
+Netid            State            Recv-Q            Send-Q                        Local Address:Port                         Peer Address:Port             Process
+tcp              ESTAB            0                 52                             10.11.48.202:22                           10.30.12.170:56340
+```
 
 
 <br>
@@ -3328,6 +3369,8 @@ netstat
 
 Conexiones TCP y UDP, tanto las activas como las en escucha, mostrando direcciones y puertos numéricos, y algo de información adicional sobre cada socket: **netstat -netua**
 
+COMANDO GENÉRICO (entrantes y salientes)
+
 ```bash
 root@ismael:~# netstat -netua
 Active Internet connections (servers and established)
@@ -3342,7 +3385,7 @@ Mi máquina tiene SSH activo (port 22) en IPv4 y IPv6. Hay una conexión activa 
 
 <br>
 
-**Opción 3: lsof (List Open Files)**
+**Opción 3: lsof (List Open Files)  -> USAR CON ROOT**
 
 Programa que lista archivos abiertos en el sistema. En Linux todo es un archivo: ficheros normales, sockets de red, dispositivos, pipes, etc. Por eso también sirve para ver conexiones de red activas. Muestra qué proceso está usando qué archivo o socket. Útil para encontrar procesos que bloquean archivos o puertos.
 
@@ -3358,13 +3401,45 @@ Flags básicas
 +D /ruta	→ Lista archivos abiertos dentro de un directorio específico
 
 
+ COMANDO GENÉRICO (Mostrar todas las conexiones de red):  **lsof -i**
+
+
+-  Conexiones entrantes (puertos en escucha)
+```bash
+lsof -iTCP -sTCP:LISTEN
+```
+
+- Conexiones salientes activas
+```bash
+lsof -iTCP -sTCP:ESTABLISHED
+ ```
+
+
+```bash
+root@ismael:~# lsof -i
+COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+sshd     756 root    3u  IPv4  15157      0t0  TCP *:ssh (LISTEN)
+sshd     756 root    4u  IPv6  15168      0t0  TCP *:ssh (LISTEN)
+sshd    1739 root    4u  IPv4 192218      0t0  TCP ismael:ssh->10.30.12.170:56340 (ESTABLISHED)
+sshd    1769  lsi    4u  IPv4 192218      0t0  TCP ismael:ssh->10.30.12.170:56340 (ESTABLISHED)
+root@ismael:~# lsof -iTCP -sTCP:LISTEN
+COMMAND PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+sshd    756 root    3u  IPv4  15157      0t0  TCP *:ssh (LISTEN)
+sshd    756 root    4u  IPv6  15168      0t0  TCP *:ssh (LISTEN)
+root@ismael:~# lsof -iTCP -sTCP:ESTABLISHED
+COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+sshd    1739 root    4u  IPv4 192218      0t0  TCP ismael:ssh->10.30.12.170:56340 (ESTABLISHED)
+sshd    1769  lsi    4u  IPv4 192218      0t0  TCP ismael:ssh->10.30.12.170:56340 (ESTABLISHED)
+```
+
+
 ### RESUMEN FÁCIL
 
 1- Todos los sockets TCP/UDP con ss
 
-ss -tuln         # LISTEN (puertos abiertos)
+ss -tuln  y  ss -tulnp       # LISTEN (puertos abiertos)
 
-ss -tunap        # LISTEN + ESTABLISHED + procesos
+ss -tn  o  ss -tunp          # LISTEN + ESTABLISHED + procesos
 
   - Entrantes: busca LISTEN o ESTABLISHED con tu IP en "Local Address"
 ss -tulnp | grep LISTEN
@@ -3377,14 +3452,34 @@ ss -tupn | grep ESTABLISHED
 
 2- Todos los sockets TCP/UDP con netstat
 
-netstat -netua
+COMANDO GENÉRICO: netstat -netua
+
+   - Entrantes (igual que ss):
+
+netstat -tuln  y netstat -tulnp       # LISTEN (puertos abiertos)
+
+
+   - Salientes (igual que ss)
+
+netstat -tn  o  netstat -tunp          # LISTEN + ESTABLISHED + procesos
 
 <br>
 
 3- lsof
 
+- Todas las conexiones: lsof -i
+
+-  Conexiones entrantes (puertos en escucha): lsof -iTCP -sTCP:LISTEN
+
+
+- Conexiones salientes activas: lsof -iTCP -sTCP:ESTABLISHED
 
 
 
 Podemos ver los procesos:  top  ||  ps aux
 
+
+<br>
+
+---
+### **Apartado K)  Nuestro sistema es el encargado de gestionar la CPU, memoria, red, etc., como soporte a los datos y procesos. Monitorice en tiempo real la información relevante de los procesos del sistema y los recursos consumidos. Monitorice en tiempo real las conexiones de su sistema**
