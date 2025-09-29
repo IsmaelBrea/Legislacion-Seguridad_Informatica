@@ -2634,7 +2634,8 @@ systemctl disable e2scrub_reap
 ```
 
 
-**En la sesión actual ModemManager está borrado** 
+**En la sesión actual ModemManager está borrado**
+
 7-ModemManager (ENMASCARADO): Es un demonio que gestiona modems de banda ancha móvil (3G, 4G, 5G, USB, tarjetas SIM, etc.). Permite que el sistema se conecte a Internet usando un módem (USB o integrado en el portátil). Lo usan aplicaciones de red y NetworkManager cuando hay un dispositivo de este tipo conectado. Las máquinas Debian de LSI están conectdas al cable Ethernet por tanto no usa modemos USB, ni tarjetas ni nada de eso por lo que podemos enmascararlo sin problema.
 ```bash
 systemctl stop ModemManager
@@ -3606,6 +3607,7 @@ watch ejecuta un comando repetidamente, mostrando la salida en pantalla y actual
 
 <br>
 #### RESUMEN FÁCIL
+
 
 
 
