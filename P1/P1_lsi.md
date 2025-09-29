@@ -3195,7 +3195,7 @@ sudo cat /var/log/inicio_logs/inicio.txt    # Verifica el log
 
 Si se produce algún fallo se puede ver con:
 ```bash
-jornalctl -xeu inicio_log.service
+journalctl -xeu inicio_log.service
 ```
 
 
@@ -3608,6 +3608,7 @@ watch ejecuta un comando repetidamente, mostrando la salida en pantalla y actual
 
 <br>
 #### RESUMEN FÁCIL
+
 
 
 
