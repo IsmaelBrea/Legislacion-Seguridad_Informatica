@@ -20,6 +20,7 @@ cd /ruta            # Cambiar carpeta
 cd ~                # Ir al home (~ es el directorio home del usuario actual)
 cd ..               # Subir un nivel
 
+
 # Archivos y directorios
 touch archivo.txt   # Crear archivo vacío
 mkdir carpeta       # Crear carpeta
@@ -39,8 +40,9 @@ tail -f archivo.log # Ver en tiempo real
 
 # Búsqueda
 find . -name "archivo.txt"  # Buscar archivo
-grep "texto" archivo.txt    # Buscar texto
-grep -r "texto" /ruta       # Buscar en varios archivos
+grep                # Se utiliza para buscar y filtrar líneas de texto que coinciden con un patrón específico
+    grep "texto" archivo.txt    # Buscar texto
+    grep -r "texto" /ruta       # Buscar en varios archivos
 
 # Redirección y tuberías (pipes)
 > sobreescribe el archivo
@@ -75,7 +77,9 @@ sudo apt upgrade          # Actualizar paquetes
 sudo apt install paquete  # Instalar
 sudo apt remove paquete   # Eliminar
 dpkg -l | wc -l           # Lista todos los paquetes instalados  y wc -l cuenta las líneas, es decir, el total de paquetes.
-
+        -dpkg -l → lista todos los paquetes.
+        -grep '^ii' → filtra los que están instalados (ii).
+        -wc -l → cuenta cuántos hay.
 
 # Red
 ping 8.8.8.8         # Probar conexión
@@ -138,13 +142,11 @@ wget --server-response --spider <url>  # Hace la petición y muestra únicamente
 wget -q <url>                 # Descarga sin mostrar barras ni mensajes, solo errores.
 
 
-
 curl <url>                   # Probar conexión HTTP/HTTPS y obtener contenido
 curl -I <url>                # Solo encabezados HTTP
 curl -s <url>                # Silencioso, sin mostrar progreso
 curl -O <url>                # Descargar archivo
 curl -L <url>                # Seguir redirecciones
-
 
 
 # Usuarios
@@ -3610,6 +3612,7 @@ watch ejecuta un comando repetidamente, mostrando la salida en pantalla y actual
 
 <br>
 #### RESUMEN FÁCIL
+
 
 
 
