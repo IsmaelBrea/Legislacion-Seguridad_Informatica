@@ -504,6 +504,10 @@ Familiarizarse con el **funcionamiento básico y la configuración de la máquin
 La práctica finaliza con la **configuración básica de servicios de red**, realizada en grupos de dos alumnos.
 
 ---
+## PARTE 1
+
+<br>
+
 ### **Apartado A): Configure su máquina virtual de laboratorio con los datos proporcionados por el profesor. Analice los ficheros básicos de configuración (interfaces, hosts, resolv.conf, nsswitch.conf, sources.list,etc).**
 
 Los pasos básicos explicados por el profesor ya los hemos realizado:
@@ -1540,6 +1544,18 @@ Te muestra todo lo que hizo systemd (y los servicios que maneja) desde que encen
 ```bash
 journalctl -b
 ```
+
+Para ver los errores de ña sesión actual: **journalctl -b p err**
+
+```bash
+root@ismael:~# journalctl -b -p err
+sep 27 20:39:09 ismael kernel: piix4_smbus 0000:00:07.3: SMBus Host Controller not enabled!
+```
+
+Es un aviso del kernel: tu placa tiene un controlador SMBus que no está activado. En tu caso, no afecta al funcionamiento normal de Debian ni a la conexión por SSH, especialmente en una máquina virtual.
+
+Se puede ignorar; no hay necesidad de corregirlo.
+
 
 <br>
 
@@ -3485,9 +3501,68 @@ Podemos ver los procesos:  top  ||  ps aux
 ### **Apartado K)  Nuestro sistema es el encargado de gestionar la CPU, memoria, red, etc., como soporte a los datos y procesos. Monitorice en tiempo real la información relevante de los procesos del sistema y los recursos consumidos. Monitorice en tiempo real las conexiones de su sistema**
 
 
+1-Monitorizar recursos en tiempo real:
+
+**Opción 1 (más clásica): top**
+
+Salida de top:
+
+- Parte superior (resumen del sistema)
+
+  - uptime → cuánto tiempo lleva encendido el sistema.
+  
+  - users → cuántos usuarios conectados.
+  
+  - load average → carga promedio CPU en 1, 5 y 15 minutos.
+  
+  - tasks → número total de procesos: running, sleeping, stopped, zombie.
+  
+  - CPU(s) → % de CPU usada por usuario (us), sistema (sy), nice (ni), idle (id), espera I/O (wa), hardware IRQ (hi), software IRQ (si).
+  
+  - Mem / Swap → memoria usada, libre, buffers/cache, swap usada y libre.
+
+<br>
+
+- Parte de procesos (cada fila)
+
+  - PID → ID del proceso.
+  
+  - USER → usuario que ejecuta el proceso.
+  
+  - PR → prioridad del proceso.
+  
+  - NI → valor “nice” (modifica prioridad).
+  
+  - VIRT → memoria virtual total que usa el proceso.
+  
+  - RES → memoria física usada (resident).
+  
+  - SHR → memoria compartida con otros procesos.
+  
+  - S → estado del proceso:
+  
+  - R = Running (ejecutándose)
+  
+  - S = Sleeping (esperando)
+  
+  - D = Waiting I/O
+  
+  - Z = Zombie
+  
+  - T = Stopped
+  
+  - %CPU → % CPU que usa ahora.
+  
+  - %MEM → % memoria RAM que usa.
+  
+  - TIME+ → tiempo total de CPU consumido por el proceso.
+  
+  - COMMAND → nombre del proceso/comando.
 
 
 
 
+<br>
 #### RESUMEN FÁCIL
+
 
