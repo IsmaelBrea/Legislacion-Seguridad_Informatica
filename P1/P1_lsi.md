@@ -2856,7 +2856,9 @@ sudo crontab -l
 7-polkit:  Es un servicio de control de permisos en Linux. Permite que usuarios normales hagan acciones que normalmente requieren root, sin tener que usar sudo directamente. Por ejemplo: cambiar la hora del sistema, montar discos, gestionar redes, configurar impresoras, etc.
 <br>
 
-8-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
+8-man_db: man database. Es el gestor de la base de datos de las páginas de manual (man) en sistemas Linux.
+
+9-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
 
 
 <br>
@@ -3612,6 +3614,7 @@ watch ejecuta un comando repetidamente, mostrando la salida en pantalla y actual
 
 <br>
 #### RESUMEN FÁCIL
+
 
 
 
