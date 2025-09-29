@@ -773,7 +773,7 @@ Porque 127.x.x.x no es tu IP real de la red, es una dirección especial solo par
 La 10.11.48.202 sí es tu IP real en la red (la que usan otros equipos para conectarse a tu máquina).
 
 
-**Resumen fácil:**
+#### RESUMEN FÁCIL:
 
 127.0.0.1 y 127.0.1.1 = tu PC hablando consigo mismo.
 
@@ -806,7 +806,7 @@ ff02::2 ip6-allrouters
 - Se usa en redes IPv6 para enviar mensajes a todos los routers a la vez.
 
 
-**Resumen fácil:**
+#### RESUMEN FÁCIL:
 
 - ::1 → tu PC hablando consigo mismo (IPv6).
 
@@ -985,7 +985,7 @@ Para encontrar otros ordenadores por su nombre:
 Todo lo demás (networks, protocols, services…) → funciona igual: primero archivos locales, después servidores o bases de datos externas si hace falta
 
 
-**Resumen fácil:**
+#### RESUMEN FÁCIL:
 
 - nsswitch.conf = el orden que sigue tu Debian para buscar información.
 
@@ -1414,7 +1414,7 @@ Ahora mismo solo tengo:
 - linux-image-amd64 → el meta-paquete que asegura que siempre reciba la última versión estable del kernel.
 
 
-### RESUMEN DE TODOS LOS COMANDOS UTILIZADOS PARA ACTUALIZAR DEBIAN:
+#### RESUMEN DE TODOS LOS COMANDOS UTILIZADOS PARA ACTUALIZAR DEBIAN:
 ```bash
 # Repositorios
 sudo nano /etc/apt/sources.list   # Editar repositorios a nueva versión
@@ -1884,7 +1884,7 @@ Systemd no solo maneja services y targets, también existen:
 + **Unidades de swap (swap units):** Estas unidades se utilizan para configurar y controlar dispositivos de intercambio (swap) en el sistema.
 
 
-### RESUMEN FÁCIL SOBRE EL TIEMPO DE ARRANQUE Y LOS TARGETS
+#### RESUMEN FÁCIL SOBRE EL TIEMPO DE ARRANQUE Y LOS TARGETS
 
 - Unidad (unit): Es la entidad básica que systemd maneja. Puede representar un servicio, un grupo de servicios, un punto de montaje, un socket, un timer, etc. Es como un “objeto” que systemd controla.
 
@@ -2306,7 +2306,7 @@ ens34: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 ```
 La interfaz ens34 vuelve a estar como antes.
 
-### RESUMEN FÁCIL:
+#### RESUMEN FÁCIL:
 Nuestra tarjeta de red física es ens34. Un interfaz lógico es como ponerle otra “puerta” a la misma tarjeta. Esto te permite tener más de una IP en la misma tarjeta física.
 
 **Interfaz física vs lógica**
@@ -2406,7 +2406,7 @@ default via 10.11.48.1 dev ens33 onlink
 ```
 
 
-### RESUMEN FÁCIL:
+#### RESUMEN FÁCIL:
 ¿Qué es una ruta por defecto (default gateway) y para qué sirve?
 
 → Para enviar todo el tráfico a redes que no están en mi tabla, normalmente hacia el router.
@@ -2977,7 +2977,7 @@ sudo systemctl preset-all
 
 <br>
 
-### RESUMEN FÁCIL:
+#### RESUMEN FÁCIL:
 
 1- Ver todos los servicios y su estado (POR ORDEN ALFÁBETICO): **systemctl list-unit-files --type=service --no-pager**
 
@@ -3235,7 +3235,7 @@ Revisar con journal:
 journalctl -u inicio_log.service
 ```
 
-### RESUMEN FÁCIL
+#### RESUMEN FÁCIL
 
 1-Crear script
 
@@ -3433,7 +3433,7 @@ sshd    1769  lsi    4u  IPv4 192218      0t0  TCP ismael:ssh->10.30.12.170:5634
 ```
 
 
-### RESUMEN FÁCIL
+#### RESUMEN FÁCIL
 
 1- Todos los sockets TCP/UDP con ss
 
@@ -3483,3 +3483,11 @@ Podemos ver los procesos:  top  ||  ps aux
 
 ---
 ### **Apartado K)  Nuestro sistema es el encargado de gestionar la CPU, memoria, red, etc., como soporte a los datos y procesos. Monitorice en tiempo real la información relevante de los procesos del sistema y los recursos consumidos. Monitorice en tiempo real las conexiones de su sistema**
+
+
+
+
+
+
+#### RESUMEN FÁCIL
+
