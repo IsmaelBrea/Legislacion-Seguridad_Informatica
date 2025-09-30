@@ -4,7 +4,28 @@
 - Traer papel y boli.  
 - Revisar siempre todo lo que aparezca en pantalla.  
  - El viernes anterior a la semana de defensas se apagan las máquinas.  Antes de cerrar todo para la defensa hacer un poweroff de la máquina.
+ - No se puede llevar nada apuntado, pero si se puede usar el comando **man** y el historial (**history**)
+
+**COMO USAR EL HISTORIAL Y TRUCOS PARA BUSCAR COMANDOS**
+
+history muestra todos los comandos ejecutados en los distintos usuarios que tenemos. Al escribir muchos comandos puede ser complicado encontrar alguno, pero aquí hay trucos para reducir la búsqueda.
+
+1- history con grep:
+
+Si nos acordamos de alguna palabra del comando podemos hacer lo siguiente:
+history | grep palabra
+
+Nos saldrán todos los comandos  que hayamos usado con esa palabra.
+
+
+2- Ctrl + R (Búsqueda hacia atrás):
+
+Presiona Ctrl + R en la terminal. Empieza a escribir parte del comando que recuerdas. Verás aparecer coincidencias de tu historial en tiempo real. Pulsa Enter para ejecutar el comando encontrado o las flechas para editarlo.
+
+SOLO busca la última coincidencia con esa palabra.
+
 <br>
+
 
 ## Repaso COMANDOS BÁSICOS útiles para las prácticas
 ```bash
@@ -3870,6 +3891,7 @@ Para comprobar -> **tail -n /var/log/syslog**
 
 ---
 ## PARTE 2  - Parejas
+
 
 
 
