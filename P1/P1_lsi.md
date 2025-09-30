@@ -9,7 +9,8 @@
 ## Repaso COMANDOS BÁSICOS útiles para las prácticas
 ```bash
 #Accesos
-last               #Sesiones de usuarios accedidas a la máquina
+last               # Sesiones de usuarios accedidas a la máquina
+date               # Hora sesión actual
 
 # Navegación
 pwd                 # Carpeta actual
@@ -40,7 +41,7 @@ tail archivo.txt    # Últimas 10 líneas
      tail -f archivo.log # Ver en tiempo real
 
 # Búsqueda
-find . -name "archivo.txt"  # Buscar archivo
+find / -name "archivo.txt"  # Buscar archivo
 grep                # Se utiliza para buscar y filtrar líneas de texto que coinciden con un patrón específico
     grep "texto" archivo.txt    # Buscar texto
     grep -r "texto" /ruta       # Buscar en varios archivos
@@ -2959,6 +2960,11 @@ Iconos, fuentes y temas del escritorio GNOME.
 ```bash
 sudo apt remove --purge adwaita-icon-theme fonts-cantarell gnome-backgrounds gnome-themes-extra desktop-base
 ```
+
+Podemos ver todos los restos sobrantes de estos paquetes buscandolos con:
+find / -name libreoffice
+
+
 <br>
 
 
@@ -3695,9 +3701,9 @@ sshd: 10.20.32.0/21
   - Mis IPs: 10.11.48.202 y 10.11.50.202 → te permiten conectarte desde tu máquina local. (NO ES OBLIGATORIA PORQUE SIEMPRE QUE ME CONECTO POR SSH A MI MÁQUINA ESTOY USANDO UNA IP DE LA VPN. NO HACE FATA PONERLA PORQUE NO VOY CONECTARME A MI IP UNA VEZ DENTRO DE LA MÁQUINA YA).
  - IP de tu compañero → 10.11.48.175 y 10.11.50.175 → permite que él también se conecte.
 
-- VPN → 10.20.0.0/16, 10.25.0.0/16, 10.30.0.0/16 → permite cualquier IP dentro de esos rangos de la VPN.
+- VPN → 10.20.0.0/16, 10.25.0.0/16, 10.30.0.0/16 → permite cualquier IP dentro de esos rangos de la VPN. NO poner los 4 octetos de mi IP asignada a mi VPN porque con el reinicio de máquinas puede cambiar y perderemos el acceso.
 
-- Eduroam → 10.20.32.0/21 → permite el rango de Eduroam de la universidad.
+- Eduroam (no es ESENCIAL)→ 10.20.32.0/21 → permite el rango de Eduroam de la universidad.
 
 
 
@@ -3785,7 +3791,7 @@ ldd /usr/sbin/cron | grep libwrap     # Cron, aunque suele no usar
 
 **Probar rsyslog**
 
-Es un servicio que debíamos haber dejado instalado. Podemos comprobar antes de nada que está activo:
+Es un servicio que debíamos haber dejado instalado. Guarda los logs Podemos comprobar antes de nada que está activo:
 ```bash
 systemctl status rsyslog
 ```
@@ -3905,3 +3911,4 @@ rtt min/avg/max/mdev = 0.036/0.064/0.086/0.020 ms
 ---
 
 ## PARTE 2  - Parejas
+
