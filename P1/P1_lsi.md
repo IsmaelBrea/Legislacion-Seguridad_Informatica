@@ -2434,6 +2434,10 @@ default via 10.11.48.1 dev ens33 onlink
 ```
 
 
+### Ejemplo de lo que va a pedir:
+**CREAME UNA RED ESTATICA X QUE VAYA A TRAVES DE ENS34. Por ejemplo, creame una red estática que vaya a marca.com a través de ens34.**
+
+
 #### RESUMEN FÁCIL:
 ¿Qué es una ruta por defecto (default gateway) y para qué sirve?
 
@@ -2573,15 +2577,25 @@ Estados que salen en systemctl:
 <br>
 
 #### Servicios que han sido eliminados:
-1-accounts-daemon (ENMAMSCARADO): un servicio que guarda info de los usuarios para programas de escritorio (como GNOME). Si solo usas SSH, realmente no lo necesitas. Enmascararlo evita que se inicie, y casi nada se verá afectado en un servidor o máquina sin escritorio.
+
+1-appArmor (ENMASCARADO): AppArmor es un sistema de seguridad que limita lo que un programa puede hacer en tu sistema. Cada programa tiene un perfil que define qué archivos y recursos puede usar. Si intenta hacer algo fuera de esos permisos, AppArmor lo bloquea y lo registra en los logs.
+```bash
+systemctl stop apparmor
+systemctl disable apparmor
+systemctl mask apparmor
+```
+
+2-accounts-daemon (ENMAMSCARADO): un servicio que guarda info de los usuarios para programas de escritorio (como GNOME). Si solo usas SSH, realmente no lo necesitas. Enmascararlo evita que se inicie, y casi nada se verá afectado en un servidor o máquina sin escritorio.
 ```bash
 systemctl stop accounts-daemon
 systemctl disable accounts-daemon
 systemctl mask accounts-daemon
 ```
 
-2-anacron (DESACTIVADO):
+3-anacron (DESACTIVADO):
    - cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse. LO desactivamos porque no queremos NADA AUTOMÁTICO. !! **cron no lo quito**
+
+ AUNQUE SEA AUTOMÁTICO, ESTE CAMBIA COSAS DE LA CONFIGURACIÓN DE LA MÁQUINA QUE SON IMPORTANTES, POR LO QUE ME DIJO CARLOS QUE NO LO QUITASE.
 
    - anacron: Similar a cron, pero pensado para máquinas que no están siempre encendidas. Garantiza que las tareas “perdidas” mientras la máquina estaba apagada se ejecuten cuando enciendes. Con solo SSH, no lo necesitas si tu máquina está casi siempre encendida y no quieres esas tareas automáticas.
 
@@ -2594,7 +2608,7 @@ systemctl disable anacron
 Si quitamos el cron todas las actualizaciones se tienen que hacer de forma manual. Ya no se harán updates y upgrades en segundo plano, tendremos que relizarlas nosotros manualmente.
 
 
-3-avahi-daemon (ENMASCARADO): hace que tu ordenador se vea solo en la red local y pueda encontrar otros dispositivos automáticamente y que tú encuentre los suyos también, como impresoras o PCs, sin configurar nada. Permite basicamente, que otros dispositivos en la misma red encuentren tu máquina automáticamente sin usar IPs manuales. Si lo desactivamos, mi máquina ya no se anunciará automáticamente en la red local. Otros equipos no la verán sin poner su IP manualmente.
+4-avahi-daemon (ENMASCARADO): hace que tu ordenador se vea solo en la red local y pueda encontrar otros dispositivos automáticamente y que tú encuentre los suyos también, como impresoras o PCs, sin configurar nada. Permite basicamente, que otros dispositivos en la misma red encuentren tu máquina automáticamente sin usar IPs manuales. Si lo desactivamos, mi máquina ya no se anunciará automáticamente en la red local. Otros equipos no la verán sin poner su IP manualmente.
 
 ```bash
 systemctl stop avahi-daemon.service
@@ -2604,7 +2618,7 @@ systemctl stop avahi-daemon.socket
  Con un reboot ya no sale el servicio en la lista de servicio activos.
 
 
-4-bluetooth (ENMASCARADO): gestiona la conexión y comunicación con dispositivos Bluetooth en tu máquina. Esto incluye ratones, teclados, auriculares, altavoces, móviles, etc. Mi máquina no usa Bluetooth (ni periféricos ni transferencia de archivos), puedo enmascararlo sin problemas.
+5-bluetooth (ENMASCARADO): gestiona la conexión y comunicación con dispositivos Bluetooth en tu máquina. Esto incluye ratones, teclados, auriculares, altavoces, móviles, etc. Mi máquina no usa Bluetooth (ni periféricos ni transferencia de archivos), puedo enmascararlo sin problemas.
 ```bash
 systemctl stop bluetooth
 systemctl disable bluetooth
@@ -2615,7 +2629,7 @@ No afectará el SSH ni otras funciones básicas de red o servidor.
 
 **CUPS: Common Unix Printing System (IMPRESORAS)** → es el sistema de impresión estándar en Linux/Unix. Se encarga de gestionar trabajos de impresión, colas, controladores y comunicación con la impresora. Básicamente, si quieres imprimir algo desde tu máquina, necesitas CUPS.
 
-5-cups (ENMASCARADO) y cups-browsed (ENMASCARADO):
+6-cups (ENMASCARADO) y cups-browsed (ENMASCARADO):
 
    - cups: servicio de impresión en Linux. Gestiona trabajos de impresión y coordina las impresoras locales o de red.
 
@@ -2633,7 +2647,7 @@ systemctl mask cups
 ```
 
 
-6-e2scrub_reap (DESACTIVADO): pertenece al sistema de scrubbing de sistemas de ficheros ext4/ext3/ext2. En palabras sencillas:
+7-e2scrub_reap (DESACTIVADO): pertenece al sistema de scrubbing de sistemas de ficheros ext4/ext3/ext2. En palabras sencillas:
 Sirve para revisar y reparar errores en discos/ext4 automáticamente, como una especie de “mantenimiento preventivo” de los sistemas de ficheros. Trabaja en segundo plano y normalmente no molesta.Como no queremos cosas automáticas y no nos interesa su funcionalidad podemos desactivarla por si caso.
 
 ```bash
@@ -2644,7 +2658,7 @@ systemctl disable e2scrub_reap
 
 **En la sesión actual ModemManager está borrado**
 
-7-ModemManager (ENMASCARADO): Es un demonio que gestiona modems de banda ancha móvil (3G, 4G, 5G, USB, tarjetas SIM, etc.). Permite que el sistema se conecte a Internet usando un módem (USB o integrado en el portátil). Lo usan aplicaciones de red y NetworkManager cuando hay un dispositivo de este tipo conectado. Las máquinas Debian de LSI están conectdas al cable Ethernet por tanto no usa modemos USB, ni tarjetas ni nada de eso por lo que podemos enmascararlo sin problema.
+8-ModemManager (ENMASCARADO): Es un demonio que gestiona modems de banda ancha móvil (3G, 4G, 5G, USB, tarjetas SIM, etc.). Permite que el sistema se conecte a Internet usando un módem (USB o integrado en el portátil). Lo usan aplicaciones de red y NetworkManager cuando hay un dispositivo de este tipo conectado. Las máquinas Debian de LSI están conectdas al cable Ethernet por tanto no usa modemos USB, ni tarjetas ni nada de eso por lo que podemos enmascararlo sin problema.
 ```bash
 systemctl stop ModemManager
 systemctl disable ModemManager
@@ -2681,7 +2695,7 @@ systemctl disable NetworkManager-wait-online
 ```
 
 
-10-plymouth: Plymouth se encarga de la animación gráfica del arranque y de mostrar mensajes bonitos mientras Linux arranca o se apaga.
+9-plymouth: Plymouth se encarga de la animación gráfica del arranque y de mostrar mensajes bonitos mientras Linux arranca o se apaga.
 
    - plymouth-halt (ENMASCARADO): Se ejecuta al apagar el sistema, mostrando animación de apagado. En mi máquina por ssh no hace nada útil.
 ```bash
@@ -2722,7 +2736,7 @@ systemctl mask plymouth-read-write.service
 
 
 
-11-power-profiles-daemon (DESACTIVADO): Es el daemon de perfiles de energía. Permite cambiar automáticamente entre modos de consumo de energía en tu máquina (por ejemplo: “alto rendimiento”, “ahorro de energía” o “equilibrado”). Se usa sobre todo en laptops o equipos de escritorio para gestionar CPU, pantalla y periféricos según el perfil elegido. En mi máquina Debian al que solo accedo por SSH, no sirve para nada, porque la máquina está conectada por cable, probablemente
+10-power-profiles-daemon (DESACTIVADO): Es el daemon de perfiles de energía. Permite cambiar automáticamente entre modos de consumo de energía en tu máquina (por ejemplo: “alto rendimiento”, “ahorro de energía” o “equilibrado”). Se usa sobre todo en laptops o equipos de escritorio para gestionar CPU, pantalla y periféricos según el perfil elegido. En mi máquina Debian al que solo accedo por SSH, no sirve para nada, porque la máquina está conectada por cable, probablemente
 enchufada siempre, y no me interesa ahorrar batería ni ajustar rendimiento automáticamente.
 ```bash
 systemctl stop power-profiles-daemon
@@ -2730,7 +2744,7 @@ systemctl disable power-profiles-daemon
 ```
 
 
-12-pulseaudio-enable-autospawn.service (DESACTIVADO): Este servicio se encarga de permitir que PulseAudio (el servidor de sonido de Linux) se inicie automáticamente cuando una aplicación lo necesita. Mi máquina es un servidor al que solo accedo por SSH y no reproduzco sonido, este servicio no sirve para nada y se puede desactivar sin problemas.
+11-pulseaudio-enable-autospawn.service (DESACTIVADO): Este servicio se encarga de permitir que PulseAudio (el servidor de sonido de Linux) se inicie automáticamente cuando una aplicación lo necesita. Mi máquina es un servidor al que solo accedo por SSH y no reproduzco sonido, este servicio no sirve para nada y se puede desactivar sin problemas.
  ```bash
 systemctl stop pulseaudio-enable-autospawn
 systemctl disable pulseaudio-enable-autospawn
@@ -2739,7 +2753,7 @@ systemctl disable pulseaudio-enable-autospawn
 En la última sesión este aparece como generated. Como solo usas SSH y no tienes sesión gráfica ni audio activo, nunca se va a iniciar. No necesitas hacer nada. Puedes ignorar este servicio sin riesgo alguno. Tu VM seguirá funcionando perfectamente, y tu red seguirá activa mientras networking.service esté habilitado.
 
 
-13-speech-dispatcher (ENMASCARADO): Servicio que permite que el sistema lea texto en voz alta. Se usa para programas que “hablan” o leen la pantalla, como lectores de pantalla. En un servidor al que solo accedes por SSH no hace falta, porque nadie va a necesitar que se lea nada.
+12-speech-dispatcher (ENMASCARADO): Servicio que permite que el sistema lea texto en voz alta. Se usa para programas que “hablan” o leen la pantalla, como lectores de pantalla. En un servidor al que solo accedes por SSH no hace falta, porque nadie va a necesitar que se lea nada.
 ```bash
 systemctl stop speech-dispatcher
 systemctl stop speech-dispatcherd
@@ -2750,14 +2764,14 @@ systemctl mask speech-dispatcherd
 ```
 
 
-14-switcheroo-control (DESACTIVADO): Servicio que gestiona la conmutación entre varias GPUs en laptops o PCs con más de una tarjeta gráfica (por ejemplo, integrada y dedicada). Permite cambiar automáticamente qué GPU usar según la carga o la aplicación. En un servidor al que solo accedes por SSH y sin múltiples GPUs, no sirve para nada.
+13-switcheroo-control (DESACTIVADO): Servicio que gestiona la conmutación entre varias GPUs en laptops o PCs con más de una tarjeta gráfica (por ejemplo, integrada y dedicada). Permite cambiar automáticamente qué GPU usar según la carga o la aplicación. En un servidor al que solo accedes por SSH y sin múltiples GPUs, no sirve para nada.
 ```bash
 systemctl stop switcheroo-control
 systemctl disable switcheroo-control
 ```
 
 
-15-udisks2 (ENMASCARADO): ervicio que gestiona discos, particiones y unidades extraíbles (como USB, discos externos o CD/DVD). Permite montar y desmontar automáticamente, obtener información de discos, etc. En un servidor que solo se accede por SSH y donde no se conectan dispositivos externos, no es necesario.
+14-udisks2 (ENMASCARADO): ervicio que gestiona discos, particiones y unidades extraíbles (como USB, discos externos o CD/DVD). Permite montar y desmontar automáticamente, obtener información de discos, etc. En un servidor que solo se accede por SSH y donde no se conectan dispositivos externos, no es necesario.
 ```bash
 systemctl stop udisks2
 systemctl disable udisks2
@@ -2765,14 +2779,14 @@ systemctl mask udisks2
 ```
 
 
-16-upower (ENMASCARADO): Servicio que gestiona información sobre la batería y la energía de los dispositivos (por ejemplo, laptops o UPS). En un servidor que solo usas por SSH y que está enchufado por cable, no aporta nada.
+15-upower (ENMASCARADO): Servicio que gestiona información sobre la batería y la energía de los dispositivos (por ejemplo, laptops o UPS). En un servidor que solo usas por SSH y que está enchufado por cable, no aporta nada.
 ```bash
 systemctl stop upower
 systemctl disable upower
 systemctl mask upower
 ```
 
-17-wpa_supplicant (ENMASCARADO): Es el servicio que gestiona conexiones Wi-Fi (autenticación y gestión de redes inalámbricas). Como mi máquina está solo por cable, no lo necesito.
+16-wpa_supplicant (ENMASCARADO): Es el servicio que gestiona conexiones Wi-Fi (autenticación y gestión de redes inalámbricas). Como mi máquina está solo por cable, no lo necesito.
 ```bash
 systemctl stop wpa_supplicant
 systemctl disable wpa_supplicant
@@ -2831,12 +2845,12 @@ systemctl disable console-setup
 
 Tty trabaja con terminales tty  ||    Ssh crea terminales pts
 
+
+5-man_db (Man Database): gestor de base de datos que contiene toda la información sobre los flags de los comandos. No es necesario y ocupa mucho.
+
 #### Servicios activos
 
-1-apparmor: es un sistema de seguridad que limita lo que puede hacer cada programa. Por ejemplo, dice “este programa solo puede leer esta carpeta, y no puede tocar otras cosas”. Ayuda a proteger tu máquina si algún programa intenta hacer algo raro o malicioso. Mejor no tocarlo, no afecta mucho el arranque y es recomendable mantenerlo por seguridad.
-   
-
-2- cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse. LO desactivamos porque no queremos NADA AUTOMÁTICO. !! **cron no lo quito**
+1- cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse. LO desactivamos porque no queremos NADA AUTOMÁTICO. !! **cron no lo quito**
 
 Podemos ver si hay tareas programadas con los siguientes comandos (1 por usuario):
 ```bash
@@ -2845,14 +2859,16 @@ sudo crontab -l
 ```
 
 
-3-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
+2-dbus: es un sistema de mensajería interna para Linux. Permite que programas y servicios del sistema “hablen” entre sí.
 
-4- networking: servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
+3- networking: servicio clásico que levanta la red con /etc/network/interfaces. Si tu máquina tiene una IP fija o el DHCP está en ese archivo, este servicio es el que asegura que la red suba al inicio. Sin esto, tu servidor podría arrancar sin conexión y no podrías entrar por SSH
 
 
 **SERVICIOS DE VMWare**:
 
-5-open-vm-tools: Son las herramientas de integración de VMware: sincronización de tiempo, copias de seguridad, gestión de red virtual, etc. Permite que la VM funcione mejor dentro de VMware. No afecta mucho, pero mejor no tocarla por si hay errores en mi máquina.
+4-open-vm-tools: Son las herramientas de integración de VMware: sincronización de tiempo, copias de seguridad, gestión de red virtual, etc. Permite que la VM funcione mejor dentro de VMware. No afecta mucho, pero mejor no tocarla por si hay errores en mi máquina.
+
+CARLOS me dijo que no lo quitase porque le facilitaba el trabajo cuando tenía que entrar él a mi máquina. Así se le configuraba el teclado a español solo, no tiene que apagar el la máquian manualmente etc.
 
 6-vgauth: Servicio usado por máquinas virtuales VMware para gestionar la autorización entre el host y el invitado (por ejemplo, para compartir credenciales de Windows con la VM). 
 
@@ -2860,9 +2876,7 @@ sudo crontab -l
 7-polkit:  Es un servicio de control de permisos en Linux. Permite que usuarios normales hagan acciones que normalmente requieren root, sin tener que usar sudo directamente. Por ejemplo: cambiar la hora del sistema, montar discos, gestionar redes, configurar impresoras, etc.
 <br>
 
-8-man_db: man database. Es el gestor de la base de datos de las páginas de manual (man) en sistemas Linux.
-
-9-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
+8-ryslog: es el servicio que gestiona los logs del sistema. Toda la información de errores, arranque, conexiones SSH, actualizaciones, etc., se registra ahí. Si lo desactivo, no tendré registros de eventos del sistema. Si algo falla (por ejemplo, problemas de red o arranque), será más difícil diagnosticarlo.
 
 
 <br>
@@ -3718,7 +3732,7 @@ sshd: 10.20.32.0/21
 **/etc/hosts.deny**
 ```bash
 root@ismael:~# cat /etc/hosts.deny
-# /etc/hosts.deny: list of hosts that are _not_ allowed to access the system.
+  GNU nano 7.2                                                                    /etc/hosts.deny                                                                             # /etc/hosts.deny: list of hosts that are _not_ allowed to access the system.
 #                  See the manual pages hosts_access(5) and hosts_options(5).
 #
 # Example:    ALL: some.host.name, .some.domain
@@ -3734,10 +3748,10 @@ root@ismael:~# cat /etc/hosts.deny
 # validate looked up hostnames still leave understandable logs. In past
 # versions of Debian this has been the default.
 # ALL: PARANOID
-ALL: ALL: spawn (/bin/echo "$(date) $(hostname) %d[%p]: conexión denegada desde %h (%a)" >> /var/log/denegados)
+sshd: ALL : spawn (/bin/sh -c 'echo "$(hostname) %d %p %a %h $(date)" >> /var/log/denegados')
 ```
 
-⚠️ ALL: ALL significa que todo lo demás se bloquea.
+⚠️ ALL: significa que todo lo demás se bloquea.
 
 Cuando una conexión SSH es denegada, spawn ejecuta un comando que escribe en /var/log/denegados la fecha, nombre del servidor, proceso (y PID) e IP de origen. Así, cada intento fallido queda registrado automáticamente en ese fichero.
 
@@ -3856,5 +3870,6 @@ Para comprobar -> **tail -n /var/log/syslog**
 
 ---
 ## PARTE 2  - Parejas
+
 
 
