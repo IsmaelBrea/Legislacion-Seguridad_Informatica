@@ -3730,6 +3730,28 @@ Para probar el deny, necesitamos que alguien esté dentro de la red de la univer
 sudo tail -f /var/log/denegados
 ```
 
+**Obtenga la relación de servicios que utilizan los wrappers de su sistema**
+
+```bash
+ldd /usr/sbin/sshd | grep libwrap
+```
+- ldd → lista las librerías que usa un programa.
+
+- /usr/sbin/sshd → el binario del servicio SSH.
+
+- grep libwrap → filtra para ver si está enlazado con la librería libwrap (la que usan los tcp-wrappers).
+
+  - Si aparece libwrap.so..., significa que ese servicio soporta tcp-wrappers (lee hosts.allow y hosts.deny).
+  - Si no aparece nada, ese servicio no usa tcp-wrappers y no le afectan esos ficheros.
+
+
+
+```bash
+ldd /usr/sbin/vsftpd | grep libwrap   # FTP si lo tienes
+ldd /usr/sbin/portmap | grep libwrap  # rpcbind/portmapper
+ldd /usr/sbin/telnetd | grep libwrap  # Telnet (si existiera)
+ldd /usr/sbin/cron | grep libwrap     # Cron, aunque suele no usar
+```
 
 
 <br>
@@ -3748,6 +3770,7 @@ sudo tail -f /var/log/denegados
 
 ---
 ### **Apartado M) Existen múltiples paquetes para la gestión de logs (syslog, syslog-ng, rsyslog). Utilizando el rsyslog pruebe su sistema de log local. Pruebe también el journald.**
+
 
 
 
