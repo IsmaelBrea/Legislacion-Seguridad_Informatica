@@ -36,7 +36,8 @@ cat archivo.txt     # Mostrar contenido
 less archivo.txt    # Leer con paginador
 head archivo.txt    # Primeras 10 líneas
 tail archivo.txt    # Últimas 10 líneas
-tail -f archivo.log # Ver en tiempo real
+     tail -n archivo.log # Especificar las últimas N líneas
+     tail -f archivo.log # Ver en tiempo real
 
 # Búsqueda
 find . -name "archivo.txt"  # Buscar archivo
@@ -83,6 +84,8 @@ dpkg -l | wc -l           # Lista todos los paquetes instalados  y wc -l cuenta 
 
 # Red
 ping 8.8.8.8         # Probar conexión
+    -c:              # Especifica cuantos paquetes se van a mandar
+ping6 2002:0a0b:3032::1 # Probar conexión IPv6
 tracert ip           # Muestra el camino a seguir para alcanzar una IP
 
  **IP moderno**
@@ -3771,7 +3774,134 @@ ldd /usr/sbin/cron | grep libwrap     # Cron, aunque suele no usar
 ---
 ### **Apartado M) Existen múltiples paquetes para la gestión de logs (syslog, syslog-ng, rsyslog). Utilizando el rsyslog pruebe su sistema de log local. Pruebe también el journald.**
 
+- syslog → el sistema clásico de logs en Unix.
+
+- rsyslog → evolución de syslog, mucho más flexible (filtros, enviar logs a otro servidor, etc.). Es el que usa Debian por defecto.
+
+- syslog-ng → otra alternativa más potente, pero no suele estar instalada por defecto.
+
+- journald → sistema de logs que viene con systemd, guarda todo en binario y lo consultas con journalctl.
 
 
+**Probar rsyslog**
+
+Es un servicio que debíamos haber dejado instalado. Podemos comprobar antes de nada que está activo:
+```bash
+systemctl status rsyslog
+```
+<br>
+
+PROBAR UN MENSAJE -> **logger**
+
+logger es un comando de Linux que sirve para enviar mensajes al sistema de logs. Cuando lo usas, el mensaje va al sistema de logging que tengas (rsyslog, syslog o journald).
+
+```bash
+logger "hola"
+logger "esto es una prueba"
+```
+
+Podemos ver los logs en el archivo de rsyslog que se encuentra en /var/log con tail. tail es un comando que muestra las últimas líneas de texto de un archivo o la salida de datos en tiempo real. Por defecto muestra las últimas 10 líneas, pero con -n podemos especificarla el número de las últimas líneas que queremos ver.
+```bash
+tail -n 10 /var/log/syslog
+```
+
+Ejemplo:
+```bash
+root@ismael:~# logger "hola"
+root@ismael:~# logger "prueba"
+root@ismael:~# tail -n 10 /var/log/rsyslog
+tail: no se puede abrir '/var/log/rsyslog' para lectura: No existe el fichero o el directorio
+root@ismael:~# tail -n 10 /var/log/syslog
+2025-09-30T11:34:48.997315+02:00 ismael anacron[861]: Anacron 2.3 started on 2025-09-30
+2025-09-30T11:34:49.038742+02:00 ismael anacron[861]: Normal exit (0 jobs run)
+2025-09-30T11:34:49.041572+02:00 ismael systemd[1]: anacron.service: Deactivated successfully.
+2025-09-30T11:40:04.641417+02:00 ismael systemd[1]: Starting systemd-tmpfiles-clean.service - Cleanup of Temporary Directories...
+2025-09-30T11:40:04.804670+02:00 ismael systemd[1]: systemd-tmpfiles-clean.service: Deactivated successfully.
+2025-09-30T11:40:04.805321+02:00 ismael systemd[1]: Finished systemd-tmpfiles-clean.service - Cleanup of Temporary Directories.
+2025-09-30T11:40:04.805479+02:00 ismael systemd[1]: run-credentials-systemd\x2dtmpfiles\x2dclean.service.mount: Deactivated successfully.
+2025-09-30T11:43:42.637944+02:00 ismael systemd[1]: Started session-4.scope - Session 4 of User lsi.
+2025-09-30T11:54:33.148183+02:00 ismael root: hola
+2025-09-30T11:54:37.584703+02:00 ismael root: prueba
+```
+
+#### RESUMEN FÁCIL
+Para enviar un mensaje de log -> **logger "mensaje"**
+
+Para comprobar -> **tail -n /var/log/syslog** 
+
+<br>
 
 
+---
+### **Apartado N) Configure IPv6 6to4 y pruebe ping6 y ssh sobre dicho protocolo. ¿Qué hace su tcp-wrapper en las conexiones ssh en IPv6? Modifique su tcp-wapper siguiendo el criterio del apartado h). ¿Necesita IPv6?. ¿Cómo se deshabilita IPv6 en su equipo?**
+
+
+**etc/network/interfaces**
+
+Lo primero que tenemos que hacer es actualizar **etc/network/interfaces** con nuestra IPv6. Para obtener nuestra IPv6 podemos hacer:
+```bash
+ip -6 addr show
+```
+Y ya veremos en ens33 y ens34 nuestras respectivas IPs con 64 bits. En mi caso son las siguientes:
+
+- ens33 → fe80::250:56ff:fe97:298f/64
+
+- ens34 → fe80::250:56ff:fe97:980a/64
+
+
+Ahora tenemos que crear la interfaz 6to4 en nuestro archivo de red:
+```bash
+auto 6to4
+iface 6to4 inet6 v4tunnel
+    pre-up modprobe ipv6
+    address 2002:0a0b:3032::1
+    netmask 16
+    gateway ::10.11.48.1
+    endpoint any
+    local 10.11.48.202
+```
+
+- auto 6to4 → activa la interfaz automáticamente al arrancar.
+
+- iface 6to4 inet6 v4tunnel → define la interfaz como IPv6 usando un túnel sobre IPv4.
+
+- pre-up modprobe ipv6 → carga el módulo de IPv6 antes de levantar la interfaz.
+
+- address 2002:0a0b:3032::1 → asigna la IP IPv6 de la interfaz, derivada de tu IP IPv4.
+
+- netmask 16 → define el tamaño de la red IPv6 del túnel.
+
+- gateway ::10.11.48.1 → puerta de enlace del túnel en formato IPv6.
+
+- endpoint any → acepta tráfico de cualquier IP remota.
+
+- local 10.11.48.202 → IP IPv4 local usada como origen de los paquetes IPv6 encapsulados.
+
+
+Una vez guardado reinicar el servicio y levantar la interfaz 6to4:
+```bash
+systemctl restart networking
+ifup 6to4
+```
+
+Y ahora podemos verificar conectividad local:
+
+```bash
+root@ismael:~# ping6 -c 3 2002:0a0b:3032::1
+PING 2002:0a0b:3032::1(2002:a0b:3032::1) 56 data bytes
+64 bytes from 2002:a0b:3032::1: icmp_seq=1 ttl=64 time=0.036 ms
+64 bytes from 2002:a0b:3032::1: icmp_seq=2 ttl=64 time=0.070 ms
+64 bytes from 2002:a0b:3032::1: icmp_seq=3 ttl=64 time=0.086 ms
+
+--- 2002:0a0b:3032::1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2040ms
+rtt min/avg/max/mdev = 0.036/0.064/0.086/0.020 ms
+```
+
+
+<br>
+<br>
+
+---
+
+## PARTE 2  - Parejas
