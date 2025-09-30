@@ -3406,7 +3406,14 @@ netstat
 
 Conexiones TCP y UDP, tanto las activas como las en escucha, mostrando direcciones y puertos numéricos, y algo de información adicional sobre cada socket: **netstat -netua**
 
-COMANDO GENÉRICO (entrantes y salientes)
+COMANDO GENÉRICO (entrantes y salientes):
+
+```bash
+netstat -putona
+netstat -tulpn
+netstat -netua
+````
+
 
 ```bash
 root@ismael:~# netstat -netua
@@ -3698,8 +3705,9 @@ sshd: 10.20.32.0/21
 - 127.0.0.1 → permite que la propia máquina se conecte a SSH (loopback).
 
 - IPs →
-  - Mis IPs: 10.11.48.202 y 10.11.50.202 → te permiten conectarte desde tu máquina local. (NO ES OBLIGATORIA PORQUE SIEMPRE QUE ME CONECTO POR SSH A MI MÁQUINA ESTOY USANDO UNA IP DE LA VPN. NO HACE FATA PONERLA PORQUE NO VOY CONECTARME A MI IP UNA VEZ DENTRO DE LA MÁQUINA YA).
- - IP de tu compañero → 10.11.48.175 y 10.11.50.175 → permite que él también se conecte.
+  - Mis IPs: 10.11.48.202 y 10.11.50.202 → te permiten conectarte desde tu máquina local.
+      - MI IP: es obligatoria para luego más adelante recibir logs en syslog
+      - IP de tu compañero → 10.11.48.175 y 10.11.50.175 → permite que él también se conecte.
 
 - VPN → 10.20.0.0/16, 10.25.0.0/16, 10.30.0.0/16 → permite cualquier IP dentro de esos rangos de la VPN. NO poner los 4 octetos de mi IP asignada a mi VPN porque con el reinicio de máquinas puede cambiar y perderemos el acceso.
 
@@ -3839,76 +3847,14 @@ Para comprobar -> **tail -n /var/log/syslog**
 
 
 ---
-### **Apartado N) Configure IPv6 6to4 y pruebe ping6 y ssh sobre dicho protocolo. ¿Qué hace su tcp-wrapper en las conexiones ssh en IPv6? Modifique su tcp-wapper siguiendo el criterio del apartado h). ¿Necesita IPv6?. ¿Cómo se deshabilita IPv6 en su equipo?**
+### NO HACERLO!!! **Apartado N) Configure IPv6 6to4 y pruebe ping6 y ssh sobre dicho protocolo. ¿Qué hace su tcp-wrapper en las conexiones ssh en IPv6? Modifique su tcp-wapper siguiendo el criterio del apartado h). ¿Necesita IPv6?. ¿Cómo se deshabilita IPv6 en su equipo?**
 
-
-**etc/network/interfaces**
-
-Lo primero que tenemos que hacer es actualizar **etc/network/interfaces** con nuestra IPv6. Para obtener nuestra IPv6 podemos hacer:
-```bash
-ip -6 addr show
-```
-Y ya veremos en ens33 y ens34 nuestras respectivas IPs con 64 bits. En mi caso son las siguientes:
-
-- ens33 → fe80::250:56ff:fe97:298f/64
-
-- ens34 → fe80::250:56ff:fe97:980a/64
-
-
-Ahora tenemos que crear la interfaz 6to4 en nuestro archivo de red:
-```bash
-auto 6to4
-iface 6to4 inet6 v4tunnel
-    pre-up modprobe ipv6
-    address 2002:0a0b:3032::1
-    netmask 16
-    gateway ::10.11.48.1
-    endpoint any
-    local 10.11.48.202
-```
-
-- auto 6to4 → activa la interfaz automáticamente al arrancar.
-
-- iface 6to4 inet6 v4tunnel → define la interfaz como IPv6 usando un túnel sobre IPv4.
-
-- pre-up modprobe ipv6 → carga el módulo de IPv6 antes de levantar la interfaz.
-
-- address 2002:0a0b:3032::1 → asigna la IP IPv6 de la interfaz, derivada de tu IP IPv4.
-
-- netmask 16 → define el tamaño de la red IPv6 del túnel.
-
-- gateway ::10.11.48.1 → puerta de enlace del túnel en formato IPv6.
-
-- endpoint any → acepta tráfico de cualquier IP remota.
-
-- local 10.11.48.202 → IP IPv4 local usada como origen de los paquetes IPv6 encapsulados.
-
-
-Una vez guardado reinicar el servicio y levantar la interfaz 6to4:
-```bash
-systemctl restart networking
-ifup 6to4
-```
-
-Y ahora podemos verificar conectividad local:
-
-```bash
-root@ismael:~# ping6 -c 3 2002:0a0b:3032::1
-PING 2002:0a0b:3032::1(2002:a0b:3032::1) 56 data bytes
-64 bytes from 2002:a0b:3032::1: icmp_seq=1 ttl=64 time=0.036 ms
-64 bytes from 2002:a0b:3032::1: icmp_seq=2 ttl=64 time=0.070 ms
-64 bytes from 2002:a0b:3032::1: icmp_seq=3 ttl=64 time=0.086 ms
-
---- 2002:0a0b:3032::1 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2040ms
-rtt min/avg/max/mdev = 0.036/0.064/0.086/0.020 ms
-```
 
 
 <br>
 <br>
 
 ---
-
 ## PARTE 2  - Parejas
+
 
