@@ -11,7 +11,7 @@
 
 history muestra todos los comandos ejecutados en los distintos usuarios que tenemos. Al escribir muchos comandos puede ser complicado encontrar alguno, pero aquí hay trucos para reducir la búsqueda.
 
-1- history con grep:
+1- **history con grep**:
 
 Si nos acordamos de alguna palabra del comando podemos hacer lo siguiente:
 history | grep palabra
@@ -19,7 +19,7 @@ history | grep palabra
 Nos saldrán todos los comandos  que hayamos usado con esa palabra.
 <br>
 
-2- Ctrl + R (Búsqueda hacia atrás):
+2- **Ctrl + R (Búsqueda hacia atrás)**:
 
 Presiona Ctrl + R en la terminal. Empieza a escribir parte del comando que recuerdas. Verás aparecer coincidencias de tu historial en tiempo real. Pulsa Enter para ejecutar el comando encontrado o las flechas para editarlo.
 
@@ -3892,6 +3892,7 @@ Para comprobar -> **tail -n /var/log/syslog**
 
 ---
 ## PARTE 2  - Parejas
+
 
 
 
