@@ -4223,6 +4223,41 @@ Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el 
 <br>
 
 ---
+### **Apartado C) Haga todo tipo de propuestas sobre los siguientes aspectos: ¿Qué problemas de seguridas identifica en los dos apartados anteriores? ¿Cómo podría solucionar los problemas identificados?
+
+
+
+-  Rsyslog
+ - Cualquier equipo podría enviar logs al servidor y llenar el disco (Denegación de Servicio, DoS).
+ - Los logs viajan sin cifrar; un atacante podría leer o modificar la información mediante un ataque *Man in the Middle* (MitM).
+
+- NTP/NTPsec
+ - Usa UDP, lo que lo hace vulnerable a ataques de inundación, *spoofing* de IP o DoS.
+ - Falta de autenticación por defecto; un atacante podría desincronizar el reloj del cliente.
+
+<br>
+
+### Propuestas de solución
+
+1. Cifrado de comunicaciones
+ - Usar certificados TLS para rsyslog y NTPsec, asegurando la autenticidad del cliente/servidor y la confidencialidad de los datos.
+
+2. Control de acceso
+ - Limitar qué hosts pueden conectarse mediante firewall o reglas específicas (`$AllowedSender` en rsyslog).
+ - Configurar autenticación basada en claves o tokens para clientes autorizados.
+
+3. Integridad y autenticación
+ - Para NTP, usar *Network Time Security* (NTS) con certificados y claves para validar servidores.
+ - Para rsyslog, configurar autenticación de origen y validación de mensajes.
+
+ 4. Prevención de DoS
+ - Monitorizar y limitar el volumen de logs recibidos.
+ - Habilitar colas y mecanismos de reintento para evitar saturación en caso de fallo temporal de red.
+
+5. Cifrado de información sensible
+ - Siempre que se transporten datos críticos, cifrar los mensajes antes de enviarlos.
+
+
 ### **Apartado E) Instale el SIEM splunk en su máquina. Sobre dicha plataforma haga los siguientes puntos.**
 
 Splunk es una plataforma para buscar, analizar y visualizar datos de registros (logs) y métricas de sistemas, redes, aplicaciones, etc. Recoge información de muchos orígenes y la hace buscable y gráfica en tiempo real. Básicamente, convierte datos “crudos” (archivos de logs, eventos, errores) en información que puedes interpretar con gráficos, alertas y dashboards.
@@ -4280,6 +4315,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
