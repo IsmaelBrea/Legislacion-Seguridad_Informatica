@@ -4027,7 +4027,9 @@ date -s "fecha hora"
 ntpq -p
 ```
 
-     remote           refid      st t when poll reach   delay   offset  jitter
+
+
+ remote           refid      st t when poll reach   delay   offset  jitter
 ==============================================================================
 10.11.48.175       .GPS.        1 u   xx   xx    xx   x.xxx  x.xxx  x.xxx
 
@@ -4045,6 +4047,7 @@ ntpdate <IP_servidor>
 timedatectl status
 ```
 Tiene que poner:  System clock synchronized: yes.
+
 
 Probar manualmente:
 ```bash
@@ -4128,5 +4131,6 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
