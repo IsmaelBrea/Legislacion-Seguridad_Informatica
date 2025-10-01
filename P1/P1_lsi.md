@@ -1,4 +1,45 @@
-# PRÁCTICA 1 - Seguridad Informática
+lsi@ismael:~$ journalctl -p warning -b
+Hint: You are currently not seeing messages from other users and the system.
+      Users in groups 'adm', 'systemd-journal' can see all messages.
+      Pass -q to turn off this notice.
+oct 01 13:29:08 ismael pipewire-pulse[813]: mod.rt: Can't find org.freedesktop.portal.Desktop. Is xdg-desktop-portal running?
+oct 01 13:29:08 ismael pipewire-pulse[813]: mod.rt: found session bus but no portal
+oct 01 13:29:08 ismael pipewire-pulse[813]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 13:29:08 ismael pipewire-pulse[813]: mod.rt: could not set nice-level to -11: Error de entrada/salida
+oct 01 13:29:08 ismael pipewire-pulse[813]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 13:29:08 ismael pipewire[808]: mod.rt: Can't find org.freedesktop.portal.Desktop. Is xdg-desktop-portal running?
+oct 01 13:29:08 ismael pipewire[808]: mod.rt: found session bus but no portal
+oct 01 13:29:08 ismael pipewire[808]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 13:29:08 ismael pipewire[808]: mod.rt: could not set nice-level to -11: Error de entrada/salida
+oct 01 13:29:08 ismael pipewire[808]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 13:29:08 ismael pipewire[808]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 13:29:08 ismael pipewire-pulse[813]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 13:29:17 ismael gvfs-udisks2-vo[854]: monitor says it's not supported
+oct 01 13:29:17 ismael gvfs-udisks2-vo[854]: monitor says it's not supported
+oct 01 13:29:17 ismael tracker-miner-f[849]: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+oct 01 13:29:18 ismael tracker-miner-f[849]: Couldn't connect to proxy: Error al llamar StartSereviceByName para org.freedesktop.UPower: Unit upower.service is masked.
+oct 01 13:29:18 ismael tracker-miner-f[849]: Unable to connect to UPower
+oct 01 13:29:19 ismael gvfs-udisks2-vo[854]: monitor says it's not supported
+oct 01 13:29:19 ismael tracker-extract[811]: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+oct 01 06:56:30 ismael pipewire[1070]: mod.rt: Can't find org.freedesktop.portal.Desktop. Is xdg-desktop-portal running?
+oct 01 06:56:30 ismael pipewire[1070]: mod.rt: found session bus but no portal
+oct 01 06:56:30 ismael pipewire[1070]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 06:56:30 ismael pipewire[1070]: mod.rt: could not set nice-level to -11: Error de entrada/salida
+oct 01 06:56:30 ismael pipewire[1070]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 06:56:30 ismael pipewire-pulse[1079]: mod.rt: Can't find org.freedesktop.portal.Desktop. Is xdg-desktop-portal running?
+oct 01 06:56:30 ismael pipewire-pulse[1079]: mod.rt: found session bus but no portal
+oct 01 06:56:30 ismael pipewire-pulse[1079]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 06:56:30 ismael pipewire-pulse[1079]: mod.rt: could not set nice-level to -11: Error de entrada/salida
+oct 01 06:56:30 ismael pipewire-pulse[1079]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 06:56:30 ismael pipewire[1070]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 06:56:30 ismael pipewire-pulse[1079]: mod.rt: RTKit error: org.freedesktop.systemd1.UnitMasked
+oct 01 06:56:31 ismael gvfs-udisks2-vo[1106]: monitor says it's not supported
+oct 01 06:56:31 ismael gvfs-udisks2-vo[1106]: monitor says it's not supported
+oct 01 06:56:31 ismael tracker-miner-f[1101]: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+oct 01 06:56:31 ismael tracker-miner-f[1101]: Couldn't connect to proxy: Error al llamar StartSereviceByName para org.freedesktop.UPower: Unit upower.service is masked.
+oct 01 06:56:31 ismael tracker-miner-f[1101]: Unable to connect to UPower
+oct 01 06:56:31 ismael gvfs-udisks2-vo[1106]: monitor says it's not supported
+oct 01 06:56:31 ismael tracker-extract[1071]: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported# PRÁCTICA 1 - Seguridad Informática
 
 ## Defensas en clase
 - Traer papel y boli.  
@@ -3990,9 +4031,9 @@ nano /etc/ntpsec/ntp.conf
 
 - tos maxclock 11 → usa como máximo 11 servidores para calcular la hora.
 
-- tos minclock 4 minsane 3 → necesita al menos 4 servidores para sincronizar, y al menos 3 deben coincidir entre ellos.
+- tos minclock 4 minsane 0 → necesita al menos 4 servidores para sincronizar, y al menos 0 deben coincidir entre ellos.
 
-- pool 0/1/2/3.debian.pool.ntp.org iburst → lista de servidores públicos de NTP a los que tu máquina consulta para ajustar la hora; iburst acelera la sincronización inicial.
+- pool 0/1/2/3.debian.pool.ntp.org iburst → lista de servidores públicos de NTP a los que tu máquina consulta para ajustar la hora; iburst acelera la sincronización inicial. !LOS HEMOS DESACTIVADO!
 
 
 <br>
@@ -4315,6 +4356,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
