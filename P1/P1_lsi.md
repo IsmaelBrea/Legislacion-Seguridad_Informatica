@@ -3967,6 +3967,8 @@ nano /etc/ntpsec/ntp.conf
 - pool 0/1/2/3.debian.pool.ntp.org iburst → lista de servidores públicos de NTP a los que tu máquina consulta para ajustar la hora; iburst acelera la sincronización inicial.
 
 
+<br>
+
 **SERVIDOR-LUCAS**
 ```bash
 server 127.127.1.0 minpoll 4
@@ -3980,10 +3982,14 @@ restrict 10.11.48.202 mask 255.255.255.255 nomodify notrap nopeer
 
 - restrict 10.11.48.202 ... → Permite que el cliente 10.11.48.202 pueda pedir la hora, pero no modificar la configuración del servidor.
 
+<br>
 
 **CLIENTE-ISMA**
+
+```bash
 server 10.11.48.175 prefer minpoll 4
 restrict 10.11.48.175 mask 255.255.255.255 noquery nopeer
+```
 
 
 - server 10.11.48.175 prefer minpoll 4 → Le dice al cliente que use el servidor 10.11.48.175 como referencia de hora. prefer indica que es su servidor principal.
@@ -3996,6 +4002,7 @@ AMBOS:
 restrict 127.0.0.1
 restrict ::1
 ```
+
 restrict 127.0.0.1 y restrict ::1 → Permite que el propio sistema (localhost) consulte su reloj sin problemas.
 
 
@@ -4022,6 +4029,7 @@ Cambiar temporalmente la hora:
 date -s "fecha hora"
 ```
 
+
 3-Cliente:
 ```bash
 ntpq -p
@@ -4038,6 +4046,10 @@ ntpq -p
 - st (stratum) debería acercarse a 10 o al nivel correcto del servidor
 - offset indica la diferencia de tiempo entre cliente y servidor (pequeña → sincronizado)
 
+
+
+
+<br>
 
 ```bash
 ntpdate <IP_servidor>
@@ -4072,8 +4084,117 @@ ntpdate -q 10.11.48.175
 
 
 
+<br>
+
+---
+### **Apartado B) Cruzando los dos equipos anteriores, configure con rsyslog un servidor y un cliente de logs.**
+
+Tenemos que hacer algo similar a antes pero con rsyslog. Podemos usar UDP o TCp pero como es más fiable y seguro TCP, lo hacemos con TCP.
 
 
+Servidor: 10.11.48.175
+Cliente (yo): 10.11.48.202
+
+
+Tenemos que cambiar en ambos el fichero: **/etc/rsyslog.conf**
+
+**SERVIDOR-LUCAS**
+
+# Habilitar TCP para recibir logs en el puerto 514
+```bash
+module(load="imtcp")
+input(type="imtcp" port="514")
+```
+
+# Opcional: limitar quién puede enviar
+```bash
+$AllowedSender TCP, 127.0.0.1, 10.11.48.202
+```
+
+# Guardar logs de clientes en carpetas separadas
+```bash
+$template RemoteLogs,"/var/log/%fromhost-ip%/%programname%.log"
+*.* ?RemoteLogs
+& stop
+```
+
+
+**CLIENTE-ISMA**
+
+Añadir al final:
+```bash
+*.* action(
+  type="omfwd"
+  target="10.11.48.175"      # IP del servidor
+  port="514"
+  protocol="tcp"
+  action.resumeRetryCount="-1"
+  queue.type="linkedlist"
+  queue.filename="/var/log/rsyslog-queue"
+  queue.saveOnShutdown="on")
+```
+
+1. type="omfwd" → dice: "módulo de salida para reenviar logs a otro equipo".
+
+2. target="10.11.48.175" → la IP de tu compa (el servidor que recibirá los logs).
+
+3. port="514" → puerto estándar de syslog.
+
+4. protocol="tcp" → se usa TCP (confiable). También podría ser "udp".
+
+5. action.resumeRetryCount="-1" → si falla la conexión, reintenta infinitamente.
+
+6. queue.type="linkedlist" → usa una cola en memoria para guardar mensajes mientras espera enviar.
+
+7. queue.filename="/var/log/rsyslog-queue" → si la cola en memoria se llena o se cae el rsyslog, guarda los logs en disco aquí (para no perderlos).
+
+8. queue.saveOnShutdown="on" → si apagas el cliente, la cola se guarda y al encender se reenvía al servidor.
+
+Coge todos mis logs, mándalos por TCP al servidor 10.11.48.175:514, y si falla la conexión, guárdalos en una cola (memoria/disco) para reenviarlos más tarde y no perder nada.
+
+
+
+Para reiniciar:
+```bash
+systemctl restart rsyslog
+```
+
+#### PROBAR QUE FUNCIONA
+
+El cliente tiene que mandar un mensaje al server y a este se le creará una carepta con el hostanme del server donde recibirá los logs del cliente. Por cada tipo de log que le manda se le crerá una carpeta distinta dentro de mi nombre cliente.
+
+Vamos a probar a mandar un user log y mail.err
+
+1-Cliente: 
+
+```bash
+logger "hola desde ismael"
+```
+
+Ahora vamos a mandar un mail.err:
+```bash
+logger -p mail.err "hola 2 desde ismael"
+```
+
+ El cliente puede probar que se ha enviado sin error en su syslog:
+
+ ```bash
+tail -f /var/log/syslog
+````
+
+2-Servidor:
+
+Para ver los logs creados accedemos a /var/log
+
+Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el hostanme del cliente. Ahí se crearán distintas carpetas por cada tipo de mensaje. En este caso se han creado dos careptas una user_log y otra mail.err.
+
+![syslog](../images/syslog.png)
+
+
+
+<br>
+
+---
 ### **Apartado E) Instale el SIEM splunk en su máquina. Sobre dicha plataforma haga los siguientes puntos.**
 
 Splunk es una plataforma para buscar, analizar y visualizar datos de registros (logs) y métricas de sistemas, redes, aplicaciones, etc. Recoge información de muchos orígenes y la hace buscable y gráfica en tiempo real. Básicamente, convierte datos “crudos” (archivos de logs, eventos, errores) en información que puedes interpretar con gráficos, alertas y dashboards.
@@ -4131,6 +4252,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
