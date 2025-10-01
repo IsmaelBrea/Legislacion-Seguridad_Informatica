@@ -2356,6 +2356,10 @@ ens34: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 ```
 La interfaz ens34 vuelve a estar como antes.
 
+**Lo ideal sería poner de IP de interfaz lógica nuestra Ip pero en vez de 48, 52 siguiendo el mismo criterio que la .50.**
+
+**También se puede añadir la interfaz lógica de forma permananente en el etc/network/interfaces y dejarla comentada, solo activarla cuando me la pidan. 
+
 #### RESUMEN FÁCIL:
 Nuestra tarjeta de red física es ens34. Un interfaz lógico es como ponerle otra “puerta” a la misma tarjeta. Esto te permite tener más de una IP en la misma tarjeta física.
 
@@ -2459,6 +2463,36 @@ default via 10.11.48.1 dev ens33 onlink
 ### Ejemplo de lo que va a pedir:
 **CREAME UNA RED ESTATICA X QUE VAYA A TRAVES DE ENS34. Por ejemplo, creame una red estática que vaya a marca.com a través de ens34.**
 
+
+**Creame una red estática a través de ens33 que vaya a marca.com**
+
+ens34 no podría acceder ya que no tiene salida a Internet
+
+1-Obtener as IPS de marca.com
+```bash
+lsi@ismael:~$ getent ahostsv4 marca.com
+34.147.120.111  STREAM marca.com
+34.147.120.111  DGRAM
+34.147.120.111  RAW
+```
+
+2-Crear la rta estática a través de ens34
+```bash
+ip route add 34.147.120.111 via 10.11.48.1 dev ens34
+```
+
+3-Comprobar que la ruta está activa:
+```bash
+ip route get 34.147.120.111
+```
+
+
+4-Probar acceso
+```bash
+wget -O- http://marca.com | head -20
+```
+
+Dberíamos ver 200 Ok y la salida de las útimas 20 líneas de un html.
 
 #### RESUMEN FÁCIL:
 ¿Qué es una ruta por defecto (default gateway) y para qué sirve?
@@ -3893,6 +3927,7 @@ Para comprobar -> **tail -n /var/log/syslog**
 ---
 ## PARTE 2  - Parejas
 
+### **Apartado A)En colaboración con otro alumno de prácticas, configure un servidor y un cliente NTPSec básico.**
 
 
 
