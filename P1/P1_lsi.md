@@ -4188,7 +4188,7 @@ Para ver los logs creados accedemos a /var/log
 
 Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el hostanme del cliente. Ahí se crearán distintas carpetas por cada tipo de mensaje. En este caso se han creado dos careptas una user_log y otra mail.err.
 
-![syslog](../images/syslog.png)
+![syslog](../images/syslog.htm)
 
 
 
@@ -4252,6 +4252,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
