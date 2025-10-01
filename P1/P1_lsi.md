@@ -3975,8 +3975,8 @@ Lo primero vamos a instalar NTPsec que es una versión segura y ligera de NTP, r
 apt install ntpsec
 ```
 
-Cliente (YO): 10.11.48.202
-Servidor: 10.11.48.175
+Cliente (YO): 10.11.48.202   ||  Servidor: 10.11.48.175
+
 
 Tenemos que tocar los archivos de configuración para hacer esto: **/etc/ntpsec/ntp.conf**
 ```bash
@@ -4315,6 +4315,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
