@@ -220,6 +220,34 @@ shutdown now         # Apagar
 --no-pager
 ```
 
+<br>
+
+---
+## Repaso CARPETAS PRINCIPALES de Linux
+```bash
+/                → Raíz del sistema, todo cuelga de aquí.
+/bin             → Binarios esenciales (comandos básicos: ls, cp, mv...).
+/sbin            → Binarios esenciales de administración (ifconfig, fdisk...).
+/usr             → Programas y utilidades de usuario.
+/usr/bin         → Binarios principales instalados para usuarios.
+/usr/sbin        → Herramientas de administración para root.
+/usr/local       → Programas instalados manualmente por el admin.
+/var             → Datos variables: logs, colas, spool.
+/var/log         → Archivos de log del sistema y servicios.
+/etc             → Archivos de configuración del sistema.
+/home            → Carpetas personales de cada usuario.
+/root            → Carpeta personal del usuario root.
+/tmp             → Archivos temporales (se borran al reiniciar).
+/lib             → Bibliotecas esenciales compartidas.
+/lib64           → Bibliotecas esenciales 64 bits.
+/boot            → Archivos de arranque (kernel, GRUB...).
+/opt             → Programas opcionales de terceros.
+/dev             → Dispositivos (discos, USB, tty, etc.).
+/proc            → Info del kernel y procesos en tiempo real.
+/sys             → Info del kernel, hardware y drivers.
+/mnt             → Punto de montaje temporal.
+/media           → Puntos de montaje automático (USB, CD, etc.).
+```
 
 ---
 <br>
@@ -4252,6 +4280,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
