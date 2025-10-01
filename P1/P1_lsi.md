@@ -3927,9 +3927,206 @@ Para comprobar -> **tail -n /var/log/syslog**
 ---
 ## PARTE 2  - Parejas
 
-### **Apartado A)En colaboración con otro alumno de prácticas, configure un servidor y un cliente NTPSec básico.**
+### **Apartado A) En colaboración con otro alumno de prácticas, configure un servidor y un cliente NTPSec básico.**
+
+-NTP (Network Time Protocol): sincroniza la hora entre máquinas en una red.
+
+- NTPsec: versión segura de NTP, más ligera y segura.
+
+    - Stratum: nivel jerárquico de los servidores de tiempo.
+
+    - Stratum 0 → fuente de tiempo (ej. reloj atómico, GPS).
+
+    - Stratum 1 → servidor conectado a Stratum 0.
+
+    - Stratum 2 → sincronizado a Stratum 1, y así sucesivamente.
+
+Lo primero vamos a instalar NTPsec que es una versión segura y ligera de NTP, reescrito desde cero para eliminar vulnerabilidades. consume menos recursos y es más rápido y compatible con NTP, así que clientes/servidores NTP normales pueden sincronizar con NTPsec.
+
+```bash
+apt install ntpsec
+```
+
+Cliente (YO): 10.11.48.202
+Servidor: 10.11.48.175
+
+Tenemos que tocar los archivos de configuración para hacer esto: **/etc/ntpsec/ntp.conf**
+```bash
+nano /etc/ntpsec/ntp.conf
+```
+
+
+- driftfile /var/lib/ntpsec/ntp.drift → guarda la desviación de tu reloj para que NTPsec lo corrija más rápido la próxima vez.
+
+- leapfile /usr/share/zoneinfo/leap-seconds.list → contiene los segundos intercalares (leap seconds) para ajustar la hora exacta.
+
+- tos maxclock 11 → usa como máximo 11 servidores para calcular la hora.
+
+- tos minclock 4 minsane 3 → necesita al menos 4 servidores para sincronizar, y al menos 3 deben coincidir entre ellos.
+
+- pool 0/1/2/3.debian.pool.ntp.org iburst → lista de servidores públicos de NTP a los que tu máquina consulta para ajustar la hora; iburst acelera la sincronización inicial.
+
+
+**SERVIDOR-LUCAS**
+```bash
+server 127.127.1.0 minpoll 4
+fudge 127.127.1.0 stratum 10
+restrict 10.11.48.202 mask 255.255.255.255 nomodify notrap nopeer
+```
+
+- server 127.127.1.0 minpoll 4 → Esto dice: el servidor usa su propio reloj local como referencia (porque no está conectado a internet).
+
+- fudge 127.127.1.0 stratum 10 → Establece la prioridad de este reloj local como nivel 10 (más alto el número → menos prioridad que un reloj real de internet).
+
+- restrict 10.11.48.202 ... → Permite que el cliente 10.11.48.202 pueda pedir la hora, pero no modificar la configuración del servidor.
+
+
+**CLIENTE-ISMA**
+server 10.11.48.175 prefer minpoll 4
+restrict 10.11.48.175 mask 255.255.255.255 noquery nopeer
+
+
+- server 10.11.48.175 prefer minpoll 4 → Le dice al cliente que use el servidor 10.11.48.175 como referencia de hora. prefer indica que es su servidor principal.
+
+- restrict 10.11.48.175 ... → Impide al cliente enviar consultas de configuración o convertirse en servidor hacia esa IP.
+
+
+AMBOS:
+```bash
+restrict 127.0.0.1
+restrict ::1
+```
+restrict 127.0.0.1 y restrict ::1 → Permite que el propio sistema (localhost) consulte su reloj sin problemas.
 
 
 
+**Pasos para SINCRONIZAR:**
+
+1-Ambos:
+```bash
+systemctl restart ntpsec
+```
+
+
+2-Servidor comprueba que escuha en puerto 123 (NTP):
+```bash
+sudo ss -ulpn | grep ntpd
+```
+
+```bash
+ntpq -p
+```
+
+Cambiar temporalmente la hora:
+```bash
+date -s "fecha hora"
+```
+
+3-Cliente:
+```bash
+ntpq -p
+```
+
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+10.11.48.175       .GPS.        1 u   xx   xx    xx   x.xxx  x.xxx  x.xxx
+
+
+- reach debe subir (empezando en 0 → 377 cuando ya tiene contacto)
+- st (stratum) debería acercarse a 10 o al nivel correcto del servidor
+- offset indica la diferencia de tiempo entre cliente y servidor (pequeña → sincronizado)
+
+
+```bash
+ntpdate <IP_servidor>
+```
+
+```bash
+timedatectl status
+```
+Tiene que poner:  System clock synchronized: yes.
+
+Probar manualmente:
+```bash
+ntpdate -q 10.11.48.175
+```
+
+
+#### RESUMEN FÁCIL
+
+
+1. En el servidor, ejecutar ntpq -p y esperar a que el campo reach llegue a 377 (significa que todas las solicitudes han sido respondidas y el servidor está listo).
+
+2. Cambiar temporalmente la fecha del servidor con date -s "fecha hora" si es necesario.
+
+3. En el cliente, reiniciar la máquina y ejecutar ntpdate <IP_servidor> para sincronizar la hora con el servidor.
+
+4. Comprobar con date que la hora se ha actualizado correctamente.
+
+5. En el servidor, ntpq -p debería mostrar un * junto a LOCAL indicando que el reloj local está activo.
+
+6. Verificar en el cliente que reach aumenta cada vez que ejecuta ntpq -p, confirmando que está sincronizado correctamente.
+
+
+
+
+
+### **Apartado E) Instale el SIEM splunk en su máquina. Sobre dicha plataforma haga los siguientes puntos.**
+
+Splunk es una plataforma para buscar, analizar y visualizar datos de registros (logs) y métricas de sistemas, redes, aplicaciones, etc. Recoge información de muchos orígenes y la hace buscable y gráfica en tiempo real. Básicamente, convierte datos “crudos” (archivos de logs, eventos, errores) en información que puedes interpretar con gráficos, alertas y dashboards.
+
+Ejemplos de uso:
+
+- Monitorizar servidores y servicios.
+
+- Analizar logs de seguridad o ataques.
+
+- Revisar métricas de rendimiento de aplicaciones.
+
+- Crear dashboards con gráficos y estadísticas de tus sistemas.
+
+1-Descargarlo:
+```bash
+cd /tmp
+wget -O splunk.deb 'https://download.splunk.com/products/splunk/releases/10.2.0/linux/splunk-10.2.0-f4b4b2e0b0d7-linux-2.6-amd64.deb'
+```
+
+2-Instalar:
+```bash
+sudo dpkg -i splunk.deb
+```
+
+
+3-Inicializar Splunk por primera vez
+```bash
+sudo /opt/splunk/bin/splunk start --accept-license
+```
+
+Te pedirá crear usuario y contraseña admin.
+
+Recuerda esta contraseña para acceder a la web.
+
+
+4-Configurar para arrancar al inicio
+```bash
+sudo /opt/splunk/bin/splunk enable boot-start
+```
+
+
+5-Comprobar estado del servicio
+```bash
+sudo /opt/splunk/bin/splunk status
+```
+
+
+Acceder a la interfaz web
+
+Abre tu navegador.
+
+URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
+
+Usuario: admin
+
+Contraseña: la que creaste al iniciar
 
 
