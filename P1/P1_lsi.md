@@ -3648,6 +3648,8 @@ Salida de top:
   - CPU(s) → % de CPU usada por usuario (us), sistema (sy), nice (ni), idle (id), espera I/O (wa), hardware IRQ (hi), software IRQ (si).
   
   - Mem / Swap → memoria usada, libre, buffers/cache, swap usada y libre.
+ 
+Explicación del comando top: **https://geekytheory.com/funcionamiento-del-comando-top-en-linux/**
 
 <br>
 
@@ -3813,6 +3815,8 @@ sshd: 10.20.32.0/21
 
 - Eduroam (no es ESENCIAL)→ 10.20.32.0/21 → permite el rango de Eduroam de la universidad.
 
+La la IP de Eduroam la sacamos con el comando ipconfig y que restamos la IP menos la IP de broadcast. La máscara es la misma
+lógica que antes, es 254 porque al haber 254 máquinas las separamos en 48,49,50 y 51, y ese bit lo usamos para diferenciar la subred 48 y 49.
 
 
 **/etc/hosts.deny**
@@ -4464,16 +4468,170 @@ Ahora tendremos control MANUAL de la siguiente forma:
 /opt/splunk/bin/splunk status
 ```
 
+---
+  #### **a) Genere una query que visualice los logs internos del splunk**
+
+  Una vez en la web, tenemos que ir al apartado de Search and Reporting y en la barra de búsqueda debemos filtrar por llo siguiente para ver los logs internos de splunk:
+
+```swift
+index=_internal
+```
+
+Afinar la query:
+
+- Últimos 15 minutos de msnajes de Splunk:
+```swift
+index=_internal sourcetype=splunkd earliest=-15m
+```
+
+- Cuántos logs internos hubo por componente
+```swift
+index=_internal sourcetype=splunkd
+| stats count by component
+```
+
+- Ver errores internos:
+```swift
+index=_internal sourcetype=splunkd log_level=ERROR
+```
+
+<br>
+
+---
+  #### **b) Cargué el fichero /var/log/apache2/access.log y el journald del sistema y visualícelos. **
+
+Tenemos que cargar por una parte logs de un país distinto y por otra parte nuestros logs de joournald de la máquina.
 
 
+**LOGS INTERNACIONALES -> Acess.log**
+
+Tenemos un archivo access-log que hemos subido a splunk.
+
+Para subirlo: Settings -> Add Data -> Upload -> Subir el archivo y todo next
+
+<br>
+
+**LOGS DE JOURNALD  -> AccesosJournald.log**
+
+Mandamos todos los archivos de journalctl -b a un archivo que creamos ahora .log:
+
+```bash
+journalctl -b >> /var/log/AccesosJournald.log
+```
+Para subirlo: Settings -> Add Data -> Monitor -> Files and Directories -> Browse -> Buscamos el archivo /var/log/AccesosJournald.log y todo next
 
 
+<br>
 
 
+**YA TENEMOS LOS DOS ARCHIVOS DE LOGS SUBIDOS**
+
+1. Podemos ver el contenido de los archivos (es decir, los logs, de la siguiente forma):
+```swift
+index=main
+```
+
+2. Para ver los archivos que hemos subido:
+```swift
+index=main
+| stats count by source
+```
+
+En la parte de Statistics:
 
 
+<br>
+
+---
+#### **c) Obtenga las IPs de los equipos que se han conectado a su servidor web (pruebe a generar algún tipo de gráfico de visualización), así como las IPs que se han conectado un determinado día de un determinado mes.**
+
+**LOGS INTERNACIONALES -> Acess.log**
+
+source="Acesos.log" | rex field=_raw "(?<prueba2>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})" | stats count by prueba2 | sort - count | head 10
+```python
+31.56.96.51	128
+66.249.66.194	126
+66.249.66.91	120
+66.111.54.249	104
+130.185.74.243	86
+5.211.97.39	82
+5.209.200.218	70
+91.99.72.15	66
+204.18.198.248	58
+207.46.13.136
+```
+
+<br>
+
+**LOGS DE JOURNALD  -> AccesosJournald.log**
+
+```swift
+source="/var/log/AccesosJournald.log" | rex field=_raw "(?<prueba2>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})" | stats count by prueba2 | sort - count | head 10
+```
+En Statistics podemos ver las IPs de los equipos:
+```python
+10.30.12.170	
+0.0.0.0	4
+10.11.48.202	
+10.11.50.202	
+127.0.0.1	
+10.11.48.175	
+127.127.1.0
+```
 
 
+<br>
+
+---
+#### **d) Trate de obtener el país y región origen de las IPs que se han conectado a su servidor web y si posible sus coordenadas geográficas.**
+
+**LOGS INTERNACIONALES -> Acess.log** 
+```swift
+source="Acesos.log" | rex field=_raw "(?<prueba2>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})" | iplocation prueba2 | stats count by Country | geom geo_countries featureIdField=Country
+```
+
+En la parte de Visualization
+
+<br>
+
+**LOGS DE JOURNALD  -> AccesosJournald.log**
+```swift
+source="/var/log/AccesosJournald.log" | rex field=_raw "(?<prueba2>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})" | iplocation prueba2 | stats count by Country | geom geo_countries featureIdField=Country
+```
+
+<br>
+
+---
+
+#### **d) Obtenga los hosts origen, sources y sourcestypes.**
+
+- Host origen (host): Es el nombre del equipo que generó o envió el log. Por ejemplo, si un log viene de tu servidor Debian, el host podría ser ismael.
+
+- Source (fuente): Es el archivo o lugar desde donde Splunk leyó el log. Por ejemplo /var/log/AccesosJournald.log o Acesos.log.
+
+- Sourcetype (tipo de fuente): Es el tipo de log que es, es decir, cómo interpreta Splunk ese archivo. Por ejemplo syslog, apache_access, journald… Esto ayuda a Splunk a aplicar reglas de extracción y análisis específicas según el tipo de log.
+
+<br> 
+
+**LOGS INTERNACIONALES -> Acess.log** 
+
+```swift
+source="Acesos.log" | stats count by source, sourcetype, host
+```
+
+En la parte de Statistics
+
+<br>
+
+**LOGS DE JOURNALD  -> AccesosJournald.log**
+
+```swift
+source="/var/log/AccesosJournald.log" | stats count by source, sourcetype, host
+```
 
 
+<br>
+
+---
+#### **f) ¿cómo podría hacer que splunk haga de servidor de log de su cliente?**
 
