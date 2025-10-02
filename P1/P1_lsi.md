@@ -39,6 +39,7 @@ pwd                 # Carpeta actual
 ls                  # Listar
 ls -l               # Listar con detalles
 ls -a               # Incluir ocultos
+
 cd /ruta            # Cambiar carpeta
 cd ~                # Ir al home (~ es el directorio home del usuario actual)
 cd ..               # Subir un nivel
@@ -500,7 +501,8 @@ Debería mostrar root
 
 - **`sudo`**  
   Ejecuta **un solo comando como root** usando tu contraseña de usuario normal.  
-  No cambia tu usuario permanentemente, solo eleva privilegios para ese comando.  
+  No cambia tu usuario permanentemente, solo eleva privilegios para ese comando.
+  Sudo se guarda en el historial del usuario, no del root.
 
 
 ---
@@ -4075,6 +4077,7 @@ ntpq -p
 - offset indica la diferencia de tiempo entre cliente y servidor (pequeña → sincronizado)
 
 
+**OJO!!!: Después del date, al no tener sincronizado la hora con la hora actual, no nos dejará actualizar paquetes- Hasta que tengamos la hora sincronizada con la hora actual no podremos.**
 
 
 <br>
@@ -4315,6 +4318,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
