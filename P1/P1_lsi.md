@@ -4194,26 +4194,25 @@ ntpdate -q 10.11.48.175
 Tenemos que hacer algo similar a antes pero con rsyslog. Podemos usar UDP o TCp pero como es más fiable y seguro TCP, lo hacemos con TCP.
 
 
-Servidor: 10.11.48.175
-Cliente (yo): 10.11.48.202
+Servidor: 10.11.48.175  ||  Cliente (yo): 10.11.48.202
 
 
 Tenemos que cambiar en ambos el fichero: **/etc/rsyslog.conf**
 
 **SERVIDOR-LUCAS**
 
-# Habilitar TCP para recibir logs en el puerto 514
+1. Habilitar TCP para recibir logs en el puerto 514
 ```bash
 module(load="imtcp")
 input(type="imtcp" port="514")
 ```
 
-# Opcional: limitar quién puede enviar
+2. Opcional: limitar quién puede enviar
 ```bash
 $AllowedSender TCP, 127.0.0.1, 10.11.48.202
 ```
 
-# Guardar logs de clientes en carpetas separadas
+3. Guardar logs de clientes en carpetas separadas
 ```bash
 $template RemoteLogs,"/var/log/%fromhost-ip%/%programname%.log"
 *.* ?RemoteLogs
@@ -4223,7 +4222,7 @@ $template RemoteLogs,"/var/log/%fromhost-ip%/%programname%.log"
 
 **CLIENTE-ISMA**
 
-Añadir al final:
+1. Añadir al final:
 ```bash
 *.* action(
   type="omfwd"
@@ -4236,23 +4235,23 @@ Añadir al final:
   queue.saveOnShutdown="on")
 ```
 
-1. type="omfwd" → dice: "módulo de salida para reenviar logs a otro equipo".
+  1. type="omfwd" → dice: "módulo de salida para reenviar logs a otro equipo".
+  
+  2. target="10.11.48.175" → la IP de tu compa (el servidor que recibirá los logs).
+  
+  3. port="514" → puerto estándar de syslog.
+  
+  4. protocol="tcp" → se usa TCP (confiable). También podría ser "udp".
+  
+  5. action.resumeRetryCount="-1" → si falla la conexión, reintenta infinitamente.
+  
+  6. queue.type="linkedlist" → usa una cola en memoria para guardar mensajes mientras espera enviar.
+  
+  7. queue.filename="/var/log/rsyslog-queue" → si la cola en memoria se llena o se cae el rsyslog, guarda los logs en disco aquí (para no perderlos).
+  
+  8. queue.saveOnShutdown="on" → si apagas el cliente, la cola se guarda y al encender se reenvía al servidor.
 
-2. target="10.11.48.175" → la IP de tu compa (el servidor que recibirá los logs).
-
-3. port="514" → puerto estándar de syslog.
-
-4. protocol="tcp" → se usa TCP (confiable). También podría ser "udp".
-
-5. action.resumeRetryCount="-1" → si falla la conexión, reintenta infinitamente.
-
-6. queue.type="linkedlist" → usa una cola en memoria para guardar mensajes mientras espera enviar.
-
-7. queue.filename="/var/log/rsyslog-queue" → si la cola en memoria se llena o se cae el rsyslog, guarda los logs en disco aquí (para no perderlos).
-
-8. queue.saveOnShutdown="on" → si apagas el cliente, la cola se guarda y al encender se reenvía al servidor.
-
-Coge todos mis logs, mándalos por TCP al servidor 10.11.48.175:514, y si falla la conexión, guárdalos en una cola (memoria/disco) para reenviarlos más tarde y no perder nada.
+Basicamente esto es lo que hace: Coge todos mis logs, mándalos por TCP al servidor 10.11.48.175:514, y si falla la conexión, guárdalos en una cola (memoria/disco) para reenviarlos más tarde y no perder nada.
 
 
 
@@ -4389,6 +4388,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
