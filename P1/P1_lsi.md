@@ -4338,17 +4338,36 @@ Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el 
 
 Hay cosas de aquí que ya hemos ido haciendo:
 
-1-Eliminar los kernels de Debian 10 y 11
+1. Eliminar los kernels de Debian 10 y 11:
 
-2-Eliminar gnome, gmd3 y libreoffice y todos sus paquetes relacionados
+ 	- `uname -r`: Muestra kernel actual.
+ 
+ 	- `dpkg --list | grep linux-image`: Muestra los kernels que tenemos en el sistema.
+ 
+ 	- `apt-get --purge remove linux-image-4.......` Elimina un kernel en específico.
+ 	
+	- Dejar solo estas dos imágenes:
 
-3-Limpieza temporal de archivos
+2. Eliminar gnome, gmd3 y libreoffice y todos sus paquetes relacionados
 
-4-Borrar logs antiguos:
+   - `apt --purge autoremove`: La opción `--purge` permite otras llamadas de *apt* para borrar también archivos de configuración y demás.
+
+
+3. Limpieza temporal de archivos:
+
+  - `apt autoclean`: Elimina de la caché los paquetes de versiones antiguas e innecesarias.
+  
+  - `apt clean`: Elimina **todos** los paquetes de la caché.
+  
+  - `apt autoremove`: Elimina aquellos paquetes perdidos, generalmente instalados como dependencias de otras instalaciones, que ya no son necesarios.
+
+4. Borrar logs antiguos:
 
 ```bash
 journalctl --vacuum-time=7d   #Borrar logs más antiguos de 7 días
 ```
+
+5. Borrar man: `apt remove --purge man-db`
 
 
 <br>
@@ -4411,6 +4430,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
