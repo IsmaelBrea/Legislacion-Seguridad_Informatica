@@ -3962,7 +3962,7 @@ journalctl -p warning -b   # Solo mensajes de error o warning:
 journalctl -f              # Logs en tiempo real
 journalctl -t logger       # Filtrar solo por tag del mensaje
 journalctl -n 10           # Últimos 10 logs
-
+```
 
 
 #### RESUMEN FÁCIL
@@ -3974,7 +3974,6 @@ Para comprobar -> **tail -n /var/log/syslog**
 
 
 ---
-
 ### **NO HACERLO!!! Apartado N) Configure IPv6 6to4 y pruebe ping6 y ssh sobre dicho protocolo. ¿Qué hace su tcp-wrapper en las conexiones ssh en IPv6? Modifique su tcp-wapper siguiendo el criterio del apartado h). ¿Necesita IPv6?. ¿Cómo se deshabilita IPv6 en su equipo?**
 
 Simplemente vamoS a desactivar IPv6 porque no lo vamos a usar. Vamos a desactivarlo permanentemente con **/etc/sysctl** (es el fichero de configuración de parámetros del kernel en Linux)
@@ -4390,6 +4389,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
