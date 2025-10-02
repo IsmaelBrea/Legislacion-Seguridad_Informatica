@@ -3974,7 +3974,7 @@ Para comprobar -> **tail -n /var/log/syslog**
 
 
 ---
-### NO HACERLO!!! **Apartado N) Configure IPv6 6to4 y pruebe ping6 y ssh sobre dicho protocolo. ¿Qué hace su tcp-wrapper en las conexiones ssh en IPv6? Modifique su tcp-wapper siguiendo el criterio del apartado h). ¿Necesita IPv6?. ¿Cómo se deshabilita IPv6 en su equipo?**
+### **NO HACERLO!!! **Apartado N) Configure IPv6 6to4 y pruebe ping6 y ssh sobre dicho protocolo. ¿Qué hace su tcp-wrapper en las conexiones ssh en IPv6? Modifique su tcp-wapper siguiendo el criterio del apartado h). ¿Necesita IPv6?. ¿Cómo se deshabilita IPv6 en su equipo?**
 
 Simplemente vamoa a desactivar IPv6 porque no lo vamos a usar. Vamos a desactivarlo permanentemente con **/etc/sysctl** (es el fichero de configuración de parámetros del kernel en Linux)
 ```bash
@@ -4389,6 +4389,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
