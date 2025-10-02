@@ -4389,37 +4389,31 @@ Ejemplos de uso:
 
 1-Descargarlo:
 ```bash
-cd /tmp
 wget -O splunk.deb 'https://download.splunk.com/products/splunk/releases/10.2.0/linux/splunk-10.2.0-f4b4b2e0b0d7-linux-2.6-amd64.deb'
 ```
 
 2-Instalar:
 ```bash
-sudo dpkg -i splunk.deb
+dpkg -i splunk.deb
 ```
 
 
 3-Inicializar Splunk por primera vez
 ```bash
-sudo /opt/splunk/bin/splunk start --accept-license
+/opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt --seed-passwd "Password123"
 ```
 
-Te pedirá crear usuario y contraseña admin.
+  - Username: admin
 
-Recuerda esta contraseña para acceder a la web.
+  - Password: Password123
 
+
+Recuerda esto para acceder a la web.
 
 4-Configurar para arrancar al inicio
 ```bash
-sudo /opt/splunk/bin/splunk enable boot-start
+/opt/splunk/bin/splunk enable boot-start
 ```
-
-
-5-Comprobar estado del servicio
-```bash
-sudo /opt/splunk/bin/splunk status
-```
-
 
 Acceder a la interfaz web
 
@@ -4427,16 +4421,48 @@ Abre tu navegador.
 
 URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 
-Usuario: admin
-
-Contraseña: la que creaste al iniciar
-
+    
+En mi caso: **http://10.11.48.202:8000**
 
 
+Podemos comprobar estado del servicio
+```bash
+/opt/splunk/bin/splunk status
+```
+
+<br>
+
+Vamos a quitar el inicio automático, para activarlo solo cuando nosotros queramos:
+
+Deshabilitamos splunk:
+```bash
+/opt/splunk/bin/splunk stop
+```
+
+Deshabilitamos el inicio automático:
+```bash
+/opt/splunk/bin/splunk disable boot-start
+```
+
+Verificamos que está deshabilitado:
+```bash
+systemctl status splunk
+```
+
+(Debe decir "disabled" o "inactive")
 
 
+Ahora tendremos control MANUAL de la siguiente forma:
+```bash
+# Iniciar
+/opt/splunk/bin/splunk start
 
+# Detener  
+/opt/splunk/bin/splunk stop
 
+# Ver estado
+/opt/splunk/bin/splunk status
+```
 
 
 
