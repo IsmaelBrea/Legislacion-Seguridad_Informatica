@@ -3949,6 +3949,50 @@ Para comprobar -> **tail -n /var/log/syslog**
 ---
 ### NO HACERLO!!! **Apartado N) Configure IPv6 6to4 y pruebe ping6 y ssh sobre dicho protocolo. ¿Qué hace su tcp-wrapper en las conexiones ssh en IPv6? Modifique su tcp-wapper siguiendo el criterio del apartado h). ¿Necesita IPv6?. ¿Cómo se deshabilita IPv6 en su equipo?**
 
+Simplemente vamoa a desactivar IPv6 porque no lo vamos a usar. Vamos a desactivarlo permanentemente con **/etc/sysctl** (es el fichero de configuración de parámetros del kernel en Linux)
+```bash
+sudo nano /etc/sysctl.conf
+```
+
+Y añadimos estas líneas al final:
+```bash
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+```
+
+Aplicar los cambios con:
+```bash
+sudo sysctl -p
+```
+
+
+Podemos comprobar que se han aplicado los cambios con:
+```bash
+cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+cat /proc/sys/net/ipv6/conf/default/disable_ipv6
+```
+
+Si ambos dan 1, significa que IPv6 está deshabilitado.
+
+También podemos ver como con p a ya no salen direcciones IPV6:
+```bash
+lsi@ismael:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 00:50:56:97:29:8f brd ff:ff:ff:ff:ff:ff
+    altname enp2s1
+    inet 10.11.48.202/23 brd 10.11.49.255 scope global ens33
+       valid_lft forever preferred_lft forever
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 00:50:56:97:98:0a brd ff:ff:ff:ff:ff:ff
+    altname enp2s2
+    inet 10.11.50.202/23 brd 10.11.51.255 scope global ens34
+       valid_lft forever preferred_lft forever
+```
 
 
 <br>
@@ -4318,6 +4362,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
