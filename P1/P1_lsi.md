@@ -4036,9 +4036,9 @@ lsi@ismael:~$ ip a
 
     - Stratum: nivel jerárquico de los servidores de tiempo.
 
-    - Stratum 0 → fuente de tiempo (ej. reloj atómico, GPS).
+    - Stratum 0 → Son los relojes de referencia “perfectos”, como relojes atómicos o GPS. No están conectados directamente a la red.
 
-    - Stratum 1 → servidor conectado a Stratum 0.
+    - Stratum 1 → Servidores que se conectan directamente a un stratum 0. Son los más precisos en la red.
 
     - Stratum 2 → sincronizado a Stratum 1, y así sucesivamente.
 
@@ -4078,8 +4078,9 @@ restrict 10.11.48.202 mask 255.255.255.255 nomodify notrap nopeer
 ```
 
 - server 127.127.1.0 minpoll 4 → Esto dice: el servidor usa su propio reloj local como referencia (porque no está conectado a internet).
+     -minpoll: es cada cuánto hará sincronización, en potencia de 2 segundos (2^4 = 16 s mínimo entre consultas).
 
-- fudge 127.127.1.0 stratum 10 → Establece la prioridad de este reloj local como nivel 10 (más alto el número → menos prioridad que un reloj real de internet).
+- fudge 127.127.1.0 stratum 10 → Establece la prioridad de este reloj local como nivel 10 (más alto el número → menos prioridad que un reloj real de internet). Esto es importante: si pones stratum bajo (ej. 1 o 2), mi máquina se consideraría “muy confiable” y otros clientes podrían usarla como referencia principal. Al poner 10, le estamos diciendo: “esto es un reloj menos confiable, sólo de respaldo si no hay otros servidores.”
 
 - restrict 10.11.48.202 ... → Permite que el cliente 10.11.48.202 pueda pedir la hora, pero no modificar la configuración del servidor.
 
@@ -4389,6 +4390,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
