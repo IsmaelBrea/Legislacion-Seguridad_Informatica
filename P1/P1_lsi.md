@@ -4296,7 +4296,7 @@ Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el 
 <br>
 
 ---
-### **Apartado C) Haga todo tipo de propuestas sobre los siguientes aspectos: ¿Qué problemas de seguridas identifica en los dos apartados anteriores? ¿Cómo podría solucionar los problemas identificados?
+### **Apartado C) Haga todo tipo de propuestas sobre los siguientes aspectos: ¿Qué problemas de seguridas identifica en los dos apartados anteriores? ¿Cómo podría solucionar los problemas identificados?**
 
 
 
@@ -4330,6 +4330,29 @@ Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el 
 5. Cifrado de información sensible
  - Siempre que se transporten datos críticos, cifrar los mensajes antes de enviarlos.
 
+
+<br>
+
+---
+### **Apartado D) En la plataforma de virtualización corren, entre otros equipos, más de 200 máquinas virtuales para LSI. Como los recursos son limitados, y el disco duro también, identifique todas aquellas acciones que pueda hacer para reducir el espacio de disco ocupado**
+
+Hay cosas de aquí que ya hemos ido haciendo:
+
+1-Eliminar los kernels de Debian 10 y 11
+
+2-Eliminar gnome, gmd3 y libreoffice y todos sus paquetes relacionados
+
+3-Limpieza temporal de archivos
+
+4-Borrar logs antiguos:
+
+```bash
+journalctl --vacuum-time=7d   #Borrar logs más antiguos de 7 días
+```
+
+
+<br>
+---
 
 ### **Apartado E) Instale el SIEM splunk en su máquina. Sobre dicha plataforma haga los siguientes puntos.**
 
@@ -4388,6 +4411,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
