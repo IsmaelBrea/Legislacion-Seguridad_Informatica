@@ -4137,12 +4137,11 @@ date -s "fecha hora"
 ntpq -p
 ```
 
-
-
- remote           refid      st t when poll reach   delay   offset  jitter
+```bash
+remote           refid      st t when poll reach   delay   offset  jitter
 ==============================================================================
 10.11.48.175       .GPS.        1 u   xx   xx    xx   x.xxx  x.xxx  x.xxx
-
+```
 
 - reach debe subir (empezando en 0 → 377 cuando ya tiene contacto)
 - st (stratum) debería acercarse a 10 o al nivel correcto del servidor
@@ -4390,6 +4389,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
