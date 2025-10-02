@@ -3909,6 +3909,22 @@ PROBAR UN MENSAJE -> **logger**
 
 logger es un comando de Linux que sirve para enviar mensajes al sistema de logs. Cuando lo usas, el mensaje va al sistema de logging que tengas (rsyslog, syslog o journald).
 
+### Facilities (categorías de origen del mensaje):
+| Facility      | Descripción                      | Ejemplo de uso                                 |
+| ------------- | -------------------------------- | ---------------------------------------------- |
+| auth/authpriv | Autenticación, seguridad         | `logger -p auth.info "Login correcto"`         |
+| cron          | Tareas programadas (cron)        | `logger -p cron.notice "Cron ejecutado"`       |
+| daemon        | Servicios y demonios             | `logger -p daemon.err "Demonio falló"`         |
+| kern          | Mensajes del kernel              | `logger -p kern.warning "Kernel aviso"`        |
+| mail          | Correo electrónico               | `logger -p mail.err "Fallo en envío"`          |
+| user          | Mensajes de usuario              | `logger -p user.info "Mensaje de usuario"`     |
+| local0–local7 | Uso personalizado                | `logger -p local0.notice "App local"`          |
+| syslog        | Sistema de logs interno          | `logger -p syslog.debug "Debug syslog"`        |
+| lpr           | Cola de impresión                | `logger -p lpr.info "Impresora lista"`         |
+| authpriv      | Seguridad, autenticación privada | `logger -p authpriv.warning "Intento fallido"` |
+
+
+
 ```bash
 logger "hola"
 logger "esto es una prueba"
@@ -3937,6 +3953,17 @@ root@ismael:~# tail -n 10 /var/log/syslog
 2025-09-30T11:54:33.148183+02:00 ismael root: hola
 2025-09-30T11:54:37.584703+02:00 ismael root: prueba
 ```
+
+
+Para probar con journald, simplmente aprovechamos el mensaje enviado con logger y podemos verlo con jorunactl y sus distintos parámetros:
+```bash
+journalctl
+journalctl -p warning -b   # Solo mensajes de error o warning:
+journalctl -f              # Logs en tiempo real
+journalctl -t logger       # Filtrar solo por tag del mensaje
+journalctl -n 10           # Últimos 10 logs
+
+
 
 #### RESUMEN FÁCIL
 Para enviar un mensaje de log -> **logger "mensaje"**
@@ -4362,6 +4389,7 @@ URL: http://localhost:8000 (o http://<tu_IP>:8000 si es desde otra máquina)
 Usuario: admin
 
 Contraseña: la que creaste al iniciar
+
 
 
 
