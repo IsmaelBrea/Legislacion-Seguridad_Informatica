@@ -3845,6 +3845,37 @@ sshd: ALL : spawn (/bin/sh -c 'echo "$(hostname) %d %p %a %h $(date)" >> /var/lo
 
 Cuando una conexión SSH es denegada, spawn ejecuta un comando que escribe en /var/log/denegados la fecha, nombre del servidor, proceso (y PID) e IP de origen. Así, cada intento fallido queda registrado automáticamente en ese fichero.
 
+- sshd: → se aplica a conexiones al servicio SSH.
+
+- ALL → a todos los usuarios.
+
+- spawn (/bin/sh -c '…') → ejecuta un comando en la shell.
+
+- echo "$(hostname) %d %p %a %h $(date)" >> /var/log/denegados → escribe información en el archivo /var/log/denegados.
+
+<br>
+
+Qué se guarda:
+
+- $(hostname) → nombre del equipo.
+
+- %d → nombre del usuario que intentó conectarse.
+
+- %p → puerto de conexión.
+
+- %a → dirección IP del cliente.
+
+- %h → host del cliente.
+
+- $(date) → fecha y hora actuales.
+
+RESUMEN: Cada intento de SSH (con todos los usuarios) ejecuta un comando que registra en /var/log/denegados quién se conectó, desde dónde y cuándo.
+
+<img width="658" height="60" alt="imagen" src="https://github.com/user-attachments/assets/bcad8e04-3a2d-47ea-a804-905dcb81338d" />
+
+
+<br>
+<br>
 
 Para probar el deny, necesitamos que alguien esté dentro de la red de la universidad si no nuestra máquina no puede guardar dicho registro. Por tanto, lo que podemos hacer es poner en deny la IP del compañero, que intente entrar y así al no dejarle se me guardará el registro de acceso no autorizado en /var/log/denegados. Luego ya podremos volver a poner en allow la IP del compañero. Podemos verlo con este comando:
 ```bash
@@ -4666,3 +4697,4 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
