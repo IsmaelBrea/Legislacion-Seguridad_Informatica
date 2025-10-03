@@ -4260,34 +4260,61 @@ $template RemoteLogs,"/var/log/%fromhost-ip%/%programname%.log"
 1. Añadir al final:
 ```bash
 *.* action(
+  type="omfile"
+  file="/var/log/rsyslog_queue.log"
+  createDirs="on"
+)
+
+*.* action(
   type="omfwd"
-  target="10.11.48.175"      # IP del servidor
+  target="10.11.48.175"
   port="514"
   protocol="tcp"
   action.resumeRetryCount="-1"
-  queue.type="linkedlist"
-  queue.filename="/var/log/rsyslog-queue"
-  queue.saveOnShutdown="on")
+  queue.type="LinkedList"
+  queue.filename="forwarding-queue"
+  queue.spoolDirectory="/var/spool/rsyslog"
+  queue.saveOnShutdown="on"
+  queue.maxdiskspace="1g"
+)
 ```
 
-  1. type="omfwd" → dice: "módulo de salida para reenviar logs a otro equipo".
-  
-  2. target="10.11.48.175" → la IP de tu compa (el servidor que recibirá los logs).
-  
-  3. port="514" → puerto estándar de syslog.
-  
-  4. protocol="tcp" → se usa TCP (confiable). También podría ser "udp".
-  
-  5. action.resumeRetryCount="-1" → si falla la conexión, reintenta infinitamente.
-  
-  6. queue.type="linkedlist" → usa una cola en memoria para guardar mensajes mientras espera enviar.
-  
-  7. queue.filename="/var/log/rsyslog-queue" → si la cola en memoria se llena o se cae el rsyslog, guarda los logs en disco aquí (para no perderlos).
-  
-  8. queue.saveOnShutdown="on" → si apagas el cliente, la cola se guarda y al encender se reenvía al servidor.
+**Action 1**:
 
-Basicamente esto es lo que hace: Coge todos mis logs, mándalos por TCP al servidor 10.11.48.175:514, y si falla la conexión, guárdalos en una cola (memoria/disco) para reenviarlos más tarde y no perder nada.
+- Guarda una copia local de todos los mensajes en /var/log/rsyslog_queue.log.
 
+- createDirs="on" crea automáticamente el archivo/directorio si no existe.
+
+
+**Action 2:**
+
+-Reenvía todos los mensajes al servidor 10.11.48.175 por TCP puerto 514.
+
+-Usa una cola en memoria (LinkedList) para no perder mensajes si el servidor está caído.
+
+-La cola se guarda en /var/spool/rsyslog/forwarding-queue mientras rsyslog está apagado o reiniciándose.
+
+-action.resumeRetryCount="-1" → reintenta enviar indefinidamente.
+
+-queue.maxdiskspace="1g" → limita la cola a 1 GB.
+
+
+
+Basicamente esto es lo que hace: Coge todos mis logs, mándalos por TCP al servidor 10.11.48.175:514, y si falla la conexión o el servidor está parado/caído, guárdalos en una cola (memoria/disco) para reenviarlos más tarde y no perder nada. Al servidor, una vez esté activo, le deberían de llegar todos los logs que se guradaron en la cola.
+
+
+Antes de nada hemos creado el archivo **/var/log/rsyslog-queue**
+```bash
+cd /var/log
+touch rsyslog_queue.log
+chmod 777 rsyslog_queue.log
+```
+
+
+Se puede ver la cola aquí después de mandar un logger:
+```bash
+ tail -f /var/log/rsyslog_queue.log
+```
 
 
 Para reiniciar:
@@ -4322,9 +4349,9 @@ tail -f /var/log/syslog
 
 Para ver los logs creados accedemos a /var/log
 
-Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el hostanme del cliente. Ahí se crearán distintas carpetas por cada tipo de mensaje. En este caso se han creado dos careptas una user_log y otra mail.err.
+Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el hostanme del cliente. Ahí se crearán distintas carpetas por cada tipo de mensaje. En este caso se han creado dos carpetas una user_log y otra mail.err.
 
-![syslog](../images/syslog.htm)
+<img width="585" height="122" alt="imagen" src="https://github.com/user-attachments/assets/aaf00404-383a-4468-8e89-5eed9db634bb" />
 
 
 
@@ -4697,4 +4724,5 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
