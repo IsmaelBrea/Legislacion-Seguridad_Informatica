@@ -4635,3 +4635,34 @@ source="/var/log/AccesosJournald.log" | stats count by source, sourcetype, host
 ---
 #### **f) ¿cómo podría hacer que splunk haga de servidor de log de su cliente?**
 
+1-Activar la recepción de logs en Splunk (inputs): En mi máquina Debian con Splunk, abre la interfaz web.
+
+- Ve a Settings → Data Inputs.
+
+- Elige Forwarded Data → Add New o bien TCP/UDP si quieres que los clientes te envíen directamente los logs por red.
+
+- Configura un puerto (por ejemplo, UDP 514, que es el estándar de syslog).
+
+Con esto Splunk escuchará conexiones de clientes en ese puerto.
+
+
+2-Configurar el cliente (máquina que enviará logs):
+
+Abre el archivo /etc/rsyslog.conf o crea uno nuevo en /etc/rsyslog.d/cliente.conf.
+
+Añade esta línea para enviar los logs al servidor Splunk:
+```bash
+*.*  @IP_DEL_SERVIDOR:514
+```
+
+Reiniciamos:
+```bash
+ systemctl restart rsyslog
+```
+
+3-Comprobar en splunk:
+
+En Search y Reportin en la barra de búsqueda:
+```bash
+index=main host=nombre_del_cliente
+```
