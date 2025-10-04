@@ -106,6 +106,11 @@ dpkg -l | wc -l           # Lista todos los paquetes instalados  y wc -l cuenta 
         -grep '^ii' → filtra los que están instalados (ii).
         -wc -l → cuenta cuántos hay.
 
+#Limpieza
+apt autoremove  # Limpia espacio quitando dependencias que ya no usa ningún paquete.
+apt autoclean   # Borra archivos de instalación (.deb) viejos o inutilizables del caché de APT
+apt purge nombre_paquete   # Desinstala y borra también archivos de configuración
+
 # Red
 ping 8.8.8.8         # Probar conexión
     -c:              # Especifica cuantos paquetes se van a mandar
@@ -4730,6 +4735,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
