@@ -1784,6 +1784,8 @@ Esto significa que tu ordenador arrancará con la pantalla de login y el escrito
 
 **Cambiar el target de arranque: systemctl set-default multi-user.target**
 
+Es un “target” de systemd (equivalente a un “runlevel” clásico en SysVinit). Representa un modo de operación del sistema sin interfaz gráfica, pensado para múltiples usuarios. Arranca todo pero solo en la consola, sin GUI (Graphical User Interface).
+
 Aquí deberíamos poder cambiar el target por el de servidor (multi-user.target), ya que el que está por defecto no nos interesa ya que solo nos vamos a conectar a la máquina por ssh y no necesitamos la interfaz gráfica.
 ```bash
 root@ismael:/home/lsi# systemctl set-default multi-user.target
@@ -4747,6 +4749,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
