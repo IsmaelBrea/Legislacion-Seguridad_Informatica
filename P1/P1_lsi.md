@@ -903,7 +903,8 @@ nano /etc/hosts
 
 Añadir:
 ```bash
-  GNU nano 7.2                          /etc/hosts                                    127.0.0.1       localhost
+GNU nano 7.2                          /etc/hosts
+127.0.0.1       localhost
 10.11.48.202    ismael debian
 10.11.50.202    ismael-ssh
 
@@ -4729,6 +4730,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
