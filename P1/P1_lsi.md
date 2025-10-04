@@ -810,7 +810,9 @@ rtt min/avg/max/mdev = 0.028/0.040/0.053/0.012 ms
 
 - La máquina puede comunicarse con el gateway.
 
-- La interfaz ens33 y ens34 están activaa y listaa para usar SSH o otras conexiones de red.
+- La interfaz ens33 y ens34 están activas y listas para usar SSH o otras conexiones de red.
+
+-!!Ens34 NO tiene salida a Internet, solo ens33!!
 ---
 
 
@@ -4727,6 +4729,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
