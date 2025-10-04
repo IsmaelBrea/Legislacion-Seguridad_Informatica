@@ -99,13 +99,13 @@ kill PID            # Terminar proceso
 # Paquetes (Debian/Ubuntu)
 sudo apt update           # Actualizar lista
 sudo apt upgrade          # Actualiza los paquetes instalados a sus versiones nuevas, sin eliminar ni instalar paquetes adicionales
-sudo apt full-upgrade     # Actualiza todo el sistema, incluso si para hacerlo debe instalar o eliminar paquetes.
+sudo apt full-upgrade     # Actualiza todo el sistema, incluso si para hacerlo debe instalar o eliminar paquetes
 sudo apt install paquete  # Instalar
 sudo apt remove paquete   # Eliminar
-dpkg -l | wc -l           # Lista todos los paquetes instalados  y wc -l cuenta las líneas, es decir, el total de paquetes.
+dpkg -l | wc -l           # Lista todos los paquetes instalados  y wc -l cuenta las líneas, es decir, el total de paquetes
         -dpkg -l → lista todos los paquetes.
-        -grep '^ii' → filtra los que están instalados (ii).
-        -wc -l → cuenta cuántos hay.
+        -grep '^ii' → filtra los que están instalados (ii)
+        -wc -l → cuenta cuántos hay
 
 #Limpieza
 apt autoremove  # Limpia espacio quitando dependencias que ya no usa ningún paquete.
@@ -170,11 +170,11 @@ netstat
    -o        # Muestra información adicional relacionada con los temporizadores de las conexiones TCP
 
  
-wget <url>                    # Descarga el contenido en un archivo con el mismo nombre que en el servidor.
+wget <url>                    # Descarga el contenido en un archivo con el mismo nombre que en el servidor
 wget -o | -O <url>                 
 		-o (o minúscula) → guarda el registro (mensajes) en un archivo.
 		-O (O mayúscula) → guarda el archivo descargado con ese nombre.
-wget --server-response --spider <url>  # Hace la petición y muestra únicamente los headers HTTP, sin guardar nada.
+wget --server-response --spider <url>  # Hace la petición y muestra únicamente los headers HTTP, sin guardar nada
 wget -q <url>                 # Descarga sin mostrar barras ni mensajes, solo errores.
 
 
@@ -211,7 +211,7 @@ systemctl            # Gestiona el estado de los servicios del sistema
    - get-default → “muestra el target por defecto del sistema”
    - set-default <target> → “cambia el target por defecto del sistema (permanente)”
    - isolate <target> → “cambia al target especificado inmediatamente (temporal)”
-   - daemon-reload  →  e dice a systemd que recargue todas las unidades y servicios.
+   - daemon-reload  →  e dice a systemd que recargue todas las unidades y servicios
 
 	# Logs
 Dos formas de ver los logs:
@@ -219,9 +219,10 @@ Dos formas de ver los logs:
 journalctl           # Muestra los registros (logs) de los servicios y del sistema
      -b → “muestra los logs desde el último arranque”
      -a → “muestra todas las líneas completas, incluso las truncadas por pantalla”
-     -p err → Muestra solo los mensajes de error (y más graves) del sistema.
+     -p err → Muestra solo los mensajes de error (y más graves) del sistema
+     -p warning → muestra solo mensajes de nivel warning y más graves (error, crítico, alerta)
      -x → Explica los mensajes del log con información extra si está disponible.
-     -e → Va directamente al final de los logs (útil para ver los últimos errores).
+     -e → Va directamente al final de los logs (útil para ver los últimos errores)
      -u <unidad> → “filtra los logs de una unidad o servicio específico”
      -f  → “muestra los logs en tiempo real (como tail -f)”
      --since "YYYY-MM-DD HH:MM:SS" → “muestra logs desde una fecha/hora específica”
@@ -4749,6 +4750,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
