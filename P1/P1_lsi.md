@@ -212,6 +212,10 @@ systemctl            # Gestiona el estado de los servicios del sistema
    - set-default <target> → “cambia el target por defecto del sistema (permanente)”
    - isolate <target> → “cambia al target especificado inmediatamente (temporal)”
    - daemon-reload  →  e dice a systemd que recargue todas las unidades y servicios.
+
+	# Logs
+Dos formas de ver los logs:
+1-De forma centralizada: journald -> journalctl
 journalctl           # Muestra los registros (logs) de los servicios y del sistema
      -b → “muestra los logs desde el último arranque”
      -a → “muestra todas las líneas completas, incluso las truncadas por pantalla”
@@ -222,6 +226,13 @@ journalctl           # Muestra los registros (logs) de los servicios y del siste
      -f  → “muestra los logs en tiempo real (como tail -f)”
      --since "YYYY-MM-DD HH:MM:SS" → “muestra logs desde una fecha/hora específica”
      --until "YYYY-MM-DD HH:MM:SS" → “muestra logs hasta una fecha/hora específica”
+
+2-Accediendo a las carpetas de /var/log y viendo los logs que de cada tipo:
+/var/log/syslog: mensajes generales del sistema
+/var/log/auth.log:  autenticación, sudo, logins
+/var/log/dpkg.log → instalación de paquetes
+...
+
 uptime               # Tiempo encendido
 reboot               # Reiniciar
 shutdown now         # Apagar
@@ -4736,6 +4747,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
