@@ -161,6 +161,7 @@ netstat
    -r        # Tabla de rutas
    -s        # Estadísticas de protocolos
    -i        # Interfaces de red
+   -o        # Muestra información adicional relacionada con los temporizadores de las conexiones TCP
 
  
 wget <url>                    # Descarga el contenido en un archivo con el mismo nombre que en el servidor.
@@ -4724,5 +4725,6 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
