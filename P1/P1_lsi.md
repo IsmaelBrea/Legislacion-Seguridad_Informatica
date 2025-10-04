@@ -165,7 +165,9 @@ netstat
 
  
 wget <url>                    # Descarga el contenido en un archivo con el mismo nombre que en el servidor.
-wget -o <url>                 # Para verlo por pantalla ya que lo manda a stdout
+wget -o | -O <url>                 
+		-o (o minúscula) → guarda el registro (mensajes) en un archivo.
+		-O (O mayúscula) → guarda el archivo descargado con ese nombre.
 wget --server-response --spider <url>  # Hace la petición y muestra únicamente los headers HTTP, sin guardar nada.
 wget -q <url>                 # Descarga sin mostrar barras ni mensajes, solo errores.
 
@@ -4725,6 +4727,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
