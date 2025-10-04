@@ -98,7 +98,8 @@ kill PID            # Terminar proceso
 
 # Paquetes (Debian/Ubuntu)
 sudo apt update           # Actualizar lista
-sudo apt upgrade          # Actualizar paquetes
+sudo apt upgrade          # Actualiza los paquetes instalados a sus versiones nuevas, sin eliminar ni instalar paquetes adicionales
+sudo apt full-upgrade     # Actualiza todo el sistema, incluso si para hacerlo debe instalar o eliminar paquetes.
 sudo apt install paquete  # Instalar
 sudo apt remove paquete   # Eliminar
 dpkg -l | wc -l           # Lista todos los paquetes instalados  y wc -l cuenta las líneas, es decir, el total de paquetes.
@@ -4735,6 +4736,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
