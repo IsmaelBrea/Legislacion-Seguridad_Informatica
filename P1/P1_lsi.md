@@ -2534,6 +2534,20 @@ lsi@ismael:~$ getent ahostsv4 marca.com
 34.147.120.111  DGRAM
 34.147.120.111  RAW
 ```
+Otra forma más fácil de obtener la IP de marca.com es hacer un ping a ella.
+```bash
+lsi@ismael:~$  ping -c 3  marca.com                                                                                                                                                                                                                   
+PING marca.com (34.147.120.111) 56(84) bytes of data.
+64 bytes from 111.120.147.34.bc.googleusercontent.com (34.147.120.111): icmp_seq=1 ttl=128 time=51.1 ms
+64 bytes from 111.120.147.34.bc.googleusercontent.com (34.147.120.111): icmp_seq=2 ttl=128 time=49.9 ms
+64 bytes from 111.120.147.34.bc.googleusercontent.com (34.147.120.111): icmp_seq=3 ttl=128 time=49.3 ms
+
+--- marca.com ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2004ms
+rtt min/avg/max/mdev = 49.251/50.080/51.133/0.784 ms
+```
+
+Aquí ya vemos que la IP es la misma -> 34.147.120.111
 
 2-Crear la rta estática a través de ens34
 ```bash
@@ -4753,6 +4767,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
