@@ -3581,12 +3581,19 @@ Programa que lista archivos abiertos en el sistema. En Linux todo es un archivo:
 Flags básicas
 
 -i →	Muestra conexiones de red (TCP/UDP)
+
 -i :22	→ Filtra por puerto, ejemplo puerto 22
+
 -i TCP	→ Filtra solo conexiones TCP
+
 -i UDP	→ Filtra solo conexiones UDP
+
 -p PID	→ Muestra archivos abiertos por un proceso específico
+
 -n	→ No resuelve nombres de host o servicio, muestra IP y puerto en números
+
 -P	→ No resuelve puertos a nombres de servicio (ej. ssh, http)
+
 +D /ruta	→ Lista archivos abiertos dentro de un directorio específico
 
 
@@ -4769,6 +4776,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
