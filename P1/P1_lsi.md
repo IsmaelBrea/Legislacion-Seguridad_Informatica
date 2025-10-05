@@ -3905,21 +3905,20 @@ Cuando una conexión SSH es denegada, spawn ejecuta un comando que escribe en /v
 
 - echo "$(hostname) %d %p %a %h $(date)" >> /var/log/denegados → escribe información en el archivo /var/log/denegados.
 
+	- $(hostname) → nombre del equipo.
+
+	- %d → nombre del usuario que intentó conectarse (argv[0], p. ej. sshd).
+	
+	- %p → PID del proceso que atiende la conexión.
+	
+	- %a → dirección IP numérica del cliente (lo que quieres: IP origen).
+	
+	- %h → nombre del host cliente (hostname si está disponible).
+
+ 	- $(date) → fecha y hora actuales.
+
 <br>
 
-Qué se guarda:
-
-- $(hostname) → nombre del equipo.
-
-- %d → nombre del usuario que intentó conectarse.
-
-- %p → puerto de conexión.
-
-- %a → dirección IP del cliente.
-
-- %h → host del cliente.
-
-- $(date) → fecha y hora actuales.
 
 RESUMEN: Cada intento de SSH (con todos los usuarios) ejecuta un comando que registra en /var/log/denegados quién se conectó, desde dónde y cuándo.
 
@@ -4776,6 +4775,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
