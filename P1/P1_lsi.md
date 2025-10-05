@@ -2249,6 +2249,7 @@ lsi@ismael:~$ ip a show ens34
 
 O asi:
 ```bash
+lsi@ismael:~$ ifconfig ens34
 ens34: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 10.11.50.202  netmask 255.255.254.0  broadcast 10.11.51.255
         inet6 fe80::250:56ff:fe97:fa74  prefixlen 64  scopeid 0x20<link>
@@ -4750,6 +4751,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
