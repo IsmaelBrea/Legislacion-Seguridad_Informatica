@@ -2999,7 +2999,7 @@ sudo crontab -l
 
 CARLOS me dijo que no lo quitase porque le facilitaba el trabajo cuando tenía que entrar él a mi máquina. Así se le configuraba el teclado a español solo, no tiene que apagar el la máquian manualmente etc.
 
-5-vgauth: Servicio usado por máquinas virtuales VMware para gestionar la autorización entre el host y el invitado (por ejemplo, para compartir credenciales de Windows con la VM). 
+5-vgauth???: Servicio usado por máquinas virtuales VMware para gestionar la autorización entre el host y el invitado (por ejemplo, para compartir credenciales de Windows con la VM). 
 
 
 6-polkit:  Es un servicio de control de permisos en Linux. Permite que usuarios normales hagan acciones que normalmente requieren root, sin tener que usar sudo directamente. Por ejemplo: cambiar la hora del sistema, montar discos, gestionar redes, configurar impresoras, etc.
@@ -4767,6 +4767,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
