@@ -3907,7 +3907,7 @@ Cuando una conexión SSH es denegada, spawn ejecuta un comando que escribe en /v
 
 	- $(hostname) → nombre del equipo.
 
-	- %d → nombre del usuario que intentó conectarse (argv[0], p. ej. sshd).
+	- %d → nombre del daemon o nombre del proceso que atiende a la conexión (argv[0], p. ej. sshd).
 	
 	- %p → PID del proceso que atiende la conexión.
 	
@@ -4775,6 +4775,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
