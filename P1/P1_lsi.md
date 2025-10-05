@@ -2722,7 +2722,7 @@ systemctl mask accounts-daemon
 ```
 
 3-anacron (DESACTIVADO):
-   - cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse. LO desactivamos porque no queremos NADA AUTOMÁTICO. !! **cron no lo quito**
+   - cron:  ejecuta tareas programadas automáticamente en segundo plano, como scripts de mantenimiento, copias de seguridad, actualizaciones o limpieza de logs. Muchas utilidades del sistema y aplicaciones dependen de cron para funcionar correctamente. Si lo desactivas, esas tareas automáticas dejarían de ejecutarse.!! **cron no lo quito**
 
  AUNQUE SEA AUTOMÁTICO, ESTE CAMBIA COSAS DE LA CONFIGURACIÓN DE LA MÁQUINA QUE SON IMPORTANTES, POR LO QUE ME DIJO CARLOS QUE NO LO QUITASE.
 
@@ -4767,6 +4767,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
