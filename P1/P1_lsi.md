@@ -2350,6 +2350,8 @@ La idea: podemos darle a la misma tarjeta física (ens34) otra IP usando un alia
   ifconfig ens34:0 192.168.1.1 netmask 255.255.255.0
  ```
 
+Le podemos meter un up al final para que ya se active sola al crearla.
+
 - ens34:0 → nombre del alias (puede ser ens34:0, ens34:1, etc.)
 
 - 192.168.1.1 → IP que le asignamos al alias
@@ -4751,6 +4753,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
