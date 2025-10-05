@@ -3913,7 +3913,7 @@ Cuando una conexión SSH es denegada, spawn ejecuta un comando que escribe en /v
 	
 	- %a → dirección IP numérica del cliente (lo que quieres: IP origen).
 	
-	- %h → nombre del host cliente (hostname si está disponible).
+	- %h → nombre del host cliente (hostname si está disponible,si no muestra de nuevo la IP como hostname).
 
  	- $(date) → fecha y hora actuales.
 
@@ -4775,6 +4775,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
