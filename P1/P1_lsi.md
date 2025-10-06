@@ -3324,6 +3324,13 @@ Description → descripción del servicio.
 
 After=network.target → espera a que la red esté activa (opcional, útil si tu script depende de la red).
 
+
+!!IMPORTANTE EL **AFTER**!!:
+
+- After=network.target → “no arranques mi servicio hasta que la red esté lista”, así no da errores de conexión al inicio. Asegura que primero se levante la red, luego tu servicio.
+
+	- network.target es un “target” de systemd que representa la disponibilidad de la red (no necesariamente que haya conexión a internet, pero sí que los interfaces de red están activos).
+
 <br>
 
 [Service]
@@ -4804,6 +4811,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
