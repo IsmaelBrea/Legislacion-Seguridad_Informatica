@@ -4148,13 +4148,15 @@ lsi@ismael:~$ ip a
 
 - NTPsec: versión segura de NTP, más ligera y segura.
 
-    - Stratum: nivel jerárquico de los servidores de tiempo.
+    - Stratum: indica el nivel de “confianza” o jerarquía del reloj en la red NTP. Se mide de 1 a 16
 
-    - Stratum 0 → Son los relojes de referencia “perfectos”, como relojes atómicos o GPS. No están conectados directamente a la red.
-
-    - Stratum 1 → Servidores que se conectan directamente a un stratum 0. Son los más precisos en la red.
-
-    - Stratum 2 → sincronizado a Stratum 1, y así sucesivamente.
+	    - Stratum 0 → Son los relojes de referencia “perfectos”, como relojes atómicos o GPS. No están conectados directamente a la red.
+	
+	    - Stratum 1 → Servidores que se conectan directamente a un stratum 0. Son los más precisos en la red.
+	
+	    - Stratum 2 → sincronizado a Stratum 1, y así sucesivamente.
+     
+       - Stratum 16 → “Desconectado” o inalcanzable.
 
 Lo primero vamos a instalar NTPsec que es una versión segura y ligera de NTP, reescrito desde cero para eliminar vulnerabilidades. consume menos recursos y es más rápido y compatible con NTP, así que clientes/servidores NTP normales pueden sincronizar con NTPsec.
 
@@ -4862,6 +4864,7 @@ Es el índice por defecto para mis propios datos, los logs que subo desde servid
 
 index=main
 | stats count by source
+
 
 
 
