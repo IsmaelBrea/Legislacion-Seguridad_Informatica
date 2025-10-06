@@ -4383,22 +4383,31 @@ $template RemoteLogs,"/var/log/%fromhost-ip%/%programname%.log"
 
 **Action 1**:
 
-- Guarda una copia local de todos los mensajes en /var/log/rsyslog_queue.log.
+- Captura todos los logs (*.*)
 
-- createDirs="on" crea automáticamente el archivo/directorio si no existe.
+- Los escribe en un archivo local: /var/log/rsyslog_queue.log
 
+- createDirs="on" → si no existe la carpeta /var/log, la crea
+
+<br>
 
 **Action 2:**
 
--Reenvía todos los mensajes al servidor 10.11.48.175 por TCP puerto 514.
+Reenvía todos los mensajes al servidor 10.11.48.175 por TCP puerto 514.
 
--Usa una cola en memoria (LinkedList) para no perder mensajes si el servidor está caído.
+- Captura todos los logs (*.*)
 
--La cola se guarda en /var/spool/rsyslog/forwarding-queue mientras rsyslog está apagado o reiniciándose.
+- Envía los logs al servidor remoto 10.11.48.175 por TCP en el puerto 514.
 
--action.resumeRetryCount="-1" → reintenta enviar indefinidamente.
+- queue.type="LinkedList" → mantiene los logs en una cola en memoria y disco mientras esperan a ser enviados.
 
--queue.maxdiskspace="1g" → limita la cola a 1 GB.
+- queue.filename y queue.spoolDirectory → guardan la cola en disco si hay muchos logs o la red falla.
+
+- action.resumeRetryCount="-1" → intenta enviar infinitamente si falla la conexión.
+
+- queue.saveOnShutdown="on" → no se pierden logs si se apaga el cliente.
+
+- queue.maxdiskspace="1g" → límite de espacio para la cola en disco.
 
 
 
@@ -4830,6 +4839,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
