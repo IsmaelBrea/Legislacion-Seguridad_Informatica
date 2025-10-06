@@ -4208,6 +4208,11 @@ restrict 10.11.48.175 mask 255.255.255.255 noquery nopeer
 
 - restrict 10.11.48.175 ... → Impide al cliente enviar consultas de configuración o convertirse en servidor hacia esa IP.
 
+  	- noquery: Impide que tu cliente haga consultas administrativas al servidor.
+
+    - nopeer: Impide que tu cliente intente establecer una relación peer-to-peer con el servidor. Peer to peer(“ser igual al otro”) → intercambian relojes y se ajustan entre sí.
+
+
 
 AMBOS:
 ```bash
@@ -4799,6 +4804,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
