@@ -4010,7 +4010,7 @@ PROBAR UN MENSAJE -> **logger**
 
 logger es un comando de Linux que sirve para enviar mensajes al sistema de logs. Cuando lo usas, el mensaje va al sistema de logging que tengas (rsyslog, syslog o journald).
 
-### Facilities (categorías de origen del mensaje):
+### Facilities (categorías de origen del mensaje -> -p):
 | Facility      | Descripción                      | Ejemplo de uso                                 |
 | ------------- | -------------------------------- | ---------------------------------------------- |
 | auth/authpriv | Autenticación, seguridad         | `logger -p auth.info "Login correcto"`         |
@@ -4024,7 +4024,13 @@ logger es un comando de Linux que sirve para enviar mensajes al sistema de logs.
 | lpr           | Cola de impresión                | `logger -p lpr.info "Impresora lista"`         |
 | authpriv      | Seguridad, autenticación privada | `logger -p authpriv.warning "Intento fallido"` |
 
+Otras opciones:
 
+-t tag: Indica el tipo de mensaje y la severidad (por ejemplo user.info, auth.warning)
+
+-f archivo: Leer un archivo y registrar cada línea como mensaje
+
+-s: Mostrar también el mensaje por pantalla además de registrarlo
 
 ```bash
 logger "hola"
@@ -4790,6 +4796,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
