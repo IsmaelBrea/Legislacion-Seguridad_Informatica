@@ -4341,6 +4341,21 @@ $template RemoteLogs,"/var/log/%fromhost-ip%/%programname%.log"
 & stop
 ```
 
+- $template RemoteLogs,"/var/log/%fromhost-ip%/%programname%.log" ->
+  
+  	- %fromhost-ip% → la IP del equipo que envía el log.
+
+	- %programname% → el nombre del servicio o programa que genera el log (por ejemplo sshd, nginx, etc.).
+
+
+- *.* ?RemoteLogs  ->
+  
+	- *.* → captura todos los logs, de cualquier nivel y cualquier programa.
+
+	- ?RemoteLogs → indica que esos logs se guardarán usando la plantilla RemoteLogs definida antes.
+
+& stop → detiene el procesamiento adicional de ese log. Esto significa que no se escribirá en otros archivos por defecto (como /var/log/syslog).
+
 
 **CLIENTE-ISMA**
 
@@ -4811,6 +4826,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
