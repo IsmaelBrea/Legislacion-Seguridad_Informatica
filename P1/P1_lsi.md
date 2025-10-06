@@ -241,7 +241,7 @@ reboot               # Reiniciar
 shutdown now         # Apagar
 
 # Flag de ayuda para ver comandos grandes de golpe
---no-pager
+--no-pager           # No hay paginación
 ```
 
 <br>
@@ -4894,6 +4894,7 @@ Es el índice por defecto para mis propios datos, los logs que subo desde servid
 
 index=main
 | stats count by source
+
 
 
 
