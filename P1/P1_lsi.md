@@ -4181,7 +4181,7 @@ nano /etc/ntpsec/ntp.conf
 ```bash
 server 127.127.1.0 minpoll 4
 fudge 127.127.1.0 stratum 10
-restrict 10.11.48.202 mask 255.255.255.255 nomodify notrap nopeer
+restrict 10.11.48.202 mask 255.255.255.255 nomodify notrap 
 ```
 
 - server 127.127.1.0 minpoll 4 → Esto dice: el servidor usa su propio reloj local como referencia (porque no está conectado a internet).
@@ -4191,6 +4191,8 @@ restrict 10.11.48.202 mask 255.255.255.255 nomodify notrap nopeer
 - fudge 127.127.1.0 stratum 10 → Establece la prioridad de este reloj local como nivel 10 (más alto el número → menos prioridad que un reloj real de internet). Esto es importante: si pones stratum bajo (ej. 1 o 2), mi máquina se consideraría “muy confiable” y otros clientes podrían usarla como referencia principal. Al poner 10, le estamos diciendo: “esto es un reloj menos confiable, sólo de respaldo si no hay otros servidores.”
 
 - restrict 10.11.48.202 ... → Permite que el cliente 10.11.48.202 pueda pedir la hora, pero no modificar la configuración del servidor.
+
+	-notrap → el cliente no puede enviar ni recibir alertas o comandos de control remoto del servidor NTP. La hora sigue sincronizando normalmente, solo bloquea esa parte de gestión remota.
 
 <br>
 
@@ -4797,6 +4799,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
