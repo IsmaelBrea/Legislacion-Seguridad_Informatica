@@ -4842,6 +4842,17 @@ index=main host=nombre_del_cliente
 
 
 
+### RESUMEN FÁCIL SPLUNK
+
+1- query logs internos -> index=_internal
+
+Guarda logs internos de Splunk, es decir, todo lo que hace el propio Splunk mientras corre: inicio y parada de servicios, errores de búsqueda, estadísticas de rendimiento (búsquedas, indexación, etc.). No contiene logs de tus servidores ni aplicaciones.
+
+
+
+2-query local (mis porpios datos) -> index=main
+
+Es el índice por defecto para mis propios datos, los logs que subo desde servidores, aplicaciones, sensores, etc. Contiene eventos que quiero analizar como usuario, no logs del propio Splunk.
 
 
 
