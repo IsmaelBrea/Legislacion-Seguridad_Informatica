@@ -4671,7 +4671,7 @@ index=_internal sourcetype=splunkd log_level=ERROR
 <br>
 
 ---
-  #### **b) Cargué el fichero /var/log/apache2/access.log y el journald del sistema y visualícelos. **
+  #### **b) Cargué el fichero /var/log/apache2/access.log y el journald del sistema y visualícelos.**
 
 Tenemos que cargar por una parte logs de un país distinto y por otra parte nuestros logs de joournald de la máquina.
 
@@ -4839,6 +4839,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
