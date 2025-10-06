@@ -3956,6 +3956,21 @@ ldd /usr/sbin/telnetd | grep libwrap  # Telnet (si existiera)
 ldd /usr/sbin/cron | grep libwrap     # Cron, aunque suele no usar
 ```
 
+**¿Y si no está integrado el servicio en libwrap (libería que permite tcp wappers), se puede añadir de alguna forma?**
+SI, hay dos posibles opciones:
+
+Si no usa libwrap y el servicio se ejecuta vía inetd/xinetd: configura inetd/xinetd para usar tcpd (el wrapper). Ejemplo para /etc/inetd.conf:
+```bash
+myservice stream tcp nowait root /usr/sbin/tcpd /usr/sbin/myservice
+```
+
+o para xinetd:
+```bash
+server = /usr/sbin/tcpd y server_args = /usr/sbin/m
+```
+
+!!Si el servicio corre bajo systemd: tcp_wrappers normalmente no funcionará!!
+
 
 <br>
 
@@ -4775,6 +4790,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
