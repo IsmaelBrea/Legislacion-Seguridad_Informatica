@@ -4720,7 +4720,10 @@ En la parte de Statistics:
 
 **LOGS INTERNACIONALES -> Acess.log**
 
+```swift
 source="Acesos.log" | rex field=_raw "(?<prueba2>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})" | stats count by prueba2 | sort - count | head 10
+```
+
 ```python
 31.56.96.51	128
 66.249.66.194	126
@@ -4853,6 +4856,7 @@ Guarda logs internos de Splunk, es decir, todo lo que hace el propio Splunk mien
 2-query local (mis porpios datos) -> index=main
 
 Es el índice por defecto para mis propios datos, los logs que subo desde servidores, aplicaciones, sensores, etc. Contiene eventos que quiero analizar como usuario, no logs del propio Splunk.
+
 
 
 
