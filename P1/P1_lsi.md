@@ -4468,11 +4468,13 @@ Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el 
    
  	- Los logs viajan sin cifrar; un atacante podría leer o modificar la información mediante un ataque *Man in the Middle* (MitM).
 
+    - Exposición de logs remotos. Guardar logs por IP (/var/log/%fromhost-ip%/...) puede revelar la topología de la red. Si un atacante compromete el servidor de logs, tiene acceso a toda la información de la red.
+
 - NTP/NTPsec
   
  	- Usa UDP, lo que lo hace vulnerable a ataques de inundación, *spoofing* de IP o DoS.
     
- 	- Falta de autenticación por defecto; un atacante podría desincronizar el reloj del cliente.
+ 	- Falta de autenticación por defecto; un atacante podría desincronizar el reloj del cliente. Además stratum 10 en el servidor local puede hacer que clientes confíen en un reloj poco fiable si no hay otras fuentes.
 
 <br>
 
@@ -4828,6 +4830,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
