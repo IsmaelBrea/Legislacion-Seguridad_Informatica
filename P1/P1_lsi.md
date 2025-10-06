@@ -3827,9 +3827,9 @@ Respecto a la pregunta de indicar la política general de filtrado, consiste en 
 
 **DIFERENCIA TCP-WRAPPERS VS FIREWALL**:
 
-- tcp-wrappers → controla acceso a servicios específicos (SSH, FTP, etc.)
+- tcp-wrappers → deja o bloquea conexiones **una vez llegan al servicio**. Controla acceso a servicios específicos (SSH, FTP, etc.)
 
-- firewall → controla tráfico a nivel de red, bloquea o permite puertos, IPs, protocolos. El firewall es más amplio, puede proteger una red completa, un sistema contra amenazas o controlar el tráfico de red. 
+- firewall → deja o bloquea **antes de que lleguen al servicio**. Controla tráfico a nivel de red, bloquea o permite puertos, IPs, protocolos. El firewall es más amplio, puede proteger una red completa, un sistema contra amenazas o controlar el tráfico de red. 
 
 No son lo mismo, aunque ambos filtran conexiones.
 
@@ -4811,6 +4811,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
