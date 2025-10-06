@@ -4463,14 +4463,16 @@ Dentro se nos habrá creado una carpeta **rsyslog_server** y dentro otra con el 
 ### **Apartado C) Haga todo tipo de propuestas sobre los siguientes aspectos: ¿Qué problemas de seguridas identifica en los dos apartados anteriores? ¿Cómo podría solucionar los problemas identificados?**
 
 
-
 -  Rsyslog
- - Cualquier equipo podría enviar logs al servidor y llenar el disco (Denegación de Servicio, DoS).
- - Los logs viajan sin cifrar; un atacante podría leer o modificar la información mediante un ataque *Man in the Middle* (MitM).
+ 	- Cualquier equipo podría enviar logs al servidor y llenar el disco (Denegación de Servicio, DoS).
+   
+ 	- Los logs viajan sin cifrar; un atacante podría leer o modificar la información mediante un ataque *Man in the Middle* (MitM).
 
 - NTP/NTPsec
- - Usa UDP, lo que lo hace vulnerable a ataques de inundación, *spoofing* de IP o DoS.
- - Falta de autenticación por defecto; un atacante podría desincronizar el reloj del cliente.
+  
+ 	- Usa UDP, lo que lo hace vulnerable a ataques de inundación, *spoofing* de IP o DoS.
+    
+ 	- Falta de autenticación por defecto; un atacante podría desincronizar el reloj del cliente.
 
 <br>
 
@@ -4826,6 +4828,7 @@ En Search y Reportin en la barra de búsqueda:
 ```bash
 index=main host=nombre_del_cliente
 ```
+
 
 
 
