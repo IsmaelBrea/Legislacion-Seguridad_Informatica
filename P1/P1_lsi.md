@@ -4858,6 +4858,12 @@ Guarda logs internos de Splunk, es decir, todo lo que hace el propio Splunk mien
 Es el índice por defecto para mis propios datos, los logs que subo desde servidores, aplicaciones, sensores, etc. Contiene eventos que quiero analizar como usuario, no logs del propio Splunk.
 
 
+3-Ver los archivos de log subidos -> 
+
+index=main
+| stats count by source
+
+
 
 
 
