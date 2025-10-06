@@ -1765,10 +1765,22 @@ Piensa en tu ordenador como si fuera un coche. Cuando enciendes el coche, puedes
   
   - Modo mantenimiento → solo algunas cosas para revisar fallos.
 
+Los targets en Linux son un nivel arranque, por ejemplo:
+
+1-basic.target → lo mínimo para que el sistema funcione.
+
+2-multi-user.target → servicios de consola y red (modo texto).
+
+3-graphical.target → arranca todo lo anterior + interfaz gráfica.
+
+4-rescue.target → modo de recuperación (mínimo).
+
+5-network.target → servicios de red activos.
+
 
 **Target por defecto: systemctl get-default**
 
-Es el target que Linux usa automáticamente al encender.
+Es el nivel de arranque que el sistema usa automáticamente cuando inicias Debian. Es decir: qué “estado final” se quiere alcanzar al arrancar.
 
 Existen distintos tipos de target en los sistemas Linux. Los más básicos son:
 
@@ -1795,6 +1807,24 @@ root@ismael:/home/lsi# systemctl set-default multi-user.target
 Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi-user.target.
 root@ismael:/home/lsi# reboot
 ```
+
+Ahora que nuestro target es multiuser-agent, podemos ver todos los targets activos que se inician antes de este. Podemos verlo en orden jerárquico con el siguiente comando:
+```bash
+systemctl list-units --type=target
+```
+
+Y veremos algo así:
+```bash
+multi-user.target
+● ├─basic.target
+● │ ├─sockets.target
+● │ └─timers.target
+● ├─network.target
+● ├─sshd.service
+● ├─rsyslog.service
+● └─getty.target
+```
+En resumen, si definimos multi-user.target por defecto, systemd también ejecutará automáticamente todos los targets previos de los que depende (basic, sysinit, local-fs, etc.).
 
 Ahora nuestra máquina irá mejor. Podemos comprobar esto analizando el tiempo de botado de la máquina:
 ```bash
@@ -4864,6 +4894,7 @@ Es el índice por defecto para mis propios datos, los logs que subo desde servid
 
 index=main
 | stats count by source
+
 
 
 
