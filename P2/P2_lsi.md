@@ -89,6 +89,9 @@ Elimino splunk e instalo metasploit. No dejarlo activo por defecto. Arrancarlo s
 Como atacanntes vamos a engañar a la víctima para que lea un pdf. Es la víctima la que se conecta al ssh.
 Buscar los comandos en wireshark, o darle a las flechas hasta que aparezca el que queramos.
 
+Tenemos que darle permisos al fichero que le mandamos a nuestro compañero.
+Tenemos que mandar dichos permisos a través de un túnel. Si no lo hacemos, no funciona.
+
 
 **Ingeniería Social**:
 Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html normal y luego hacemos que funcione el ettercap.
@@ -244,6 +247,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
