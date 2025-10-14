@@ -13,7 +13,7 @@ En esta práctica se van a realizar muchos escaneos, ataques y defensas, por lo 
 
 ### **Apartado a) Instale el ettercap y pruebe sus opciones básicas en línea de comando.**
 
-Lllamos a eterrcap por CLI.
+Llamamos a eterrcap por la línea de comandos.
 
 tiene 2 targets.
 
@@ -254,6 +254,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
