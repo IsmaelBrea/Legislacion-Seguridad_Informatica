@@ -20,7 +20,9 @@ solo ipv4
 
 
 <br>
+
 ---
+
 ### **Apartado b) Capture paquetería variada de su compañero de prácticas que incluya varias sesiones HTTP. Sobre esta paquetería (puede utilizar el wireshark para los siguientes subapartados)**
 
 - **Identifique los campos de cabecera de un paquete TCP**  
@@ -229,6 +231,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
