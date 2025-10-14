@@ -6,7 +6,7 @@ DEFENSA DE LA PRÁCTICA: 4 de noviembre.
 
 En esta práctica se van a realizar muchos escaneos, ataques y defensas, por lo que se van a generar muchos logs en nuestro sistema. Tendremos que ir comprobando los logs poco a poco así como el espacio para que no se nos llene el disco ni ocurran cosas raras en nuestras máquinas.
 
-**IMPORTANTE:** Mirar una vez al día cuánto espacio tiene nuestra máquina y cuando ocupa nuestro log de la máquina. Nos podemos encontrar hasta logs de 5 GB que no valen para nada**
+**IMPORTANTE:** Mirar una vez al día cuánto espacio tiene nuestra máquina y cuando ocupa nuestro log de la máquina. Nos podemos encontrar hasta logs de 5 GB que no valen para nada.
 
 <br>
 <br>
@@ -254,6 +254,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
