@@ -2,9 +2,11 @@
 
 Defensa de la práctica: 4 de noviembre.
 
-**Objetivo:**: El objetivo de esta práctica es aprender y experimentar con la captura y el análisis del tráfico de red mediante sniffers, comprender y probar ataques DoS/DDoS, y trabajar la llamada «trilogía»: descubrimiento de hosts, escaneo de puertos y fingerprinting de sistemas (conjunto de técnicas usadas para identificar características de un equipo o servicio en la red). Además, se pretende gestionar y analizar la información de auditoría generada durante las pruebas, empleando en el laboratorio distintas herramientas sugeridas para practicar y validar los conceptos.
+**Objetivo:** El objetivo de esta práctica es aprender y experimentar con la captura y el análisis del tráfico de red mediante sniffers, comprender y probar ataques DoS/DDoS, y trabajar la llamada «trilogía»: descubrimiento de hosts, escaneo de puertos y fingerprinting de sistemas (conjunto de técnicas usadas para identificar características de un equipo o servicio en la red). Además, se pretende gestionar y analizar la información de auditoría generada durante las pruebas, empleando en el laboratorio distintas herramientas sugeridas para practicar y validar los conceptos.
 
 En esta práctica se van a realizar muchos escaneos, ataques y defensas, por lo que se van a generar muchos logs en nuestro sistema. Tendremos que ir comprobando los logs poco a poco así como el espacio para que no se nos llene el disco ni ocurran cosas raras en nuestras máquinas.
+
+**IMPORTANTE:** Mirar una vez al día cuánto espacio tiene nuestra máquina y cuando ocupa nuestro log de la máquina. Nos podemos encontrar hasta logs de 5 GB que no valen para nada**
 
 <br>
 <br>
@@ -91,6 +93,10 @@ Buscar los comandos en wireshark, o darle a las flechas hasta que aparezca el qu
 
 Tenemos que darle permisos al fichero que le mandamos a nuestro compañero.
 Tenemos que mandar dichos permisos a través de un túnel. Si no lo hacemos, no funciona.
+Hay que usar meterpreter, que usa comandos distintos. Tenemos que saber que comandos tenemos que usar.
+
+
+Una vez que sabemos que funciona metasploit, tenemos que hacer el filtro de ettercap (si encuentras un tag de este estilo, cambialo por eso otro -> tendremos que hacer esto en un html). Tenemos que usar ingenieria social. Tenemos que hacer que nuestro compañero entre en algo que trampa que le mandemos.
 
 
 **Ingeniería Social**:
@@ -175,7 +181,7 @@ Ataques Apache recomendados:
 <br>
 
 Defensas Apache recomendadas:
--ModSecurity
+-ModSecurity. Carlos no obliga a usar ModSecurity. 
 
 Existen 5 paquetes de apache que protegen sin querer.
 
@@ -247,6 +253,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
