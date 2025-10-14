@@ -3,6 +3,9 @@
 DEFENSA DE LA PRÁCTICA: 4 de noviembre.
 
 **Objetivo:** El objetivo de esta práctica es aprender y experimentar con la captura y el análisis del tráfico de red mediante sniffers, comprender y probar ataques DoS/DDoS, y trabajar la llamada «trilogía»: descubrimiento de hosts, escaneo de puertos y fingerprinting de sistemas (conjunto de técnicas usadas para identificar características de un equipo o servicio en la red). Además, se pretende gestionar y analizar la información de auditoría generada durante las pruebas, empleando en el laboratorio distintas herramientas sugeridas para practicar y validar los conceptos.
+ 
+ - Ataque: vulneración del protocolo ARP
+ - Ataque y defensa DoS.
 
 En esta práctica se van a realizar muchos escaneos, ataques y defensas, por lo que se van a generar muchos logs en nuestro sistema. Tendremos que ir comprobando los logs poco a poco así como el espacio para que no se nos llene el disco ni ocurran cosas raras en nuestras máquinas.
 
@@ -146,15 +149,15 @@ Poner solo una red pequeña o solo al compañero y la puerta del enlace por ejem
 
 ---
 
-### **Apartado j) Monitorizamos nuestra infraestructura.:  
+### **Apartado j) Monitorizamos nuestra infraestructura.:**
 
-- Instale prometheus y node_exporter y configúrelos para recopilar todo tipo de métricas de su máquina linux.
-- 
-- Posteriormente instale grafana y agregue como fuente de datos las métricas de su equipo de prometheus.
-- 
-- Importe vía grafana el dashboard 1860.
-- 
-- En los ataques de los apartados m y n busque posibles alteraciones en las métricas visualizadas.**
+**- Instale prometheus y node_exporter y configúrelos para recopilar todo tipo de métricas de su máquina linux.**
+  
+**- Posteriormente instale grafana y agregue como fuente de datos las métricas de su equipo de prometheus.**
+
+**- Importe vía grafana el dashboard 1860.**
+
+**- En los ataques de los apartados m y n busque posibles alteraciones en las métricas visualizadas.**
 
 
 
@@ -254,6 +257,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
