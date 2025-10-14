@@ -23,20 +23,16 @@ solo ipv4
 
 ---
 
-### **Apartado b) Capture paquetería variada de su compañero de prácticas que incluya varias sesiones HTTP. Sobre esta paquetería (puede utilizar el wireshark para los siguientes subapartados)  
-- Identifique los campos de cabecera de un paquete TCP
-    
-- Filtre la captura para obtener el tráfico HTTP
-  
-- Obtenga los distintos “objetos” del tráfico HTTP (imágenes, pdfs, etc.)
-   
-- Visualice la paquetería TCP de una determinada sesión.
+### **Apartado b) Capture paquetería variada de su compañero de prácticas que incluya varias sesiones HTTP. Sobre esta paquetería (puede utilizar el wireshark para los siguientes subapartados)**
 
-- Sobre el total de la paquetería obtenga estadísticas del tráfico por protocolo como fuente de información para un análisis básico del tráfico.
- 
-- Obtenga información del tráfico de las distintas “conversaciones” mantenidas.
+- **Identifique los campos de cabecera de un paquete TCP**  
+- **Filtre la captura para obtener el tráfico HTTP**  
+- **Obtenga los distintos “objetos” del tráfico HTTP (imágenes, pdfs, etc.)**  
+- **Visualice la paquetería TCP de una determinada sesión.**  
+- **Sobre el total de la paquetería obtenga estadísticas del tráfico por protocolo como fuente de información para un análisis básico del tráfico.**  
+- **Obtenga información del tráfico de las distintas “conversaciones” mantenidas.**  
+- **Obtenga direcciones finales del tráfico de los distintos protocolos como mecanismo para determinar qué circula por nuestras redes.**
 
-- Obtenga direcciones finales del tráfico de los distintos protocolos como mecanismo para determinar qué circula por nuestras redes.**
  
 
 
@@ -57,6 +53,8 @@ Cuidado con los balanceadores!! Buscar fotos que sean solo en http!!
 
 
 Usar nmap. Solo ipv4
+
+
 
 <br>
 ---
@@ -233,4 +231,5 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
