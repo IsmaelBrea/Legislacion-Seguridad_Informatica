@@ -47,6 +47,7 @@ Nosotros capturamos la peticion con wireshark y vemos la peticion y el gato.
 Cuidado con los balanceadores!! Buscar fotos que sean solo en http!!
 
 <br>
+
 ---
 
 ### **Apartado c) Obtenga la relación de las direcciones MAC de los equipos de su segmento.**
@@ -67,6 +68,7 @@ Cuidado con localhost, que es virtual!!!
 
 
 <br>
+
 ---
 
 ### **Apartado e) Mediante arpspoofing entre una máquina objetivo (víctima) y el router del laboratorio obtenga todas las URL HTTP visitadas por la víctima.**
@@ -76,6 +78,7 @@ Yo ataco y en mi pantalla veo lo que mi compañero ve en directo. Sus cambios co
 
 
 <br>
+
 ---
 
 ### **Apartado f) Instale metasploit. Haga un ejecutable que incluya un Reverse TCP meterpreter payload para plataformas linux. Inclúyalo en un filtro ettercap y aplique toda su sabiduría en ingeniería social para que una víctima u objetivo lo ejecute.**
@@ -98,6 +101,7 @@ Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html n
 
 
 <br>
+
 ---
 
 ### **Apartado g) Pruebe alguna herramienta y técnica de detección del sniffing (preferiblemente arpon).**
@@ -107,6 +111,7 @@ Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html n
 
 
 <br>
+
 ---
 
 ### **Apartado h) Pruebe distintas técnicas de host discovey, port scanning y OS fingerprinting sobre las máquinas del laboratorio de prácticas en IPv4. Realice alguna de las pruebas de port scanning sobre IPv6. ¿Coinciden los servicios prestados por un sistema con los de IPv4?.**
@@ -121,12 +126,14 @@ Poner solo una red pequeña o solo al compañero y la puerta del enlace por ejem
 
 
 <br>
+
 ---
 
 ### **Apartado i) Obtenga información “en tiempo real” sobre las conexiones de su máquina, así como del ancho de banda consumido en cada una de ellas.**
 
 
 <br>
+
 ---
 
 ### **Apartado j) Monitorizamos nuestra infraestructura.:  
@@ -151,6 +158,7 @@ Carlos no lo mira mucho, solo Nino.
 
 
 <br>
+
 ---
 
 ### **Apartado l) Ataque un servidor apache instalado en algunas de las máquinas del laboratorio de prácticas para tratar de provocarle una DoS. Utilice herramientas DoS que trabajen a nivel de aplicación (capa 7). ¿Cómo podría proteger dicho servicio ante este tipo de ataque? ¿Y si se produjese desde fuera de su segmento de red? ¿Cómo podría tratar de saltarse dicha protección?**
@@ -171,6 +179,7 @@ Existen 5 paquetes de apache que protegen sin querer.
 Probar varios y probar que podemos atacar y nosotros podemos defendernos.
 
 <br>
+
 ---
 
 ### **Apartado m) Instale y configure modsecurity. Vuelva a proceder con el ataque del apartado anterior. ¿Qué acontece ahora?**
@@ -190,6 +199,7 @@ Probar varios y probar que podemos atacar y nosotros podemos defendernos.
 
 
 <br>
+
 ---
 
 ### **Apartado o) Trate de sacar un perfil de los principales sistemas que conviven en su red de prácticas, puertos accesibles, fingerprinting, etc.**
@@ -197,6 +207,7 @@ Probar varios y probar que podemos atacar y nosotros podemos defendernos.
 
 
 <br>
+
 ---
 
 ## ATAQUES Y DEFENSAS DE FUERZA BRUTA:
@@ -215,6 +226,7 @@ Usar Medusa para atacar.
 
 
 <br>
+
 ---
 
 ### **Apartado q) Reportar alarmas está muy bien, pero no estaría mejor un sistema activo, en lugar de uno pasivo. Configure algún sistema activo, por ejemplo OSSEC, y pruebe su funcionamiento ante un “password guessing”.**
@@ -225,12 +237,14 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 ---
 
 ### **Apartado r) Supongamos que una máquina ha sido comprometida y disponemos de un fichero con sus mensajes de log. Procese dicho fichero con OSSEC para tratar de localizar evidencias de lo acontecido (“post mortem”). Muestre las alertas detectadas con su grado de criticidad, así como un resumen de las mismas.**
 
 
 <br>
+
 
 
 
