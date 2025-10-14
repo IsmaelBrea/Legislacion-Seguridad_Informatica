@@ -6,6 +6,8 @@ Defensa de la práctica: 4 de noviembre.
 
 En esta práctica se van a realizar muchos escaneos, ataques y defensas, por lo que se van a generar muchos logs en nuestro sistema. Tendremos que ir comprobando los logs poco a poco así como el espacio para que no se nos llene el disco ni ocurran cosas raras en nuestras máquinas.
 
+<br>
+<br>
 
 ### **Apartado a) Instale el ettercap y pruebe sus opciones básicas en línea de comando.**
 
@@ -34,8 +36,8 @@ solo ipv4
  
 - Obtenga información del tráfico de las distintas “conversaciones” mantenidas.
 
-- Obtenga direcciones finales del tráfico de los distintos protocolos como mecanismo para determinar qué circula por nuestras redes.
- **
+- Obtenga direcciones finales del tráfico de los distintos protocolos como mecanismo para determinar qué circula por nuestras redes.**
+ 
 
 
 
@@ -231,3 +233,4 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
