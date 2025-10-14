@@ -17,6 +17,8 @@ Lllamos a eterrcap por CLI.
 
 tiene 2 targets. /// no hacer esto porque colapsa
 
+No leer toda la red porque colapsa.
+
 solo ipv4
 
 
@@ -253,6 +255,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
