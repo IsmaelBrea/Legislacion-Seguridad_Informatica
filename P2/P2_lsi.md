@@ -1,6 +1,6 @@
 # PRÁCTICA 2 - Seguridad Informática
 
-Defensa de la práctica: 4 de noviembre.
+DEFENSA DE LA PRÁCTICA: 4 de noviembre.
 
 **Objetivo:** El objetivo de esta práctica es aprender y experimentar con la captura y el análisis del tráfico de red mediante sniffers, comprender y probar ataques DoS/DDoS, y trabajar la llamada «trilogía»: descubrimiento de hosts, escaneo de puertos y fingerprinting de sistemas (conjunto de técnicas usadas para identificar características de un equipo o servicio en la red). Además, se pretende gestionar y analizar la información de auditoría generada durante las pruebas, empleando en el laboratorio distintas herramientas sugeridas para practicar y validar los conceptos.
 
@@ -15,9 +15,10 @@ En esta práctica se van a realizar muchos escaneos, ataques y defensas, por lo 
 
 Lllamos a eterrcap por CLI.
 
-tiene 2 targets. /// no hacer esto porque colapsa
+tiene 2 targets.
 
-No leer toda la red porque colapsa.
+No usar ettercap///  -> no hacer esto porque colapsa porque se está leyendo toda la red.
+
 
 solo ipv4
 
@@ -38,8 +39,6 @@ solo ipv4
 - **Obtenga direcciones finales del tráfico de los distintos protocolos como mecanismo para determinar qué circula por nuestras redes.**
 
  
-
-
 
 HTTP porque no va cifrado.
 
@@ -255,6 +254,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
