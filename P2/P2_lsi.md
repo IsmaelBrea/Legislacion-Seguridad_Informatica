@@ -16,8 +16,237 @@ En esta práctica se van a realizar muchos escaneos, ataques y defensas, por lo 
 
 **IMPORTANTE:** Mirar una vez al día cuánto espacio tiene nuestra máquina y cuando ocupa nuestro log de la máquina. Nos podemos encontrar hasta logs de 5 GB que no valen para nada.
 
+## Repaso COMANDOS BÁSICOS útiles para la práctica
+
+```bash
+#Accesos
+last               # Sesiones de usuarios accedidas a la máquina
+date               # Hora sesión actual
+
+# Navegación
+pwd                 # Carpeta actual
+ls                  # Listar
+ls -l               # Listar con detalles
+ls -a               # Incluir ocultos
+
+cd /ruta            # Cambiar carpeta
+cd ~                # Ir al home (~ es el directorio home del usuario actual)
+cd ..               # Subir un nivel
+
+
+# Archivos y directorios
+touch archivo.txt   # Crear archivo vacío
+mkdir carpeta       # Crear carpeta
+mkdir -p a/b/c      # Crear subcarpetas
+cp origen destino   # Copiar archivo
+cp -r dir1 dir2     # Copiar directorio
+mv origen destino   # Mover/renombrar
+rm archivo.txt      # Borrar archivo
+rm -r carpeta       # Borrar carpeta
+
+# Ver contenido
+cat archivo.txt     # Mostrar contenido
+less archivo.txt    # Leer con paginador
+head archivo.txt    # Primeras 10 líneas
+tail archivo.txt    # Últimas 10 líneas
+     tail -n archivo.log # Especificar las últimas N líneas
+     tail -f archivo.log # Ver en tiempo real
+
+# Búsqueda
+find / -name "archivo.txt"  # Buscar archivo
+grep                # Se utiliza para buscar y filtrar líneas de texto que coinciden con un patrón específico
+    grep "texto" archivo.txt    # Buscar texto
+    grep -r "texto" /ruta       # Buscar en varios archivos
+
+# Redirección y tuberías (pipes)
+> sobreescribe el archivo
+>> añade al final del archivo
+
+| tubería. Envía la salida de un comando como entrada de otro comando, conectando procesos en serie
+
+# Permisos
+ls -l               # Ver permisos
+chmod 755 archivo   # Cambiar permisos
+chown usr:grp arch  # Cambiar propietario
+
+# Procesos
+ps               # Procesos ligados a tu terminal actual
+   -e            # Muestra todos los procesos del sistema 
+   -a            # Procesos de todos los usuarios (excepto los sin terminal)
+   -u            # Procesos con info del usuario, CPU, memoria, etc.
+   -x            # Incluye procesos sin terminal (daemons, servicios)
+ps aux           # Vista clásica estilo BSD, muestra todos los procesos con detalles
+ps -ef           # Vista estilo Unix System V, alternativa a aux
+
+top                 # Procesos en tiempo real
+sudo systemd-cgtop  # Procesos en tiempo real de los grupos de control
+watch               # Ejecuta un comando repetidamente
+   -n <segundos>    # Intervalo de actualización (por defecto 2 segundos)
+   -d               # Resalta los cambios en cada actualización
+kill PID            # Terminar proceso
+
+# Paquetes (Debian/Ubuntu)
+sudo apt update           # Actualizar lista
+sudo apt upgrade          # Actualiza los paquetes instalados a sus versiones nuevas, sin eliminar ni instalar paquetes adicionales
+sudo apt full-upgrade     # Actualiza todo el sistema, incluso si para hacerlo debe instalar o eliminar paquetes
+sudo apt install paquete  # Instalar
+sudo apt remove paquete   # Eliminar
+dpkg -l | wc -l           # Lista todos los paquetes instalados  y wc -l cuenta las líneas, es decir, el total de paquetes
+        -dpkg -l → lista todos los paquetes.
+        -grep '^ii' → filtra los que están instalados (ii)
+        -wc -l → cuenta cuántos hay
+
+#Limpieza
+apt autoremove  # Limpia espacio quitando dependencias que ya no usa ningún paquete.
+apt autoclean   # Borra archivos de instalación (.deb) viejos o inutilizables del caché de APT
+apt purge nombre_paquete   # Desinstala y borra también archivos de configuración
+
+# Red
+ping 8.8.8.8         # Probar conexión
+    -c:              # Especifica cuantos paquetes se van a mandar
+ping6 2002:0a0b:3032::1 # Probar conexión IPv6
+tracert ip           # Muestra el camino a seguir para alcanzar una IP
+
+ **IP moderno**
+ip a                         # Ver IP
+ip addr show                 # Igual que ip a
+ip addr add <IP>/<mask> dev <interfaz>   # Añadir dirección IP temporal
+ip addr del <IP>/<mask> dev <interfaz>   # Quitar dirección IP
+ip link show                 # Mostrar estado de interfaces
+ip link set <interfaz> up    # Activar interfaz
+ip link set <interfaz> down  # Desactivar interfaz
+ip route show                # Mostrar tabla de rutas
+ip route add <red> via <gateway> dev <interfaz>  # Añadir ruta
+ip route del <red>           # Eliminar ruta
+
+**ifconfig (antiguo)**
+ifconfig                     # Mostrar interfaces activas
+ifconfig <interfaz>          # Mostrar detalles de interfaz
+ifconfig <interfaz> up       # Activar interfaz
+ifconfig <interfaz> down     # Desactivar interfaz
+ifconfig <interfaz> <IP> netmask <mask>  # Asignar IP temporal
+ifconfig <interfaz>:<n> <IP> netmask <mask>  # Crear alias/interfaz lógica
+
+**route (rutas)**
+route -n                     # Mostrar tabla de rutas
+route add default gw <gateway>        # Añadir puerta de enlace predeterminada
+route del default gw <gateway>        # Eliminar puerta de enlace predeterminada
+route add -net <red> gw <gateway>    # Añadir ruta específica
+route del -net <red> gw <gateway>    # Eliminar ruta específica
+
+**sockets**
+1-Alternativa nueva
+ss           # Muestra todos los sockets
+   -t        # TCP
+   -u        # UDP
+   -l        # Solo sockets escuchando (listening)
+   -n        # Mostrar IPs y puertos en números (no nombres)
+   -p        # Mostrar PID y proceso que usa el socket
+   -a        # Mostrar todos los sockets (escuchando y conectados)
+   -s        # Resumen de conexiones por tipo
+
+2-Alternativa clásica (más lento que ss, pero muy usada)
+netstat
+   -t        # TCP
+   -u        # UDP
+   -l        # Solo escuchando
+   -n        # Números en lugar de nombres
+   -p        # PID/Nombre del proceso
+   -a        # Todas las conexiones y puertos escuchando
+   -r        # Tabla de rutas
+   -s        # Estadísticas de protocolos
+   -i        # Interfaces de red
+   -o        # Muestra información adicional relacionada con los temporizadores de las conexiones TCP
+
+ 
+wget <url>                    # Descarga el contenido en un archivo con el mismo nombre que en el servidor
+wget -o | -O <url>                 
+		-o (o minúscula) → guarda el registro (mensajes) en un archivo.
+		-O (O mayúscula) → guarda el archivo descargado con ese nombre.
+wget --spider https://www.google.com  # Comprueba si la URL está disponible sin descargar nada
+wget --timeout=10 https://www.google.com  # Límite de espera antes de rendirse
+wget --server-response --spider <url>  # Hace la petición y muestra únicamente los headers HTTP, sin guardar nada
+wget -q <url>                 # Descarga sin mostrar barras ni mensajes, solo errores.
+
+
+curl <url>                   # Probar conexión HTTP/HTTPS y obtener contenido
+curl -I <url>                # Solo encabezados HTTP
+curl -s <url>                # Silencioso, sin mostrar progreso
+curl -O <url>                # Descargar archivo
+curl -L <url>                # Seguir redirecciones
+
+
+# Usuarios
+whoami               # Usuario actual
+id                   # UID y grupos
+adduser usuario      # Crear usuario
+passwd usuario       # Cambiar contraseña
+
+# Sistema
+uname -r             # Versión kernel
+lsb_release -a       # Versión distro
+df -h                # Espacio en disco
+du -sh carpeta       # Tamaño carpeta
+free -h              # Memoria RAM
+systemctl            # Gestiona el estado de los servicios del sistema
+   - list-units → “lista las unidades que están activas ahora”
+   - list-unit-files → “lista todas las unidades que existen y su configuración de inicio”
+          ---type = service | target | socket | mount | device | timer | path | slice | automount | swap
+          --state = active | inactive | enabled | disabled | masked | static
+   - status <unidad> → “muestra el estado detallado de una unidad o servicio específico”
+   - start <unidad> → “inicia un servicio/unidad”
+   - stop <unidad> → “detiene un servicio/unidad”
+   - restart <unidad> → “reinicia un servicio/unidad”
+   - enable <unidad> → “configura la unidad para que arranque automáticamente”
+   - disable <unidad> → “desactiva el arranque automático de la unidad”
+   - get-default → “muestra el target por defecto del sistema”
+   - set-default <target> → “cambia el target por defecto del sistema (permanente)”
+   - isolate <target> → “cambia al target especificado inmediatamente (temporal)”
+   - daemon-reload  →  e dice a systemd que recargue todas las unidades y servicios
+
+	# Logs
+Dos formas de ver los logs:
+1-De forma centralizada: journald -> journalctl
+journalctl           # Muestra los registros (logs) de los servicios y del sistema
+     -b → “muestra los logs desde el último arranque”
+     -a → “muestra todas las líneas completas, incluso las truncadas por pantalla”
+     -p err → Muestra solo los mensajes de error (y más graves) del sistema
+     -p warning → muestra solo mensajes de nivel warning y más graves (error, crítico, alerta)
+     -x → Explica los mensajes del log con información extra si está disponible.
+     -e → Va directamente al final de los logs (útil para ver los últimos errores)
+     -u <unidad> → “filtra los logs de una unidad o servicio específico”
+     -f  → “muestra los logs en tiempo real (como tail -f)”
+     --since "YYYY-MM-DD HH:MM:SS" → “muestra logs desde una fecha/hora específica”
+     --until "YYYY-MM-DD HH:MM:SS" → “muestra logs hasta una fecha/hora específica”
+
+2-Accediendo a las carpetas de /var/log y viendo los logs que de cada tipo:
+/var/log/syslog: mensajes generales del sistema
+/var/log/auth.log:  autenticación, sudo, logins
+/var/log/dpkg.log → instalación de paquetes
+...
+
+uptime               # Tiempo encendido
+reboot               # Reiniciar
+shutdown now         # Apagar
+
+# Flag de ayuda para ver comandos grandes de golpe
+--no-pager           # No hay paginación
+
+
+## PRÁCTICA 2
+
+# Transferencia de archivos
+scp archivo_origen lsi@ip:directorio_destino
+
+```
+
+
 <br>
 <br>
+
+## 1-SNIFFERS Y ANÁLISIS DE TRÁFICO
+
+Sniffers (o analizadores de paquetes) son herramientas o programas software diseñados para capturar, monitorizar y analizar el tráfico de red que circula por un segmento de red. Su funcionamiento se basa en poner la tarjeta de red (NIC) en modo promiscuo, lo que le permite capturar todos los paquetes que pasan por la red, no solo los dirigidos específicamente a esa máquina.
 
 ### **Apartado a) Instale el ettercap y pruebe sus opciones básicas en línea de comando.**
 
@@ -262,6 +491,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
