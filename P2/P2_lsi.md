@@ -346,21 +346,21 @@ Al instalarlo con text-only no dejará entrar al modo interactivo. Esto quiere d
 
 Llamamos a eterrcap por la línea de comandos. Ettercap tiene los siguientes parámetros principales:
 
--T: modo solo texto. Muestra el tráfico de red en tiempo real. Muestra demasiada información, cientos de líneas por segundo. Subflags para -T:
+- T: modo solo texto. Muestra el tráfico de red en tiempo real. Muestra demasiada información, cientos de líneas por segundo. Subflags para -T:
 	-q: Silencioso (menos output). Muestra solo LO IMPORTANTE ya que omite paquetes técnicos como ACK,SYN etc.
 
--i: especificarle la interfaz. 
+- i: especificarle la interfaz. 
 
--L: para escribir en un fichero con extension .ettrcap                                                                                                 
--w: para escribir en un fichero con extension .pcap      
+- L: para escribir en un fichero con extension .ettrcap                                                                                                 
+- w: para escribir en un fichero con extension .pcap      
 
--P <pluging> -> especificar que plugin usar
+- P <pluging> -> especificar que plugin usar
                                                              
--r: para leer un fichero con extensión .pcap
+- r: para leer un fichero con extensión .pcap
 
--t: filtrar por protocolo (http, tcp...)
+- t: filtrar por protocolo (http, tcp...)
  
--M <metodos:argumentos> -> hace un ataque MITM(man in the middle). Subflags para -M:                                                                                                                                                 
+- M <metodos:argumentos> -> hace un ataque MITM(man in the middle). Subflags para -M:                                                                                                                                                 
     - arp:remote/oneway -> para facer un arp poisoning(ARP spoofing)                                          
 	- icmp:MAC/IP -> ataque de redireccionamento icmp                                                          
     - DHCP:ip_pool/netmask/dns -> para un dhcp spoofing                                                         
@@ -616,6 +616,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
