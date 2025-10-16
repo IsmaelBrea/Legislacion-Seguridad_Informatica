@@ -4,12 +4,12 @@ DEFENSA DE LA PRÁCTICA: 4 de noviembre.
 
 **Objetivo:** El objetivo de esta práctica es aprender y experimentar con la captura y el análisis del tráfico de red mediante sniffers, comprender y probar ataques DoS/DDoS, y trabajar la llamada «trilogía»: descubrimiento de hosts, escaneo de puertos y fingerprinting de sistemas (conjunto de técnicas usadas para identificar características de un equipo o servicio en la red). Además, se pretende gestionar y analizar la información de auditoría generada durante las pruebas, empleando en el laboratorio distintas herramientas sugeridas para practicar y validar los conceptos.
 
- 1- Sniffers y análisis de tráfico
- 2- Ataques y defensas, explotación y DoS: vulneración del protocolo ARP
- 3-Detección y monitorización
- 4-Reconocimiento pasivo y análisis externo
- 5-Ataques y defensa de fuerza bruta
- 6-Análisis forense / post-mortem
+ 1- Sniffers y análisis de tráfico: a, b, c, d.
+ 2- Ataques Man in the Middle: e, f.
+ 3-Detección y monitorización: g, i, j.
+ 4-Reconocimiento y escaneo de red: h, n, o
+ 5-Ataques y protección de servicios: k, l, p
+ 6-Sistemas de detección y respuesta: q, r 
 
 
 En esta práctica se van a realizar muchos escaneos, ataques y defensas, por lo que se van a generar muchos logs en nuestro sistema. Tendremos que ir comprobando los logs poco a poco así como el espacio para que no se nos llene el disco ni ocurran cosas raras en nuestras máquinas.
@@ -262,6 +262,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
