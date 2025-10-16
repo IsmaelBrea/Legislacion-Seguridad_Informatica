@@ -5,10 +5,15 @@ DEFENSA DE LA PRÁCTICA: 4 de noviembre.
 **Objetivo:** El objetivo de esta práctica es aprender y experimentar con la captura y el análisis del tráfico de red mediante sniffers, comprender y probar ataques DoS/DDoS, y trabajar la llamada «trilogía»: descubrimiento de hosts, escaneo de puertos y fingerprinting de sistemas (conjunto de técnicas usadas para identificar características de un equipo o servicio en la red). Además, se pretende gestionar y analizar la información de auditoría generada durante las pruebas, empleando en el laboratorio distintas herramientas sugeridas para practicar y validar los conceptos.
 
  1- Sniffers y análisis de tráfico: a, b, c, d.
+ 
  2- Ataques Man in the Middle: e, f.
+ 
  3-Detección y monitorización: g, i, j.
+ 
  4-Reconocimiento y escaneo de red: h, n, o
+ 
  5-Ataques y protección de servicios: k, l, p
+ 
  6-Sistemas de detección y respuesta: q, r 
 
 
@@ -238,6 +243,81 @@ shutdown now         # Apagar
 # Transferencia de archivos
 scp archivo_origen lsi@ip:directorio_destino
 
+ETTERCAP — CHULETA DE FLAGS (TODO EN UN SOLO BLOQUE, TEXTO PLANO)
+
+# Modos / interfaz
+-T                        modo texto (CLI). Veremos toda la info de la red. Dentro de esta nos pedirá elegir:
+
+	h → help. Ver ayuda completa de comandos disponibles
+
+    s → statistics. Ver estadísticas de tráfico capturado
+
+    l → list. Listar todos los hosts descubiertos (los 230)
+
+    c → connections. Ver la lista de conexiones 
+
+    q → Salir del programa
+
+-C (NO USAR)                       modo curses (menús en terminal; más estructurado que -T).
+-G (NO USAR)                       modo gráfico (GTK) — NO usar en servidores sin X.
+
+# Ayuda / info
+-h, --help                muestra ayuda.
+-v, --version             muestra versión.
+-q                        quiet: reduce verbosidad (menos salida en pantalla).
+
+# Interfaz / captura
+-i <iface>                usar interfaz (ej: eth0, wlan0).
+-p, --nopromisc           no poner la interfaz en modo promiscuo.
+-w <archivo.pcap>         guardar captura en archivo pcap.
+-r <archivo.pcap>         leer tráfico desde un pcap (modo offline).
+--autosave                (según versión) guardar automáticamente pcap.
+
+# MitM / métodos de ataque
+-M <METHOD:ARGS>          lanzar ataque man-in-the-middle.
+                          Ejemplos:
+                            -M arp:remote /IP1/ /IP2/   # ARP poisoning entre dos hosts
+                            -M arp:gateway /IP_victima/ # envenenar gateway
+                            -M syn /IP1/ /IP2/          # SYN flooding/mitm (según versión)
+-o                        only-mitm: solo hacer poisoning (no procesar/sniffear paquetes).
+-B <iface1> <iface2>      modo bridge (inline) entre dos interfaces (filtrado inline).
+
+# Filtros / modificaciones
+-F <filtro_compilado>     cargar filtro compilado (output de etterfilter).
+etterfilter input.ef -o out.ef   # compilar filtro antes de usarlo.
+                          filtros permiten reemplazar cadenas, inyectar respuestas, bloquear, etc.
+
+# Plugins
+-P <plugin>               cargar plugin (ej: dns_spoof, chk_poison, autoadd, remote_browser).
+                          algunos plugins requieren ficheros/config previos (hosts, reglas).
+
+# Opciones de comportamiento
+-u, --unoffensive         no reenviar paquetes (modo no destructivo).
+-S                        modo sniffer (según versión) / minimizar acciones intrusivas.
+--local-mac <MAC>         usar MAC local especificada (cuando aplicable).
+--remote-mac <MAC>        especificar MAC remota (cuando aplicable).
+
+# Logging / output
+--log <file>              (según versión) guardar logs en archivo.
+--debug                   modo debug (muy verboso).
+--pcap                   (sin -w) opciones relacionadas con pcap (varía por versión).
+
+# Ejecución / automatización
+-q                        quiet, útil para scripts.
+-n                        (según versión) no resolver nombres DNS/hosts (más rápido).
+--no-spoof-check          evitar comprobaciones de spoofing (según versión).
+
+# Señales / parada
+(en lugar de Ctrl+C) usar pkill -TERM ettercap o sudo kill <PID> para parada limpia.
+
+
+
+
+FIN — TODO EN UN BLOQUE DE TEXTO PLANO.
+
+
+
+
 ```
 
 
@@ -250,15 +330,60 @@ Sniffers (o analizadores de paquetes) son herramientas o programas software dise
 
 ### **Apartado a) Instale el ettercap y pruebe sus opciones básicas en línea de comando.**
 
-Llamamos a eterrcap por la línea de comandos.
+Ettercap es una herramienta usada para hacer análisis y manipulación del tráfico de red, especialmente en redes LAN.
+Se utiliza mucho en auditorías de seguridad para ver cómo viajan los datos y detectar posibles ataques o vulnerabilidades.
 
-tiene 2 targets.
+!!SOLO ANALIZAREMOS TRÁFICO IPv4!!
 
-No usar ettercap///  -> no hacer esto porque colapsa porque se está leyendo toda la red.
+Vamos a instalar ettercap en nuestra máquina sin interfaz gráfica. Para eso:
+
+```bash
+apt install ettercap-text-only
+```
+
+Al instalarlo con text-only no dejará entrar al modo interactivo. Esto quiere decir que cada vez que queramos hacer algo con ettercap solo podemos teclear sus comandos desde la línea de comandos. El modo interactivo es como una especie de shell dentro de nuestra línea de comandos, pero eso nosotros no lo hemos activado.
 
 
-solo ipv4
+Llamamos a eterrcap por la línea de comandos. Ettercap tiene los siguientes parámetros principales:
 
+-T: modo solo texto. Muestra el tráfico de red en tiempo real. Muestra demasiada información, cientos de líneas por segundo. Subflags para -T:
+	-q: Silencioso (menos output). Muestra solo LO IMPORTANTE ya que omite paquetes técnicos como ACK,SYN etc.
+
+-i: especificarle la interfaz. 
+
+-L: para escribir en un fichero con extension .ettrcap                                                                                                 
+-w: para escribir en un fichero con extension .pcap      
+
+-P <pluging> -> especificar que plugin usar
+                                                             
+-r: para leer un fichero con extensión .pcap
+
+-t: filtrar por protocolo (http, tcp...)
+ 
+-M <metodos:argumentos> -> hace un ataque MITM(man in the middle). Subflags para -M:                                                                                                                                                 
+    - arp:remote/oneway -> para facer un arp poisoning(ARP spoofing)                                          
+	- icmp:MAC/IP -> ataque de redireccionamento icmp                                                          
+    - DHCP:ip_pool/netmask/dns -> para un dhcp spoofing                                                         
+    - port:remote/tree -> roubo de puertos     
+
+Para hacer ataques MiM, ettercap tiene **dos targets**. Esto significa que Ettercap necesita dos equipos entre los que va a ponerse en medio para espiar o alterar el tráfico.
+
+- Target 1 (T1) = primer equipo (por ejemplo: la víctima, un PC).
+	
+- Target 2 (T2) = segundo equipo (por ejemplo: el router/gateway o otro PC).
+
+
+No usar ettercap con target ///  -> no hacer esto porque colapsa porque se está leyendo toda la red.
+
+
+¡IMPORTANTE!: a veces cerrar un comando con Ctrl+C de ettercap puede dar problemas. Para cerrar bien:
+
+```bash
+sudo pkill -TERM ettercap
+# o si prefieres por PID:
+sudo pgrep -a ettercap      # ver PID
+sudo kill -TERM <PID>
+```
 
 
 <br>
@@ -491,6 +616,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
