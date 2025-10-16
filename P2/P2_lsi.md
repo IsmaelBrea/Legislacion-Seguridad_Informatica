@@ -276,11 +276,13 @@ ETTERCAP — CHULETA DE FLAGS (TODO EN UN SOLO BLOQUE, TEXTO PLANO)
 # MitM / métodos de ataque
 -M <METHOD:ARGS>          lanzar ataque man-in-the-middle.
                           Ejemplos:
-                            -M arp:remote /IP1/ /IP2/   # ARP poisoning entre dos hosts
-                            -M arp:gateway /IP_victima/ # envenenar gateway
-                            -M syn /IP1/ /IP2/          # SYN flooding/mitm (según versión)
+                            -M arp:remote /IP1/ /IP2/   # engaña a IP1 y IP2 para que todo su tráfico pase por tu máquina (ARP poisoning entre dos hosts).
+                            -M arp:gateway /IP_victima/ # hace creer a la víctima que tú eres el gateway (redirige su tráfico al gateway a través tuyo).
+                            -M syn /IP1/ /IP2/          # usa método SYN (según versión, puede usarse para ciertos ataques/mitm).
+
 -o                        only-mitm: solo hacer poisoning (no procesar/sniffear paquetes).
 -B <iface1> <iface2>      modo bridge (inline) entre dos interfaces (filtrado inline).
+
 
 # Filtros / modificaciones
 -F <filtro_compilado>     cargar filtro compilado (output de etterfilter).
@@ -309,14 +311,6 @@ etterfilter input.ef -o out.ef   # compilar filtro antes de usarlo.
 
 # Señales / parada
 (en lugar de Ctrl+C) usar pkill -TERM ettercap o sudo kill <PID> para parada limpia.
-
-
-
-
-FIN — TODO EN UN BLOQUE DE TEXTO PLANO.
-
-
-
 
 ```
 
@@ -617,6 +611,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
