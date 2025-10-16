@@ -347,7 +347,8 @@ Al instalarlo con text-only no dejará entrar al modo interactivo. Esto quiere d
 Llamamos a eterrcap por la línea de comandos. Ettercap tiene los siguientes parámetros principales:
 
 - -T: modo solo texto. Muestra el tráfico de red en tiempo real. Muestra demasiada información, cientos de líneas por segundo. Subflags para -T:
-	-q: Silencioso (menos output). Muestra solo LO IMPORTANTE ya que omite paquetes técnicos como ACK,SYN etc.
+
+- -q: Silencioso (menos output). Muestra solo LO IMPORTANTE ya que omite paquetes técnicos como ACK,SYN etc.
 
 - -i: especificarle la interfaz. 
 
@@ -616,6 +617,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
