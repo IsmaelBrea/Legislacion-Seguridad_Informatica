@@ -356,10 +356,10 @@ Llamamos a eterrcap por la línea de comandos. Ettercap tiene los siguientes par
 - -t: filtrar por protocolo (http, tcp...)
  
 - -M <metodos:argumentos> -> hace un ataque MITM(man in the middle). Subflags para -M:                                                                                                                                                 
-    - arp:remote/oneway -> para facer un arp poisoning(ARP spoofing)                                          
+    - arp:remote / arp:gateway -> para hacer un arp poisoning(ARP spoofing)                                          
 	- icmp:MAC/IP -> ataque de redireccionamento icmp                                                          
     - DHCP:ip_pool/netmask/dns -> para un dhcp spoofing                                                         
-    - port:remote/tree -> roubo de puertos     
+    - port:remote/tree -> robo de puertos     
 
 Para hacer ataques MiM, ettercap tiene **dos targets**. Esto significa que Ettercap necesita dos equipos entre los que va a ponerse en medio para espiar o alterar el tráfico.
 
@@ -396,10 +396,17 @@ sudo kill -TERM <PID>
 - **Obtenga direcciones finales del tráfico de los distintos protocolos como mecanismo para determinar qué circula por nuestras redes.**
 
  
+!! Solo usaremos HTTP porque no va cifrado !!
 
-HTTP porque no va cifrado.
+Instalar wireshark en local y ver el tráfico. 
 
-Instalar wireshark en local y ver el tráfico. En wireskark  hay que ver el gato.
+
+
+
+
+
+
+En wireskark  hay que ver el gato.
 wget fotodelgato.png 
 
 Nosotros capturamos la peticion con wireshark y vemos la peticion y el gato.
@@ -611,6 +618,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
