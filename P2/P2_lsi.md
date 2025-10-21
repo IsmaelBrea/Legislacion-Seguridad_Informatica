@@ -405,7 +405,7 @@ Una vez instalado wireshark tenemos que instalar en la máquina **tcpdump** para
 
 **PASOS ATAQUE-DEFENSA**
 
-1- El atacante hace sniffing ao trafico do compañeiro:
+1- El atacante hace sniffing al trafico del compañero:
 ```bash
 ettercap -T -q -i ens33 -M arp:remote //10.11.48.175/ //10.11.48.1/ (sniffing da paqueteria)
 ```
@@ -415,9 +415,9 @@ Mientras esfina, en otro terminal:
 tcpdump -i ens33 -s 65536 -w lsicompa.pcap
 ```
 
-   [-i] é para espicificar a interfaz.
-   [-s] o limite de bytes dos paquetes a capturar.
-   [-w] o achivo donde se gardará.
+   [-i] es para especificar la interfaz.
+   [-s] el límite de bytes de los paquetes a capturar.
+   [-w] el achivo donde se guardará.
 
 
 <br>
@@ -437,18 +437,19 @@ curl http://securitylab.disi.unitn.it/lib/exe/fetch.php?media=teaching:netsec:20
 curl http://cdn2.thecatapi.com/images/MTY3ODIyMQ.jpg
 curl http://owasp.org/
 ```
-Debería poder ver más adelante el atacante:
+
+El atacante tiene que poder ver más adelante:
 - pdf de man in the middle
 - foto de un gato
 - web de owasp
 
 <br>
 
-3- El atacante sale de ettercap con q (si salimos con ctrl+c tiramos ca conexion do compañeiro), fai ctrl+c no terminal onde está o tcpdump e enviamos o archivo á nosa maquina local:
+3- El atacante sale de ettercap con q (si salimos con ctrl+c tiramos con la conexion del compañero), hace ctrl+c en el terminal donde está el tcpdump y enviamos el archivo a nuestra máquina local:
 
-  1º forma -> si temos windows e nos conectamos por ssh con mobaXTerm ou Bitvise SSH con arrastrar o archivo ao noso ordenador xa está.
+  1º forma -> si tenemos Windows y nos conectamos por ssh con mobaXTerm o Bitvise SSH con arrastrar o archivo a nuestro ordenador ya está.
 
-  2º forma -> si non temos acceso ao noso arbol de directorios da maquina de lsi ou temos Linux executamos -> scp lsi@ip rutaArchivomáquina destinoLocal
+  2º forma -> si no tenemos acceso a nuestro árbol de directorios de la máquina de lsi o temos Linux ejecutamos -> scp lsi@ip rutaArchivomáquina destinoLocal
 
   ```bash
  scp lsi@10.11.48.202:/home/lsi/lsicompa.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
@@ -480,7 +481,11 @@ En la lista da paquetería buscamos un paquete TCP, pinchamos en uno y abajo nos
     [SEQ/ACK analysis]
     TCP payload (111 bytes)      +
 
-**Filtre la captura para obtener el tráfico http**
+<br>
+
+- **Filtre la captura para obtener el tráfico http**
+
+En la barra de filtros ponemos http:
 <img width="1595" height="171" alt="imagen" src="https://github.com/user-attachments/assets/c8dcc23d-43ba-4ca0-a84a-d3c3a04c2029" />
 
 
@@ -495,7 +500,8 @@ Para ver la imagen, accedemos al http que indica que tiene una imagen y vamos a 
 Abajo del todo nos aparece en enlace:
 <img width="1563" height="678" alt="imagen" src="https://github.com/user-attachments/assets/75469ca8-0c97-4cbd-a408-6c3d7cc36bf8" />
 
-Clic derecho en el enlace -> Copiar -> Valor -> Pegamos la URL en internet y podemos visualizar la imagen
+Clic derecho en el enlace -> Copiar -> Valor -> Pegamos la URL en internet y podemos visualizar la imagen.
+
 <br>
 
 -PDFS:
@@ -751,6 +757,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
