@@ -6,7 +6,7 @@ DEFENSA DE LA PRÁCTICA: 11 (en principio). Semana del 10 al 14 -> Apagan las m�
 
  1- Sniffers y análisis de tráfico: a, b, c, d.
  
- 2- Ataques Man in the Middle: e, f.
+ 2- Ataques Man in the Middle: e, f. El apartado b también es un Man in The Middle.
  
  3-Detección y monitorización: g, i, j.
  
@@ -327,7 +327,7 @@ Sniffers (o analizadores de paquetes) son herramientas o programas software dise
 **ARP SPOOFING**: Ettercap es una herramienta usada para hacer análisis y manipulación del tráfico de red, especialmente en redes LAN.
 Se utiliza mucho en auditorías de seguridad para ver cómo viajan los datos y detectar posibles ataques o vulnerabilidades.
 
-!!SOLO ANALIZAREMOS TRÁFICO IPv4!!
+¡¡SOLO ANALIZAREMOS TRÁFICO IPv4!!
 
 Vamos a instalar ettercap en nuestra máquina sin interfaz gráfica. Para eso:
 
@@ -540,8 +540,7 @@ Vamos a 'Estadísticas' > Puntos finales
 
 ### **Apartado c) Obtenga la relación de las direcciones MAC de los equipos de su segmento.**
 
-
-Usar nmap. Solo ipv4
+Para hacer esto tenemos que instalar **nmap**. ¡¡Hacer solo sobre IPv4, no hacer nada con IPv6!!
 
 
 <br>
@@ -758,6 +757,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
