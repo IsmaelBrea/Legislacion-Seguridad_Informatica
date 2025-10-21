@@ -384,7 +384,6 @@ sudo kill -TERM <PID>
 <br>
 
 ---
-
 ### **Apartado b) Capture paquetería variada de su compañero de prácticas que incluya varias sesiones HTTP. Sobre esta paquetería (puede utilizar el wireshark para los siguientes subapartados)**
 
 - **Identifique los campos de cabecera de un paquete TCP**  
@@ -536,6 +535,7 @@ Vamos a 'Estadísticas' > Puntos finales
 
 <br>
 <br>
+
 ---
 
 ### **Apartado c) Obtenga la relación de las direcciones MAC de los equipos de su segmento.**
@@ -546,6 +546,7 @@ Usar nmap. Solo ipv4
 
 <br>
 <br>
+
 ---
 
 ### **Apartado d) Obtenga el tráfico de entrada y salida legítimo de su interface de red ens33 e investigue los servicios, conexiones y protocolos involucrados.**
@@ -757,6 +758,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
