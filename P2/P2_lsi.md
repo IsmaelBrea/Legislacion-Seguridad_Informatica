@@ -324,7 +324,7 @@ Sniffers (o analizadores de paquetes) son herramientas o programas software dise
 
 ### **Apartado a) Instale el ettercap y pruebe sus opciones básicas en línea de comando.**
 
-Ettercap es una herramienta usada para hacer análisis y manipulación del tráfico de red, especialmente en redes LAN.
+**ARP SPOOFING**: Ettercap es una herramienta usada para hacer análisis y manipulación del tráfico de red, especialmente en redes LAN.
 Se utiliza mucho en auditorías de seguridad para ver cómo viajan los datos y detectar posibles ataques o vulnerabilidades.
 
 !!SOLO ANALIZAREMOS TRÁFICO IPv4!!
@@ -758,6 +758,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
