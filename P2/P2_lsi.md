@@ -424,11 +424,23 @@ tcpdump -i ens33 -s 65536 -w lsicompa.pcap
 
 2-Mientras el atacante hace el sniffing y guarda la paqueteria (tcpdump), la víctima busca imágenes, páginas, archivos en http (https no sirve ya que la info está cifrada):
 
+ 2.1- Archivo lsicompa:
 ```bash
-   curl https://owasp.org/                                                                               #página OWASP
-   curl http://cdn2.thecatapi.com/images/MTY3ODIyMQ.jpg                                                 #foto del gato
+   curl http://w3af.org/                                                                            #página W3AF
+   curl http://www.edu4java.com/_img/web/http.png                                                   #foto de un servidor
 ```
 
+
+2.1-Archivo lsicompa2:
+```bash
+curl http://securitylab.disi.unitn.it/lib/exe/fetch.php?media=teaching:netsec:2016:g4_-_mitm.pdf
+curl http://cdn2.thecatapi.com/images/MTY3ODIyMQ.jpg
+curl http://owasp.org/
+```
+Debería poder ver más adelante el atacante:
+- pdf de man in the middle
+- foto de un gato
+- web de owasp
 
 <br>
 
@@ -488,6 +500,7 @@ Clic derecho en el enlace -> Copiar -> Valor -> Pegamos la URL en internet y pod
 
 -PDFS:
 
+Hacemos lo mismo que con las imágenes.
 
 
 <br>
@@ -738,6 +751,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
