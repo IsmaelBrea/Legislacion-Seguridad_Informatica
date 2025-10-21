@@ -1,6 +1,6 @@
 # PRÁCTICA 2 - Seguridad Informática
 
-DEFENSA DE LA PRÁCTICA: 4 de noviembre.
+DEFENSA DE LA PRÁCTICA: 11 (en principio). Semana del 10 al 14 -> Apagan las máquinas el 7 de noviembre.
 
 **Objetivo:** El objetivo de esta práctica es aprender y experimentar con la captura y el análisis del tráfico de red mediante sniffers, comprender y probar ataques DoS/DDoS, y trabajar la llamada «trilogía»: descubrimiento de hosts, escaneo de puertos y fingerprinting de sistemas (conjunto de técnicas usadas para identificar características de un equipo o servicio en la red). Además, se pretende gestionar y analizar la información de auditoría generada durante las pruebas, empleando en el laboratorio distintas herramientas sugeridas para practicar y validar los conceptos.
 
@@ -398,23 +398,101 @@ sudo kill -TERM <PID>
  
 !! Solo usaremos HTTP porque no va cifrado !!
 
-Instalar wireshark en local y ver el tráfico. 
+Instalar **wireshark** en local y ver el tráfico del compañero -> tendremos que ver el gato que nuestro compañero descarga con curl. Cuidado con los balanceadores!! Buscar fotos que sean solo en http (https no que va cifrado).
+
+Una vez instalado wireshark tenemos que instalar en la máquina **tcpdump** para poder ver el tráfico de la máquina en wireshark.
 
 
+**PASOS ATAQUE-DEFENSA**
 
+1- El atacante hace sniffing ao trafico do compañeiro:
+```bash
+ettercap -T -q -i ens33 -M arp:remote //10.11.48.175/ //10.11.48.1/ (sniffing da paqueteria)
+```
 
+Mientras esfina, en otro terminal:
+```bash
+tcpdump -i ens33 -s 65536 -w lsicompa.pcap
+```
 
+   [-i] é para espicificar a interfaz.
+   [-s] o limite de bytes dos paquetes a capturar.
+   [-w] o achivo donde se gardará.
 
-
-En wireskark  hay que ver el gato.
-wget fotodelgato.png 
-
-Nosotros capturamos la peticion con wireshark y vemos la peticion y el gato.
-
-Cuidado con los balanceadores!! Buscar fotos que sean solo en http!!
 
 <br>
 
+2-Mientras el atacante hace el sniffing y guarda la paqueteria (tcpdump), la víctima busca imágenes, páginas, archivos en http (https no sirve ya que la info está cifrada):
+
+```bash
+   curl https://owasp.org/                                                                               #página OWASP
+   curl https://cdn2.thecatapi.com/images/MTY3ODIyMQ.jpg                                                 #foto del gato
+```
+
+
+<br>
+
+3- El atacante sale de ettercap con q (si salimos con ctrl+c tiramos ca conexion do compañeiro), fai ctrl+c no terminal onde está o tcpdump e enviamos o archivo á nosa maquina local:
+
+  1º forma -> si temos windows e nos conectamos por ssh con mobaXTerm ou Bitvise SSH con arrastrar o archivo ao noso ordenador xa está.
+
+  2º forma -> si non temos acceso ao noso arbol de directorios da maquina de lsi ou temos Linux executamos -> scp lsi@ip rutaArchivomáquina destinoLocal
+
+  ```bash
+ scp lsi@10.11.48.202:/home/lsi/lsicompa.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
+```
+  
+
+<br>
+
+4- Abrimos Wireshark:
+
+Arriba en archivos le damos a abrir y seleccionamos el archivo .pcap y veríamos toda la paqueteria que se capturo con el ettercap.
+
+
+- **Identifique los campos de cabecera de un paquete TCP**
+
+En la lista da paquetería buscamos un paquete TCP, pinchamos en uno y abajo nos pone las siguientes lineas:
+
+    Frame 59: 165 bytes on wire (1320 bits), 165 bytes captured (1320 bits)
+    Ethernet II, Src: VMware_97:24:d0 (00:50:56:97:24:d0), Dst: VMware_97:d5:d9 (00:50:56:97:d5:d9)
+    .
+    .
+    .
+    [SEQ/ACK analysis]
+    TCP payload (111 bytes)      +
+
+**Filtre la captura para obtener el tráfico http**
+<img width="1595" height="171" alt="imagen" src="https://github.com/user-attachments/assets/c8dcc23d-43ba-4ca0-a84a-d3c3a04c2029" />
+
+
+- **Obtenga los distintos “objetos” del tráfico HTTP (imágenes, pdfs, etc.)**
+
+1-IMÁGENES
+
+Una vez que filtramos por http, pinchamos en una petición y miramos la estructura que tiene.
+
+Para ver la imagen, accedemos al http que indica que tiene una imagen y vamos a su estructura.
+
+Abajo del todo nos aparece en enlace:
+<img width="1563" height="678" alt="imagen" src="https://github.com/user-attachments/assets/75469ca8-0c97-4cbd-a408-6c3d7cc36bf8" />
+
+Clic derecho en el enlace -> Copiar -> Valor -> Pegamos la URL en internet y podemos visualizar la imagen
+<br>
+
+-PDFS:
+
+
+
+<br>
+
+- **Visualice la paquetería TCP de una determinada sesión.**
+
+Vamos a 'Analizar' > 'Seguir' > Secuencia tcp (tcp stream)
+
+
+<br>
+<br>
 ---
 
 ### **Apartado c) Obtenga la relación de las direcciones MAC de los equipos de su segmento.**
@@ -423,7 +501,7 @@ Cuidado con los balanceadores!! Buscar fotos que sean solo en http!!
 Usar nmap. Solo ipv4
 
 
-
+<br>
 <br>
 ---
 
@@ -435,6 +513,7 @@ Cuidado con localhost, que es virtual!!!
 
 
 <br>
+<br>
 
 ---
 
@@ -444,6 +523,7 @@ Cuidado con localhost, que es virtual!!!
 Yo ataco y en mi pantalla veo lo que mi compañero ve en directo. Sus cambios como yo estoy en el medio, yo lo muestro en pantalla. Lo tenemos que ver simultaneamente. Tengo que ver como cambia mi pantalla mientras el hace cambios.
 
 
+<br>
 <br>
 
 ---
@@ -475,6 +555,7 @@ Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html n
 
 
 <br>
+<br>
 
 ---
 
@@ -484,6 +565,7 @@ Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html n
 
 
 
+<br>
 <br>
 
 ---
@@ -500,12 +582,14 @@ Poner solo una red pequeña o solo al compañero y la puerta del enlace por ejem
 
 
 <br>
+<br>
 
 ---
 
 ### **Apartado i) Obtenga información “en tiempo real” sobre las conexiones de su máquina, así como del ancho de banda consumido en cada una de ellas.**
 
 
+<br>
 <br>
 
 ---
@@ -525,6 +609,7 @@ Poner solo una red pequeña o solo al compañero y la puerta del enlace por ejem
 En Prometeheus deberemos ver los datos de la máquina en tiempo real no en estático. La gráfica debe crecer hacia la ziquierda ycon picos altos cuanfo se relizan ataques como DoS debido a que hay mucho tráfico.
 
 <br>
+<br>
 ---
 
 ### **Apartado k) **PARA PLANTEAR DE FORMA TEÓRICA.: ¿Cómo podría hacer un DoS de tipo direct attack contra un equipo de la red de prácticas? ¿Y mediante un DoS de tipo reflective flooding attack?.**
@@ -533,6 +618,7 @@ Carlos no lo mira mucho, solo Nino.
 
 
 
+<br>
 <br>
 
 ---
@@ -555,6 +641,7 @@ Existen 5 paquetes de apache que protegen sin querer.
 Probar varios y probar que podemos atacar y nosotros podemos defendernos.
 
 <br>
+<br>
 
 ---
 
@@ -565,6 +652,7 @@ Actualizar todos los módulos de ModSecurity. Nos va mandar realizar ataques sin
 
 Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no probará todos, solo alguno
 
+<br>
 <br>
 
 ### **Apartado n) Buscamos información.:  
@@ -579,6 +667,7 @@ Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no pr
 
 
 <br>
+<br>
 
 ---
 
@@ -586,6 +675,7 @@ Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no pr
 
 
 
+<br>
 <br>
 
 ---
@@ -624,6 +714,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
