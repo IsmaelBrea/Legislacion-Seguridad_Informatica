@@ -522,6 +522,8 @@ Poner solo una red pequeña o solo al compañero y la puerta del enlace por ejem
 
 
 
+En Prometeheus deberemos ver los datos de la máquina en tiempo real no en estático. La gráfica debe crecer hacia la ziquierda ycon picos altos cuanfo se relizan ataques como DoS debido a que hay mucho tráfico.
+
 <br>
 ---
 
@@ -546,7 +548,7 @@ Ataques Apache recomendados:
 <br>
 
 Defensas Apache recomendadas:
--ModSecurity. Carlos no obliga a usar ModSecurity. 
+-ModSecurity. Carlos obliga a usar ModSecurity. 
 
 Existen 5 paquetes de apache que protegen sin querer.
 
@@ -558,6 +560,10 @@ Probar varios y probar que podemos atacar y nosotros podemos defendernos.
 
 ### **Apartado m) Instale y configure modsecurity. Vuelva a proceder con el ataque del apartado anterior. ¿Qué acontece ahora?**
 
+
+Actualizar todos los módulos de ModSecurity. Nos va mandar realizar ataques sin él primero y ver que nadie defiende. Si ahora atacamos cn ModSecurity activado la máquina si que deberñia defenderse. 
+
+Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no probará todos, solo alguno
 
 <br>
 
@@ -618,6 +624,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
