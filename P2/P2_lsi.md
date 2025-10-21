@@ -426,7 +426,7 @@ tcpdump -i ens33 -s 65536 -w lsicompa.pcap
 
 ```bash
    curl https://owasp.org/                                                                               #página OWASP
-   curl https://cdn2.thecatapi.com/images/MTY3ODIyMQ.jpg                                                 #foto del gato
+   curl http://cdn2.thecatapi.com/images/MTY3ODIyMQ.jpg                                                 #foto del gato
 ```
 
 
@@ -441,7 +441,13 @@ tcpdump -i ens33 -s 65536 -w lsicompa.pcap
   ```bash
  scp lsi@10.11.48.202:/home/lsi/lsicompa.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
 ```
-  
+
+```bash
+ scp lsi@10.11.48.202:/home/lsi/lsicompa2.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
+```
+
+- lsicompa- http con página web e imagen de servidor
+- lsicompa2- http con páginas web, imágenes y pdfs.
 
 <br>
 
@@ -490,6 +496,24 @@ Clic derecho en el enlace -> Copiar -> Valor -> Pegamos la URL en internet y pod
 
 Vamos a 'Analizar' > 'Seguir' > Secuencia tcp (tcp stream)
 
+
+<br>
+
+- **Sobre el total de la paquetería obtenga estadísticas del tráfico por protocolo como fuente de información para un análisis básico del tráfico.**  
+
+Vamos a 'Estadísticas' > Jerarquia de protocolo
+
+<br>
+
+- **Obtenga información del tráfico de las distintas “conversaciones” mantenidas.**
+
+Vamos a 'Estadísticas' > Conversaciones
+
+<br>
+
+- **Obtenga direcciones finales del tráfico de los distintos protocolos como mecanismo para determinar qué circula por nuestras redes.**
+
+Vamos a 'Estadísticas' > Puntos finales
 
 <br>
 <br>
@@ -714,6 +738,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
