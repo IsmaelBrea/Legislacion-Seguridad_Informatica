@@ -241,7 +241,7 @@ shutdown now         # Apagar
 ## PRÁCTICA 2
 
 # Transferencia de archivos
-scp archivo_origen lsi@ip:directorio_destino
+scp lsi@ip:/archivo_origen directorio_destinoLocal
 
 ETTERCAP — CHULETA DE FLAGS (TODO EN UN SOLO BLOQUE, TEXTO PLANO)
 
@@ -751,6 +751,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
