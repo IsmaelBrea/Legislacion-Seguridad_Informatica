@@ -10,6 +10,9 @@ El repositorio recoge las prácticas desarrolladas y **explicadas paso a paso**,
 - Poner en práctica los conceptos teóricos aprendidos en clase.  
 - Resolver problemas sobre **máquinas virtuales del laboratorio**.  
 - **Defender oralmente** las soluciones ante el profesor, demostrando comprensión y capacidad de razonamiento.  
-- Documentar cada práctica de forma clara y detallada, incluyendo conceptos vistos en teoría.  
+- Documentar cada práctica de forma clara y detallada, incluyendo conceptos vistos en teoría.
 
+<br>
+
+ - **P1**: Familiarizarse con el funcionamiento básico y la configuración de la máquina de laboratorio, utilizando comandos y ficheros de configuración en Linux.
 ---
