@@ -16,3 +16,4 @@ El repositorio recoge las prácticas desarrolladas y **explicadas paso a paso**,
 
 ---
  - **P1**: Familiarizarse con el funcionamiento básico y la configuración de la máquina de laboratorio, utilizando comandos y ficheros de configuración en Linux.
+ - **P2**: Aprender y experimentar con la captura y el análisis del tráfico de red mediante sniffers, comprender y probar ataques DoS/DDoS, y trabajar la llamada «trilogía»: descubrimiento de hosts, escaneo de puertos y fingerprinting de sistemas (conjunto de técnicas usadas para identificar características de un equipo o servicio en la red). Además, se pretende gestionar y analizar la información de auditoría generada durante las pruebas, empleando en el laboratorio distintas herramientas sugeridas para practicar y validar los conceptos.
