@@ -13,6 +13,7 @@ El repositorio recoge las prácticas desarrolladas y **explicadas paso a paso**,
 - Documentar cada práctica de forma clara y detallada, incluyendo conceptos vistos en teoría.
 
 <br>
+---
 
  - **P1**: Familiarizarse con el funcionamiento básico y la configuración de la máquina de laboratorio, utilizando comandos y ficheros de configuración en Linux.
 ---
