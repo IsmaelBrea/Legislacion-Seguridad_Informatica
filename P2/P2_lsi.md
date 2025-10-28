@@ -749,9 +749,10 @@ tcpdump -i ens33 -w /home/lsi/traficored2.pcap
    Escuchamos el tráfico de la red. Lo dejamos un ratito para que recoja datos.
    
    3. Una vez con el fichero .pcap, lo metemos con Wireshark y vemos el tráfico.
-	```bash
-	scp lsi@10.11.48.202:/home/lsi/traficored2.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
-	```
+      
+```bash
+scp lsi@10.11.48.202:/home/lsi/traficored2.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
+```
 
 
 
@@ -957,6 +958,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
