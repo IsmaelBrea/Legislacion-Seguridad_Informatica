@@ -244,7 +244,11 @@ shutdown now         # Apagar
 # Transferencia de archivos
 scp lsi@ip:/archivo_origen directorio_destinoLocal
 
-ETTERCAP — CHULETA DE FLAGS (TODO EN UN SOLO BLOQUE, TEXTO PLANO)
+# Ver donde están los ficheros .pcap
+sudo find / -type f \( -iname "*.pcap" -o -iname "*.pcapng" -o -iname "*.cap" -o -iname "*.pcap.gz" -o -iname "*.pcapng.gz" \) -print 2>/dev/null
+
+
+1- ETTERCAP — CHULETA DE FLAGS (TODO EN UN SOLO BLOQUE, TEXTO PLANO)
 
 # Modos / interfaz
 -T                        modo texto (CLI). Veremos toda la info de la red. Dentro de esta nos pedirá elegir:
@@ -316,7 +320,7 @@ etterfilter input.ef -o out.ef   # compilar filtro antes de usarlo.
 
 
 
-NMAP: Sirve para escanear redes y descubrir hosts, puertos y servicios.
+2- NMAP: Sirve para escanear redes y descubrir hosts, puertos y servicios.
 
 # Puertos
 - `-p` : Define puertos específicos a escanear.  
@@ -377,7 +381,7 @@ NMAP: Sirve para escanear redes y descubrir hosts, puertos y servicios.
 
 
 
-NAST: Sirve para analizar y monitorizar redes locales.
+3- NAST: Sirve para analizar y monitorizar redes locales.
 -m	Muestra los equipos del segmento (IP + MAC)	
 -i	Especifica la interfaz de red a usar	
 -s	Activa modo sniffer (captura de tráfico)	
@@ -423,6 +427,7 @@ Llamamos a eterrcap por la línea de comandos. Ettercap tiene los siguientes par
 - -w: para escribir en un fichero con extension .pcap      
 
 - -P <pluging> -> especificar que plugin usar
+- -p -> permite capturar todos los paquetes que pasan a través de la red
                                                              
 - -r: para leer un fichero con extensión .pcap
 
@@ -484,7 +489,7 @@ ettercap -T -q -i ens33 -M arp:remote //10.11.48.175/ //10.11.48.1/ (sniffing da
 
 Mientras esfina, en otro terminal:
 ```bash
-tcpdump -i ens33 -s 65536 -w lsicompa.pcap
+tcpdump -i ens33 -s 65536 -w /home/lsi/lsicompa.pcap
 ```
 
    [-i] es para especificar la interfaz.
@@ -707,6 +712,44 @@ Saca la lista de MACs ordenadas de nuestra red.
 Cuidado con localhost, que es virtual!!!
 
 
+2 formas: con ettercap y con tcdump
+
+1. ettercap:
+   
+
+```bash
+ettercap -T -p -i ens33 -w /home/lsi/traficored2.pcap /10.11.48.202// /10.11.48.1//
+
+```
+
+- -T se ejecuta en modo texto
+- -p le permite capturar todos los paquetes que pasan a través de la red
+- -z realiza el análisis en silencio
+- -i ens33 indica la interfaz de red a utilizar
+- -w /home/lsi traficored1.pcap archivo donde se almacenará
+- /10.11.48.202// dirección IP de la cual se capturarán los paquetes
+- /10.11.48.1// captura los paquetes dirigidos a esta dirección IP
+
+Una vez con el fichero .pcap, lo metemos con Wireshark y vemos el tráfico.
+```bash
+scp lsi@10.11.48.202:/home/lsi/traficored1.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
+```
+
+<br>
+
+2-tcdump:
+	1. Instalamos tcpdump: Comando apt install tcpdump (ya lo tenemos instalado de antes).
+	2. Comando:
+	
+```bash
+tcpdump -i ens33 -w /home/lsi/traficored2.pcap
+```
+   Escuchamos el tráfico de la red. Lo dejamos un ratito para que recoja datos.
+	3. Una vez con el fichero .pcap, lo metemos con Wireshark y vemos el tráfico.
+	```bash
+	scp lsi@10.11.48.202:/home/lsi/traficored2.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
+	```
+
 
 
 <br>
@@ -911,6 +954,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
