@@ -4,6 +4,8 @@ DEFENSA DE LA PRÁCTICA: 11 (en principio). Semana del 10 al 14 -> Apagan las m�
 
 **Objetivo:** El objetivo de esta práctica es aprender y experimentar con la captura y el análisis del tráfico de red mediante sniffers, comprender y probar ataques DoS/DDoS, y trabajar la llamada «trilogía»: descubrimiento de hosts, escaneo de puertos y fingerprinting de sistemas (conjunto de técnicas usadas para identificar características de un equipo o servicio en la red). Además, se pretende gestionar y analizar la información de auditoría generada durante las pruebas, empleando en el laboratorio distintas herramientas sugeridas para practicar y validar los conceptos.
 
+IMPORTANTE: ETTERCAP COMANDOS, FUNCIONAR OSSEC Y MEDUSA.
+
  1- Sniffers y análisis de tráfico: a, b, c, d.
  
  2- Ataques Man in the Middle: e, f. El apartado b también es un Man in The Middle.
@@ -954,6 +956,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
