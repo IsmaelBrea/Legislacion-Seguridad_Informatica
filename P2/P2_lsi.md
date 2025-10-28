@@ -238,6 +238,7 @@ shutdown now         # Apagar
 --no-pager           # No hay paginación
 
 
+
 ## PRÁCTICA 2
 
 # Transferencia de archivos
@@ -312,6 +313,78 @@ etterfilter input.ef -o out.ef   # compilar filtro antes de usarlo.
 # Señales / parada
 (en lugar de Ctrl+C) usar pkill -TERM ettercap o sudo kill <PID> para parada limpia.
 
+
+
+
+NMAP: Sirve para escanear redes y descubrir hosts, puertos y servicios.
+
+# Puertos
+- `-p` : Define puertos específicos a escanear.  
+- `-p-` : Escanea todos los puertos posibles (0-65535).  
+
+# Escaneo de hosts
+- `-sP` : Detecta hosts activos en una red sin escanear puertos.  
+- `-Pn` : No realiza ping previo; asume que el host está activo.  
+
+# Velocidad y control
+- `-T0` a `-T5` : Controla velocidad del escaneo (T0 muy lento y sigiloso, T5 muy rápido).  
+
+# Detección de servicios y sistema operativo
+- `-A` : Escaneo completo (OS, servicios, versiones, scripts y traceroute).  
+- `-O` : Detecta el sistema operativo del host.  
+- `-sV` : Detecta servicios y sus versiones.  
+
+# Tipos de escaneo
+- `-sS` : SYN scan (semi-abierto, rápido y menos detectable).  
+- `-sT` : TCP connect scan (completo, más detectable).  
+- `-sU` : Escaneo de puertos UDP.  
+
+# Verbosidad y depuración
+- `-v` : Modo verbose, muestra información detallada.  
+- `-vv` : Verbose máximo.  
+- `-d` : Modo debug para ver paquetes y procesos internos.  
+
+# Filtrado y resultados
+- `--open` : Muestra solo puertos abiertos.  
+- `--reason` : Explica por qué un puerto está abierto, cerrado o filtrado.  
+
+# Scripts NSE
+- `--script` : Ejecuta scripts NSE para detección avanzada y auditorías.  
+- `--script=<script>` : Ejecuta un script específico.  
+- `--script-args` : Pasa argumentos a los scripts NSE.  
+- `--script-help` : Muestra ayuda sobre los scripts disponibles.  
+
+# Otras opciones útiles
+- `--traceroute` : Realiza un traceroute hacia el host.  
+- `-6` : Habilita escaneo IPv6.  
+- `-n` : No resuelve nombres DNS, usa solo IPs.  
+- `-R` : Fuerza resolución DNS.  
+- `--max-retries` : Número máximo de reintentos por host.  
+- `--host-timeout` : Tiempo máximo permitido por host.  
+- `--max-rate` : Limita la velocidad máxima de paquetes por segundo.  
+- `--min-rate` : Define velocidad mínima de paquetes.  
+
+# Salida de resultados
+- `-oN` : Guarda salida en formato normal.  
+- `-oX` : Guarda salida en formato XML.  
+- `-oG` : Guarda salida en formato grepable.  
+- `-oA` : Guarda salida en todos los formatos anteriores.  
+- `--packet-trace` : Muestra todos los paquetes enviados y recibidos.  
+- `--iflist` : Lista interfaces de red disponibles y rutas.  
+- `--version-all` : Detección de versión exhaustiva.  
+- `--version-light` : Detección de versión rápida.  
+
+
+
+
+NAST: Sirve para analizar y monitorizar redes locales.
+-m	Muestra los equipos del segmento (IP + MAC)	
+-i	Especifica la interfaz de red a usar	
+-s	Activa modo sniffer (captura de tráfico)	
+-p	Escanea puertos abiertos en un host	
+-S	Detecta sniffers en la red (equipos escuchando tráfico)	
+-g	Muestra información general de la red (gateway, máscara, etc.)	
+-a	Analiza ARP (tabla de direcciones IP ↔ MAC)
 ```
 
 
@@ -480,6 +553,8 @@ En la lista da paquetería buscamos un paquete TCP, pinchamos en uno y abajo nos
     [SEQ/ACK analysis]
     TCP payload (111 bytes)      +
 
+<img width="1005" height="513" alt="imagen" src="https://github.com/user-attachments/assets/e84d50c7-72c1-461a-8bcd-05d2d267ee17" />
+
 <br>
 
 - **Filtre la captura para obtener el tráfico http**
@@ -501,6 +576,8 @@ Abajo del todo nos aparece en enlace:
 
 Clic derecho en el enlace -> Copiar -> Valor -> Pegamos la URL en internet y podemos visualizar la imagen.
 
+Otra forma: Seleccionamos un paquete HTTP y vamos File > Export Objects > HTTP y le damos a preview para visualizar el archivo de la petición, o a save si queremos guardarnoslo.
+
 <br>
 
 -PDFS:
@@ -514,6 +591,8 @@ Hacemos lo mismo que con las imágenes.
 
 Vamos a 'Analizar' > 'Seguir' > Secuencia tcp (tcp stream)
 
+<img width="992" height="767" alt="imagen" src="https://github.com/user-attachments/assets/e0f415a6-22ae-4af1-bfbc-e03243363065" />
+
 
 <br>
 
@@ -521,17 +600,26 @@ Vamos a 'Analizar' > 'Seguir' > Secuencia tcp (tcp stream)
 
 Vamos a 'Estadísticas' > Jerarquia de protocolo
 
+<img width="1156" height="207" alt="imagen" src="https://github.com/user-attachments/assets/a6cf9129-3275-4f13-84ae-7f509eb17b63" />
+
+
 <br>
 
 - **Obtenga información del tráfico de las distintas “conversaciones” mantenidas.**
 
 Vamos a 'Estadísticas' > Conversaciones
 
+<img width="938" height="401" alt="imagen" src="https://github.com/user-attachments/assets/faa5b18d-2074-4e5d-8708-4c6ff18bdacc" />
+
+
 <br>
 
 - **Obtenga direcciones finales del tráfico de los distintos protocolos como mecanismo para determinar qué circula por nuestras redes.**
 
 Vamos a 'Estadísticas' > Puntos finales
+
+<img width="922" height="392" alt="imagen" src="https://github.com/user-attachments/assets/b75dda09-290d-47a2-ac98-29c694ac7c1f" />
+
 
 <br>
 <br>
@@ -542,7 +630,52 @@ Vamos a 'Estadísticas' > Puntos finales
 
 Para hacer esto tenemos que instalar **nmap**. ¡¡Hacer solo sobre IPv4, no hacer nada con IPv6!!
 
+Instalamos nmap y nast:
+```bash
+apt install nmap
+apt installl nast
+```
 
+
+1. Con nmap:
+```bash
+nmap -sP 10.11.48.0/23
+```
+
+- -sP : Detecta hosts activos en una red sin escanear puertos.  
+
+Ejemplo de salida:
+```bash
+root@ismael:~# nmap -sP 10.11.48.0/23
+Starting Nmap 7.93 ( https://nmap.org ) at 2025-10-28 10:59 CET
+Nmap scan report for 10.11.48.1
+Host is up (0.0014s latency).
+MAC Address: DC:08:56:10:84:B9 (Alcatel-Lucent Enterprise)
+Nmap scan report for 10.11.48.16
+Host is up (0.0020s latency).
+MAC Address: 00:50:56:97:77:98 (VMware)
+Nmap scan report for 10.11.48.18
+Host is up (0.0047s latency).
+MAC Address: 00:50:56:97:E8:37 (VMware)
+Nmap scan report for 10.11.48.19
+Host is up (0.0015s latency).
+MAC Address: 00:50:56:97:83:57 (VMware)
+Nmap scan report for 10.11.48.20
+Host is up (0.0075s latency).
+MAC Address: 00:50:56:97:36:AF (VMware)
+Nmap scan report for 10.11.48.21
+Host is up (0.0014s latency).
+MAC Address: 00:50:56:97:2D:B4 (VMware)
+Nmap scan report for 10.11.48.23
+```
+
+2. Con nast:
+```bash
+nast -m -i ens33
+```
+
+Saca la lista de MACs ordenadas de nuestra red.
+   
 <br>
 <br>
 
