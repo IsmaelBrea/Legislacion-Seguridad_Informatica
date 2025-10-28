@@ -730,6 +730,8 @@ scp lsi@10.11.48.202:/home/lsi/traficored.pcap "C:\Users\User\Desktop\INGENIERIA
 ```
 
 
+**SERVICIOS, CONEXIONES Y PROTOCOLOS INVOLUCRADOS**
+
 
 <br>
 <br>
@@ -740,7 +742,6 @@ scp lsi@10.11.48.202:/home/lsi/traficored.pcap "C:\Users\User\Desktop\INGENIERIA
 ## 2-ATAQUES MAN IN THE MIDDLE
 
 ### **Apartado e) Mediante arpspoofing entre una máquina objetivo (víctima) y el router del laboratorio obtenga todas las URL HTTP visitadas por la víctima.**
-
 
 Yo ataco y en mi pantalla veo lo que mi compañero ve en directo. Sus cambios como yo estoy en el medio, yo lo muestro en pantalla. Lo tenemos que ver simultaneamente. Tengo que ver como cambia mi pantalla mientras el hace cambios.
 
@@ -771,6 +772,10 @@ Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html n
 
 1-Primero tiene que funcionar metasploit.
 2-Luego ya tenemos que usar ettercap.
+
+
+
+En cueanto al fichero, tiene que descragarse algo que funcione. No poner un dropbox ni drive ni nada de eso. NUBE  ni de coña!!!!!
 
 
 
@@ -949,6 +954,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
