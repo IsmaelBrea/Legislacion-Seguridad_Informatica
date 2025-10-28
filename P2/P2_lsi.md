@@ -750,9 +750,12 @@ scp lsi@10.11.48.202:/home/lsi/traficored.pcap "C:\Users\User\Desktop\INGENIERIA
 Yo ataco y en mi pantalla veo lo que mi compañero ve en directo. Sus cambios como yo estoy en el medio, yo lo muestro en pantalla. Lo tenemos que ver simultaneamente. Tengo que ver como cambia mi pantalla mientras el hace cambios (no se ve la pantalla remota).
 
 1. Vamos al fichero /etc/ettercap/etter.conf y modificamos los siguientes valores:
+	
 	a. ec_uid y ec_gid a 0.
+
 	b. remote browser a “NOMBRE NAVEGADOR http://%host%url”.
-	Nosotras usamos w3m, pero vale cualquier navegador de texto:
+
+	Nosotros usamos w3m, pero vale cualquier navegador de texto:
 ```bash
 remote_browser = "w3m http://%host%url
 ```
@@ -974,6 +977,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
