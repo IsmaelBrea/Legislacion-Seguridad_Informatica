@@ -507,6 +507,7 @@ tcpdump -i ens33 -s 65536 -w /home/lsi/lsicompa.pcap
 ```bash
    curl http://w3af.org/                                                                            #página W3AF
    curl http://www.edu4java.com/_img/web/http.png                                                   #foto de un servidor
+   curl 
 ```
 
 
@@ -518,9 +519,9 @@ curl http://owasp.org/
 ```
 
 El atacante tiene que poder ver más adelante:
-- pdf de man in the middle
-- foto de un gato
-- web de owasp
+- pdf 
+- foto
+- web 
 
 <br>
 
@@ -581,9 +582,10 @@ Para ver la imagen, accedemos al http que indica que tiene una imagen y vamos a 
 Abajo del todo nos aparece en enlace:
 <img width="1563" height="678" alt="imagen" src="https://github.com/user-attachments/assets/75469ca8-0c97-4cbd-a408-6c3d7cc36bf8" />
 
-Clic derecho en el enlace -> Copiar -> Valor -> Pegamos la URL en internet y podemos visualizar la imagen.
 
-Otra forma: Seleccionamos un paquete HTTP y vamos File > Export Objects > HTTP y le damos a preview para visualizar el archivo de la petición, o a save si queremos guardarnoslo.
+Esto no!!: Clic derecho en el enlace -> Copiar -> Valor -> Pegamos la URL en internet y podemos visualizar la imagen.
+
+**CARLOS PIDE ESTO**: Seleccionamos un paquete HTTP y vamos File > Export Objects > HTTP y le damos a preview para visualizar el archivo de la petición, o a save si queremos guardarnoslo.
 
 <br>
 
@@ -745,7 +747,23 @@ scp lsi@10.11.48.202:/home/lsi/traficored.pcap "C:\Users\User\Desktop\INGENIERIA
 
 ### **Apartado e) Mediante arpspoofing entre una máquina objetivo (víctima) y el router del laboratorio obtenga todas las URL HTTP visitadas por la víctima.**
 
-Yo ataco y en mi pantalla veo lo que mi compañero ve en directo. Sus cambios como yo estoy en el medio, yo lo muestro en pantalla. Lo tenemos que ver simultaneamente. Tengo que ver como cambia mi pantalla mientras el hace cambios.
+Yo ataco y en mi pantalla veo lo que mi compañero ve en directo. Sus cambios como yo estoy en el medio, yo lo muestro en pantalla. Lo tenemos que ver simultaneamente. Tengo que ver como cambia mi pantalla mientras el hace cambios (no se ve la pantalla remota).
+
+1. Vamos al fichero /etc/ettercap/etter.conf y modificamos los siguientes valores:
+	a. ec_uid y ec_gid a 0.
+	b. remote browser a “NOMBRE NAVEGADOR http://%host%url”.
+	Nosotras usamos w3m, pero vale cualquier navegador de texto:
+```bash
+remote_browser = "w3m http://%host%url
+```
+
+3. Después, usamos el siguiente comando:
+```bash
+ettercap -Tq -i ens33 -P remote_browser -M arp:remote /10.11.48.175// /10.11.48.1//
+```
+
+
+4. La víctima usará el navegador para buscar algo (usar el navegador puesto en el fichero del ettercap). Si todo va bien, deberíamos haber entrado en la misma página que la víctima. Si hace click en un enlace dentro de esa página, nosotros también deberíamos entrar.
 
 
 <br>
@@ -956,6 +974,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
