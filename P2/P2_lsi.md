@@ -767,6 +767,9 @@ ettercap -Tq -i ens33 -P remote_browser -M arp:remote /10.11.48.175// /10.11.48.
 
 
 4. La víctima usará el navegador para buscar algo (usar el navegador puesto en el fichero del ettercap). Si todo va bien, deberíamos haber entrado en la misma página que la víctima. Si hace click en un enlace dentro de esa página, nosotros también deberíamos entrar.
+```bash
+w3m www.google.com
+````
 
 
 <br>
@@ -977,6 +980,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
