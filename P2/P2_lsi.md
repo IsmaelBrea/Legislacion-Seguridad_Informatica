@@ -712,46 +712,21 @@ Saca la lista de MACs ordenadas de nuestra red.
 Cuidado con localhost, que es virtual!!!
 
 
-2 formas: con ettercap y con tcdump
-
-1. ettercap:
-   
-
-```bash
-ettercap -T -p -i ens33 -w /home/lsi/traficored2.pcap /10.11.48.202// /10.11.48.1//
-
-```
-
-- -T se ejecuta en modo texto
-- -p le permite capturar todos los paquetes que pasan a través de la red
-- -z realiza el análisis en silencio
-- -i ens33 indica la interfaz de red a utilizar
-- -w /home/lsi traficored1.pcap archivo donde se almacenará
-- /10.11.48.202// dirección IP de la cual se capturarán los paquetes
-- /10.11.48.1// captura los paquetes dirigidos a esta dirección IP
-
-Una vez con el fichero .pcap, lo metemos con Wireshark y vemos el tráfico.
-```bash
-scp lsi@10.11.48.202:/home/lsi/traficored1.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
-```
-
-<br>
-
-2-tcdump:
+- TCPDUMP:
 	
    1. Instalamos tcpdump: Comando apt install tcpdump (ya lo tenemos instalado de antes).
    
    2. Comando:
 	
 ```bash
-tcpdump -i ens33 -w /home/lsi/traficored2.pcap
+tcpdump -i ens33 -w /home/lsi/traficored.pcap
 ```
    Escuchamos el tráfico de la red. Lo dejamos un ratito para que recoja datos.
    
    3. Una vez con el fichero .pcap, lo metemos con Wireshark y vemos el tráfico.
       
 ```bash
-scp lsi@10.11.48.202:/home/lsi/traficored2.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
+scp lsi@10.11.48.202:/home/lsi/traficored.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
 ```
 
 
@@ -760,6 +735,9 @@ scp lsi@10.11.48.202:/home/lsi/traficored2.pcap "C:\Users\User\Desktop\INGENIERI
 <br>
 
 ---
+
+
+## 2-ATAQUES MAN IN THE MIDDLE
 
 ### **Apartado e) Mediante arpspoofing entre una máquina objetivo (víctima) y el router del laboratorio obtenga todas las URL HTTP visitadas por la víctima.**
 
@@ -910,6 +888,11 @@ Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no pr
 
 
 
+Si es factible cambiar de zona -> mostrarlo
+Si no es factible mostrar también
+
+
+
 <br>
 <br>
 
@@ -926,7 +909,7 @@ Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no pr
 
 ## ATAQUES Y DEFENSAS DE FUERZA BRUTA:
 
-**Ataques de fuerza bruta:** Usar Medusa para atacar. 
+**Ataques de fuerza bruta:** Usar Medusa o hydra para atacar. 
 
 **Defensas de fuerza bruta:** Usar OOSEC para defenderse. Añadir Ips baneables a hosts.deny para bloquear accesos.
 
@@ -935,7 +918,10 @@ Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no pr
 
 ### **Apartado p) Realice algún ataque de “password guessing” contra su servidor ssh y compruebe que el analizador de logs reporta las correspondientes alarmas.**
 
-Usar Medusa para atacar. 
+Usar Medusa o Hydra para atacar. 
+
+Probar sobre un usuario mejor, no sobre la red -> Fuerza bruta bucle for sobre el usuario de lsi del compañero (no poner diccionario de usuarios, solo de contraseñas).
+
 
 
 
@@ -945,8 +931,13 @@ Usar Medusa para atacar.
 
 ### **Apartado q) Reportar alarmas está muy bien, pero no estaría mejor un sistema activo, en lugar de uno pasivo. Configure algún sistema activo, por ejemplo OSSEC, y pruebe su funcionamiento ante un “password guessing”.**
 
-Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el ataque constantemente.
+Usar OSSEC para defender a los ataques. Baneará la Ip que está realizando el ataque constantemente.
 
+OSSEC no tiene que defender a un número de ataques. Tiene que defender ya de primeras.
+
+Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. Si dejamos de atacar OSSEC se para.
+
+**Carlos nos va decir: Para OSSEC a la cuarta vez** -> Hay que hacerlo bien y explicar porque.
 
 
 
@@ -958,6 +949,7 @@ Usar OSSEC para defender a los ataques. Baneará la Ip que estña realizando el 
 
 
 <br>
+
 
 
 
