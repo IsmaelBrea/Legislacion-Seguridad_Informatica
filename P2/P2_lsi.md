@@ -801,9 +801,10 @@ Yo ataco y en mi pantalla veo lo que mi compañero ve en directo. Sus cambios co
 
 	b. remote browser a “NOMBRE NAVEGADOR http://%host%url”.
 
-	Nosotros usamos w3m, pero vale cualquier navegador de texto:
+	Nosotros usamos w3m o lynx, pero vale cualquier navegador de texto:
 ```bash
-remote_browser = "w3m http://%host%url
+remote_browser = "w3m http://%host%url"
+remote_browser = "lynx http://%host%url"
 ```
 
 3. Después, usamos el siguiente comando:
@@ -817,6 +818,10 @@ ettercap -Tq -i ens33 -P remote_browser -M arp:remote /10.11.48.175// /10.11.48.
 w3m www.google.com
 ````
 
+Si todo va bien, deberíamos haber entrado en la misma página que la víctima. Si hace click en un enlace dentro de esa
+página, nosotros también deberíamos entrar.
+
+Nos redirige a la misma página que la víctima buscó y la vemos en nuestra pantalla. Pero no es un escritorio remoto, solo nos redirige a sus búsquedas pero no muestra su pantalla en tiempo real ni lo que está haciendo, pero si podemos ver las páginas a las que accede.
 
 <br>
 <br>
@@ -825,8 +830,12 @@ w3m www.google.com
 
 ### **Apartado f) Instale metasploit. Haga un ejecutable que incluya un Reverse TCP meterpreter payload para plataformas linux. Inclúyalo en un filtro ettercap y aplique toda su sabiduría en ingeniería social para que una víctima u objetivo lo ejecute.**
 
-
 Elimino splunk e instalo metasploit. No dejarlo activo por defecto. Arrancarlo solo cuando sea necesario.
+
+Metasploit es un framework (conjunto de herramientas) para desarrollar, probar y ejecutar exploits y payloads contra sistemas. Es muy usado en seguridad informática para pruebas de penetración y análisis.
+
+
+
 
 Como atacanntes vamos a engañar a la víctima para que lea un pdf. Es la víctima la que se conecta al ssh.
 Buscar los comandos en wireshark, o darle a las flechas hasta que aparezca el que queramos.
@@ -1026,6 +1035,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
