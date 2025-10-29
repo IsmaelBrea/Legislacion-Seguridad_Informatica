@@ -725,15 +725,62 @@ Cuidado con localhost, que es virtual!!!
 tcpdump -i ens33 -w /home/lsi/traficored.pcap
 ```
    Escuchamos el tráfico de la red. Lo dejamos un ratito para que recoja datos.
-   
-   3. Una vez con el fichero .pcap, lo metemos con Wireshark y vemos el tráfico.
+
+Vamos a hacer lo mismo sin escuchar en localhost:
+```bash
+tcpdump -i ens33 'not (net 127.0.0.0/8)' -w /home/lsi/traficored2.pcap
+```
+
+   3. Una vez con el fichero .pcap, los metemos en Wireshark y vemos el tráfico.
       
 ```bash
 scp lsi@10.11.48.202:/home/lsi/traficored.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
+scp lsi@10.11.48.202:/home/lsi/traficored2.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
 ```
 
 
 **SERVICIOS, CONEXIONES Y PROTOCOLOS INVOLUCRADOS**
+
+- Servicios:
+
+Aplicaciones o funciones de red que usan un puerto concreto (por ejemplo, web, DNS, SSH). Cada servicio usa un protocolo asociado (HTTP, DNS, SSH, etc.).
+
+Filtro general:
+
+tcp || udp
+
+Mira la columna Protocol → verás cosas como HTTP, TLSv1.2, DNS, SSH, DHCP. También puedes mirar la columna Info, que indica el tipo de tráfico o puerto.
+
+<br>
+
+- Conexiones
+Comunicación entre dos direcciones IP y puertos (cliente ↔ servidor).
+
+Wireshark → menú Statistics → Conversations → IPv4 o TCP
+
+Ahí vemos:
+
+  - IP origen / destino
+
+  - Puerto origen / destino
+
+  - Nº de paquetes y bytes intercambiados
+
+<br>
+
+- Protocolos:
+
+Reglas o formatos que permiten que los equipos se comuniquen (capas del modelo TCP/IP).
+Ejemplo: ARP, IP, TCP, UDP, HTTP, DNS...
+
+En Wireshark → menú Estadísticas → Jerarquía de Protocolos
+Te mostrará una lista con todos los protocolos detectados y su porcentaje de tráfico.
+
+| Tipo          | Qué es                                        | Cómo verlo en Wireshark           | Ejemplo                                |
+| ------------- | --------------------------------------------- | --------------------------------- | -------------------------------------- |
+| **Servicio**  | Aplicación o función de red que usa un puerto | Columna *Protocol* o *Info*       | HTTP, DNS, SSH                         |
+| **Conexión**  | Comunicación IP↔IP con puertos                | *Statistics → Conversations*      | 10.11.48.202:52314 ↔ 172.217.17.68:443 |
+| **Protocolo** | Conjunto de reglas de comunicación            | *Statistics → Protocol Hierarchy* | TCP, UDP, ICMP, ARP                    |
 
 
 <br>
@@ -979,6 +1026,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
