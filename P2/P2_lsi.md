@@ -555,11 +555,10 @@ En la lista da paquetería buscamos un paquete TCP, pinchamos en uno y abajo nos
 
     Frame 59: 165 bytes on wire (1320 bits), 165 bytes captured (1320 bits)
     Ethernet II, Src: VMware_97:24:d0 (00:50:56:97:24:d0), Dst: VMware_97:d5:d9 (00:50:56:97:d5:d9)
-    .
-    .
-    .
-    [SEQ/ACK analysis]
-    TCP payload (111 bytes)      +
+	Internet Protocol Version 4, Src: 10.30.12.20, Dst: 10.11.48.202
+    Transmission Control Protocol, Src Port: 63928, Dst Port: 22, Seq: 1, Ack: 165, Len: 0
+
+Pulsamos sobre la flecha desplegable a la izquierda de “Transmission Control Protocol".
 
 <img width="1005" height="513" alt="imagen" src="https://github.com/user-attachments/assets/e84d50c7-72c1-461a-8bcd-05d2d267ee17" />
 
@@ -980,6 +979,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
