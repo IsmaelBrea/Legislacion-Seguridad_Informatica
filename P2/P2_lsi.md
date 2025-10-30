@@ -1321,11 +1321,11 @@ watch -n 2 "netstat -putona"
 
 - Ancho de banda de las conexiones:
 
-iftop -i ens33    # Por Ip
+iftop -i ens33    # Por Ip en una interfaz específica.
 
 nethogs ens33     # Por proceso
 
-Hay más opciones como vnstat o tshark.
+Hay más opciones como vnstat, tcptrack o tshark.
 
 
 <br>
@@ -1344,8 +1344,70 @@ Hay más opciones como vnstat o tshark.
 **- En los ataques de los apartados m y n busque posibles alteraciones en las métricas visualizadas.**
 
 
+> IMPORTANTE: tener la hora bien puesta, si la tenemos mal no funciona ya que hace calculos a tiempo real
 
-En Prometeheus deberemos ver los datos de la máquina en tiempo real no en estático. La gráfica debe crecer hacia la ziquierda ycon picos altos cuanfo se relizan ataques como DoS debido a que hay mucho tráfico.
+> Poñer también en la configuracion de prometheus.yml el servidor do compañeiro (un target con su ip) 
+
+En Prometeheus deberemos ver los datos de la máquina en tiempo real no en estático. La gráfica debe crecer hacia la izquierda y con picos altos cuanfo se realizan ataques como DoS debido a que hay mucho tráfico.
+
+<br>
+
+**- Instale prometheus y node_exporter y configúrelos para recopilar todo tipo de métricas de su máquina linux.**
+
+**Prometheus** es un sistema de monitorización y base de datos de series temporales. Recoge métricas de diferentes servicios, las almacena y permite consultarlas. Necesitamos un sistema centralizado que almacene todas las métricas de nuestra máquina para poder analizarlas y visualizarlas luego en Grafana.
+
+Instalar Prometheus:
+```bash
+apt install prometeheus
+```
+
+Para abrir la interfaz web:  **http://10.11.48.202:9090**
+
+<br>
+
+**Node-exporter** es un “exportador” de métricas del sistema Linux. Envía métricas de CPU, RAM, disco, red y más a Prometheus. Prometheus por sí solo no sabe nada de tu sistema. Node Exporter “expone” esas métricas para que Prometheus las pueda recopilar.
+
+Instalar node exporter:
+```bash
+wget https://github.com/prometheus/node_exporter/releases/download/v1.10.2/node_exporter-1.10.2.linux-amd64.tar.gz
+tar -xvzf node_exporter-1.10.2.linux-amd64.tar.gz
+cd node_exporter-1.10.2.linux-amd64
+./node_exporter
+```
+
+Ahora estará disponible en: http://localhost:9100/metrics
+
+
+Para activarlo, ./node_exporter. Para ver si funciona, lo mismo que para el prometheus pero con el puerto 9100. Tenemos que abrir dos terminales para que el node_exporter se conecte con el prometheus. Una vez instalado node_exporter, procedemos a configurar prometheus para pasarle sus métricas.
+
+Tenemos que añadir esto en el fichero prometheus.yml-
+```bash
+nano /etc/prometheus/prometheus.yml
+```
+
+```bash
+scrape_configs:
+  - job_name: "node"
+    static_configs:
+      - targets: ["localhost:9100"]  # dirección de Node Exporter
+```
+
+En mi caso ya estaba configurado así.
+
+Ahora ambos están corriendo, podemos ver las métricas en Prometheus:
+
+1-http://10.20.48.202:9090
+2-Ve a “Targets” → ahí verás ambos jobs (prometheus y node) con estado UP.
+3-Puedes ir a “Graph”, escribir métricas como node_cpu_seconds_total o node_memory_MemAvailable_bytes y verlas en tiempo real.
+
+Métricas en Node-exporter:
+1- Abre en el navegador o con curl: http://10.20.48.202:9100/metrics.
+Verás todas las métricas del sistema en texto plano.
+
+<br>
+
+Vamos a hacer que los servicios solo estén activos cuando nosotros los activemos. Par ello:
+
 
 <br>
 <br>
@@ -1466,6 +1528,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
