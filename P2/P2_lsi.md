@@ -429,6 +429,22 @@ upload /ruta/local/file.txt   # Subir archivo a la víctima
 download file.txt /ruta/local # Descargar archivo de la víctima
 shell            # Acceder a la terminal normal de la víctima
 
+
+
+5-Iftop (ver ancho de banda del tráfico por IP)
+-i	# Elegir interfaz (-i ens33)
+-P	# Mostrar puertos
+-B	# Mostrar en bytes (no bits)
+-t	# Modo texto (sin interfaz gráfica)
+-n	# No resolver nombres (solo IPs)
+
+
+6-Nethogs ((ver ancho de banda del tráfico por procesos)
+<interfaz>	# Indicar interfaz (nethogs ens33)
+-d X	    # Actualización cada X segundos (-d 1)
+-t	        # Modo texto/log para scripts
+-p	        # Mostrar solo procesos (más limpio)
+
 ```
 
 
@@ -1295,6 +1311,22 @@ NetHogs muestra qué procesos están usando la red. Aquí solo hay uno: tu sesi�
 
 En total, la máquina está usando muy poco tráfico.
 
+#### RESUMEN FÁCIL
+
+- Conexiones en tiempo real:
+
+watch -n 2 "ss -tulnp"
+
+watch -n 2 "netstat -putona"
+
+- Ancho de banda de las conexiones:
+
+iftop -i ens33    # Por Ip
+
+nethogs ens33     # Por proceso
+
+Hay más opciones como vnstat o tshark.
+
 
 <br>
 <br>
@@ -1434,6 +1466,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
