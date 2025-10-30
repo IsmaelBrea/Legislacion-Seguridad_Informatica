@@ -1205,12 +1205,95 @@ nmap -A 10.11.48.175
 - Port scanning: nmap -sS IP COMPAÑERO.
 - OS fingerprinting: nmap -O IP COMPAÑERO.
 
+De IPv6 no hacemos nada. La respuesta a la pregunta de si coinciden los servicios de IPv4 e IPv6 es que normalmente sí, pero a veces no, dependiendo de como esté configurado el equipo.
+
 <br>
 <br>
 
 ---
 
 ### **Apartado i) Obtenga información “en tiempo real” sobre las conexiones de su máquina, así como del ancho de banda consumido en cada una de ellas.**
+
+
+- Conexiones de la máquina:
+
+Recordamos de la práctica anterior como ver conexiones antiguas (ss, netstat):
+
+```bash
+ss -tulpn
+netstat -putona
+```
+
+Para ver en tiempo real usamos **watch**:
+```bash
+watch -n 2 "ss -tulnp"
+watch -n 2 "netstat -putona"
+```
+
+- [-n 2] indica que se actualiza cada 2 segundos.
+
+<br>
+
+- Ancho de banda en tiempo real:
+
+1-Iftop (visual, por IP)
+
+Es como un "monitor de tráfico en tiempo real" para tu conexión de internet o red. Muestra qué programas o conexiones 
+están usando más ancho de banda en ese momento.
+
+Instalamos iftop 
+```bash
+apt install iftop
+```
+
+Par ver el tráfico de red por conexión en una interfaz específica:
+```bash
+iftop -i ens33
+```
+
+<img width="1585" height="813" alt="imagen" src="https://github.com/user-attachments/assets/81c5cca6-4d28-44c6-871e-8a1a3e8fef16" />
+
+Es un resumen de tráfico de red por conexiones/hosts. Cada fila muestra quién habla con quién (=> enviar, <= recibir) y cuánta información se ha transferido y las tasas de transferencia.
+
+Parte inferior:
+
+- TX: tráfico transmitido (enviado) por tu máquina.
+  - cum: acumulado total enviado (ej. 15,0KB).
+  - peak: pico de transferencia observado (ej. 8,59Kb).
+  - A la derecha aparecen las tasas recientes (ej. 5,23Kb 2,36Kb 3,33Kb) — instantánea / medias.
+
+- RX: tráfico recibido (lo mismo pero entrante).
+
+TOTAL: suma TX + RX (volumen y picos combinados).
+
+A la derecha de RX/TX hay columnas pequeñas con valores (320b 426b 539b) que son contadores por segundos o por muestreo (paquetes/bytes en ventanas pequeñas).
+
+<br>
+
+
+2-Nethogs (por proceso):
+
+Es una herramienta que te dice qué procesos están usando la red y cuánto están enviando y recibiendo.
+
+Instalarlo:
+```bash
+apt install nethogs
+```
+
+Para ver el tráfico por proceso:
+```bash
+nethogs ens33
+```
+
+<img width="1584" height="167" alt="imagen" src="https://github.com/user-attachments/assets/ef649fc2-05ed-444e-a93d-494723edc922" />
+
+NetHogs muestra qué procesos están usando la red. Aquí solo hay uno: tu sesión SSH.
+
+- sshd (tu conexión SSH) está enviando ~0.46 KB/s y recibiendo ~0.07 KB/s.
+
+- El otro proceso no está usando red.
+
+En total, la máquina está usando muy poco tráfico.
 
 
 <br>
@@ -1351,6 +1434,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
