@@ -1556,18 +1556,36 @@ TÚ 👀 ← Ve gráficos bonitos en el navegador
 
 **Carlos no lo mira mucho, solo Nino**
 
-1-Direct attack: El ataque directo DoS consiste en envíar paquetes DIRECTAMENTE desde tu máquina a la víctima para hacer que servicios dejen de funcionar, consumirle recursos Envío masivo de paquetes de manera directa a la víctima (la
-dirección origen es normalmente falsificada)
+1-Direct attack: El ataque directo DoS consiste en envíar paquetes DIRECTAMENTE desde tu máquina a la víctima para hacer que servicios dejen de funcionar, consumirle recursos etc. Envío masivo de paquetes de manera directa a la víctima (la
+dirección origen es normalmente falsificada)-
 
-Para direct attack: Comando packit -c 0 -b 0 -s IP origen -d IP destino -F S -S 1000
--D 22. Explicación del comando:
+Para direct attack:
+```bash
+packit -c 0 -b 0 -s IP origen -d IP destino -F S -S 1000 -D 22
+```
+Basicamente hace esto. Envía paquetes falsos SIN PARAR desde IP_origen a IP_destino al puerto SSH (22).
+Explicación del comando
 
+    -c 0 = Cantidad: 0 = infinitos (no para nunca)
 
-2- Reflective flooding attack: Se utilizan nodos intermedios como amplificadores
-(routers, servidores web, DNS …). El atacante envía paquetes que requieren
-respuesta a los amplificadores con ip origen la ip de la víctima ( los
-amplificadores responderán masivamente a la víctima).
+    -b 0 = Tamaño: automático
 
+    -s IP_origen = IP del atacante (normalmente falsa)
+
+    -d IP_destino = IP de la víctima (a quien atacas)
+
+    -F S = Flag SYN (como tocar timbre pero no entrar)
+
+    -S 1000 = Puerto origen 1000 (cualquiera)
+
+    -D 22 = Puerto destino 22 (SSH - servicio importante)
+
+2- Reflective flooding attack:  Es como pedirle a 100 personas que llamen por ti a alguien. El atacante envía peticiones a servidores legítimos (DNS, NTP, routers) pero falsifica la IP de origen para que sea la de la víctima. Los servidores responden masivamente a la víctima, saturándola sin que el atacante sea directamente visible. Se utilizan nodos intermedios como amplificadores (routers, servidores web, DNS …). El atacante envía paquetes que requieren respuesta a los amplificadores con ip origen la ip de la víctima ( los amplificadores responderán masivamente a la víctima).
+
+Para refelective flooding attack:
+```bash
+dig @8.8.8.8 google.com +source=IP_victima
+```
 
 <br>
 <br>
@@ -1678,6 +1696,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
