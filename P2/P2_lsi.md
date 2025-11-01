@@ -1436,11 +1436,15 @@ tcp6       0      0 :::9090                 :::*                    LISTEN      
 Podemos ver las métricas en Prometheus:
 
 1-http://10.20.48.202:9090
+
 2-Ve a “Targets” → ahí verás ambos jobs (prometheus y node) con estado UP.
+
 3-Puedes ir a “Graph”, escribir métricas como node_cpu_seconds_total o node_memory_MemAvailable_bytes y verlas en tiempo real.
 
 Métricas en Node-exporter:
+
 1- Abre en el navegador o con curl: http://10.20.48.202:9100/metrics.
+
 Verás todas las métricas del sistema en texto plano.
 
 Al activar prometheus y node_exporter, nos metemos en la página del prometheus y
@@ -1531,6 +1535,7 @@ Más adelante comentaremos este apartado el los respectivos ejercicios.
 
 #### RESUMEN FÁCIL
 
+```text
 TU MÁQUINA LINUX
      ↓
 Node Exporter (puerto 9100)
@@ -1540,6 +1545,8 @@ Prometheus (puerto 9090)
 Grafana (puerto 3000)
      ↓  Muestra dashboards visuales
 TÚ 👀 ← Ve gráficos bonitos en el navegador
+```
+
 
 <br>
 <br>
@@ -1547,8 +1554,19 @@ TÚ 👀 ← Ve gráficos bonitos en el navegador
 
 ### **Apartado k) **PARA PLANTEAR DE FORMA TEÓRICA.: ¿Cómo podría hacer un DoS de tipo direct attack contra un equipo de la red de prácticas? ¿Y mediante un DoS de tipo reflective flooding attack?.**
 
-Carlos no lo mira mucho, solo Nino.
+**Carlos no lo mira mucho, solo Nino**
 
+1-Direct attack: El ataque directo DoS consiste en envíar paquetes DIRECTAMENTE desde tu máquina a la víctima para hacer que servicios dejen de funcionar, consumirle recursos Envío masivo de paquetes de manera directa a la víctima (la
+dirección origen es normalmente falsificada)
+
+Para direct attack: Comando packit -c 0 -b 0 -s IP origen -d IP destino -F S -S 1000
+-D 22. Explicación del comando:
+
+
+2- Reflective flooding attack: Se utilizan nodos intermedios como amplificadores
+(routers, servidores web, DNS …). El atacante envía paquetes que requieren
+respuesta a los amplificadores con ip origen la ip de la víctima ( los
+amplificadores responderán masivamente a la víctima).
 
 
 <br>
@@ -1660,6 +1678,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
