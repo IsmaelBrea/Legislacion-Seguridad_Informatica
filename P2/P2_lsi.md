@@ -1361,6 +1361,18 @@ Instalar Prometheus:
 apt install prometeheus
 ```
 
+Prometheus ya viene con servicio configurado. Vamos a desactivar el activado automático y vamos a habilitarlo SOLO cuando lo queramos usar.
+```bash
+systemctl stop prometheus
+systemctl disable prometheus
+```
+
+**Para activar prometheus** (para paralo hacer un stop):
+```bash
+systemctl enable prometheus
+systemctl start prometehus
+```
+
 Para abrir la interfaz web:  **http://10.11.48.202:9090**
 
 <br>
@@ -1375,7 +1387,13 @@ cd node_exporter-1.10.2.linux-amd64
 ./node_exporter
 ```
 
-Ahora estará disponible en: http://localhost:9100/metrics
+```bash
+cd node_exporter-1.10.2.linux-amd64
+mv node_exporter /usr/local/bin/  # Mover el binario a /usr/local/bin
+chmod +x /usr/local/bin/node_exporter
+```
+
+Ahora estará disponible en: http://10.11.48.202:9100/metrics
 
 
 Para activarlo, ./node_exporter. Para ver si funciona, lo mismo que para el prometheus pero con el puerto 9100. Tenemos que abrir dos terminales para que el node_exporter se conecte con el prometheus. Una vez instalado node_exporter, procedemos a configurar prometheus para pasarle sus métricas.
@@ -1394,7 +1412,28 @@ scrape_configs:
 
 En mi caso ya estaba configurado así.
 
-Ahora ambos están corriendo, podemos ver las métricas en Prometheus:
+Ahora vamos a desactivar el inicio automático del servicio de node-exporter y vamos a activarlo SOLO cuando nos haga falta:
+```bash
+systemctl stop prometheus-node-exporter
+systemctl disable prometheus-node-exporter
+systemctl enable prometheus-node-exporter
+```
+
+**Para activar node-exporter** (para paralo hacer un stop):
+```bash
+systemctl start prometheus-node-exporter
+```
+
+
+Ahora ambos están corriendo:
+```bash
+root@ismael:~/node_exporter-1.10.2.linux-amd64# netstat -tulpn | grep 9100
+tcp6       0      0 :::9100                 :::*                    LISTEN      62880/prometheus-no
+root@ismael:~/node_exporter-1.10.2.linux-amd64# netstat -tulpn | grep 9090
+tcp6       0      0 :::9090                 :::*                    LISTEN      63105/prometheus
+```
+
+Podemos ver las métricas en Prometheus:
 
 1-http://10.20.48.202:9090
 2-Ve a “Targets” → ahí verás ambos jobs (prometheus y node) con estado UP.
@@ -1404,10 +1443,103 @@ Métricas en Node-exporter:
 1- Abre en el navegador o con curl: http://10.20.48.202:9100/metrics.
 Verás todas las métricas del sistema en texto plano.
 
+Al activar prometheus y node_exporter, nos metemos en la página del prometheus y
+si todo va bien, nos debería salir esto en la pestaña Status > Targets:
+
 <br>
 
 Vamos a hacer que los servicios solo estén activos cuando nosotros los activemos. Par ello:
 
+<img width="950" height="567" alt="imagen" src="https://github.com/user-attachments/assets/dc39ed4c-8587-4bb4-af55-7d4694c57d15" />
+
+<br>
+
+**- Posteriormente instale grafana y agregue como fuente de datos las métricas de su equipo de prometheus.**
+
+Grafana es una herramienta de visualización y dashboards open source.
+
+Resumen:
+```text
+Node Exporter → Prometheus → Grafana
+     ↓              ↓           ↓
+Métricas del   Almacena    Muestra gráficos
+sistema Linux  los datos   y dashboards bonitos
+```
+
+Instalamos Grafana:
+```bash
+# Instalar dependencias
+sudo apt install -y adduser libfontconfig1 musl
+
+# Descargar versión OSS (gratuita)
+wget https://dl.grafana.com/oss/release/grafana_10.2.2_amd64.deb
+
+# Instalar
+sudo dpkg -i grafana_10.2.2_amd64.deb
+
+# Si hay errores de dependencias:
+sudo apt-get install -f
+```
+
+Iniciar grafana:
+```
+/bin/systemctl start grafana-server
+```
+
+Grafana corre en el puerto 3000. Podemos acceder a él en: **http://10.11.48.202:3000**
+
+Por defecto el usuario es admin y la contraseña también. Nos pide actualizarla. Yo he puesto la misma que la del user lsi.
+
+<br>
+
+Vamos a añadir ahora Prometehus en Grafana:
+
+- Pinchamos en la ruedita (en el logo del grafana).
+
+- Le damos a “Data Sources” y luego a “Add data source”.
+
+- Le damos a Prometheus.
+
+- Un poco más abajo, en el campo de la URL, metemos la URL anterior del prometheus.
+
+- Abajo de todo, guardamos los cambios pulsando en “Save & test”.
+
+<br>
+
+**- Importe vía grafana el dashboard 1860.**
+
+1- Buscamos Grafana Labs: https://grafana.com/grafana/dashboards/
+
+2- En la página verás un cuadro de búsqueda que dice algo como: "Search dashboards..."
+Ahí buscamos 1860.
+
+3- Copiamos el ID de la última actualización: 10242
+
+4- En nuestra página de Grafana: Dashboards > New > Import. Pegamos el ID y guardamos el dashboard.
+
+Ya estaría, debemos ver algo así:
+
+<img width="1911" height="801" alt="imagen" src="https://github.com/user-attachments/assets/25b06500-c1e6-4be5-85d4-7a3ab21129e8" />
+
+<br>
+
+**- En los ataques de los apartados m y n busque posibles alteraciones en las métricas visualizadas.**
+
+Más adelante comentaremos este apartado el los respectivos ejercicios.
+
+<br>
+
+#### RESUMEN FÁCIL
+
+TU MÁQUINA LINUX
+     ↓
+Node Exporter (puerto 9100)
+     ↓  Exporta métricas del sistema
+Prometheus (puerto 9090) 
+     ↓  Recoge y almacena métricas
+Grafana (puerto 3000)
+     ↓  Muestra dashboards visuales
+TÚ 👀 ← Ve gráficos bonitos en el navegador
 
 <br>
 <br>
@@ -1528,6 +1660,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
