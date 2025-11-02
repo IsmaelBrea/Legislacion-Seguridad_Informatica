@@ -809,6 +809,7 @@ Mira la columna Protocol → verás cosas como HTTP, TLSv1.2, DNS, SSH, DHCP. Ta
 <br>
 
 - Conexiones
+
 Comunicación entre dos direcciones IP y puertos (cliente ↔ servidor).
 
 Wireshark → menú Statistics → Conversations → IPv4 o TCP
@@ -1696,6 +1697,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
