@@ -2057,11 +2057,17 @@ hydra -L /home/lsi/users.txt -P /home/lsi/passwords.txt -t 4 -W 1 -f -V ssh://10
 ```
 
 -L /home/lsi/users.txt     → Lee usuarios de este archivo (solo "lsi")
+
 -P /home/lsi/passwords.txt → Lee 40 contraseñas de este archivo  
+
 -t 4                       → Usa 4 hilos a la vez (más rápido)
+
 -W 1                       → Espera 1 segundo entre intentos
+
 -f                         → PARA cuando encuentre la contraseña correcta
+
 -V                         → Muestra progreso en pantalla
+
 ssh://10.11.48.175         → Ataca el servicio SSH de esta IP
 
 En resumen, este comando comprueba para cada usuario del users.txt todas las contraseñas posibles del passwords.txt. Si algún usuario y contraseña coincide ya nos lo dice.
@@ -2102,6 +2108,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
