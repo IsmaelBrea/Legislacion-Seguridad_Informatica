@@ -1549,6 +1549,20 @@ TÚ 👀 ← Ve gráficos bonitos en el navegador
 ```
 
 
+Iniciarlos cuando los queramos usar:
+```bash
+systemctl start prometheus
+systemctl start prometheus-node-exporter
+systemctl start grafana-server
+```
+
+Pararlos:
+```bash
+systemctl stop prometheus
+systemctl stop prometheus-node-exporter
+systemctl stop grafana-server
+```
+
 <br>
 <br>
 ---
@@ -1595,20 +1609,12 @@ dig @8.8.8.8 google.com +source=IP_victima
 
 ### **Apartado l) Ataque un servidor apache instalado en algunas de las máquinas del laboratorio de prácticas para tratar de provocarle una DoS. Utilice herramientas DoS que trabajen a nivel de aplicación (capa 7). ¿Cómo podría proteger dicho servicio ante este tipo de ataque? ¿Y si se produjese desde fuera de su segmento de red? ¿Cómo podría tratar de saltarse dicha protección?**
 
-
-Ataques Apache recomendados:
--perl
-
--python en Github: SlowLoris
+Instalar Apache. El atacante tiene que hacer un ataque DoS en capa 7 al servidor Apache. Ataques Apache recomendados: perl y python en GitHub (SlowLoris). Comprobar si el servdior sigue disponible. Parar el ataque. Configurar ModSecurity para defender estos ataques. Existen 5 paquetes de Apache que protegen sin querer. Probar varios y probar que podemos atacar y que podemos defendernos.
 
 <br>
 
-Defensas Apache recomendadas:
--ModSecurity. Carlos obliga a usar ModSecurity. 
 
-Existen 5 paquetes de apache que protegen sin querer.
 
-Probar varios y probar que podemos atacar y nosotros podemos defendernos.
 
 <br>
 <br>
@@ -1697,6 +1703,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
