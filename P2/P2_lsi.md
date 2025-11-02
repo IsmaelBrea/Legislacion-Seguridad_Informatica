@@ -1572,7 +1572,7 @@ systemctl stop grafana-server
 **Carlos no lo mira mucho, solo Nino**
 
 1-Direct attack: El ataque directo DoS consiste en envíar paquetes DIRECTAMENTE desde tu máquina a la víctima para hacer que servicios dejen de funcionar, consumirle recursos etc. Envío masivo de paquetes de manera directa a la víctima (la
-dirección origen es normalmente falsificada)-
+dirección origen es normalmente falsificada). En el DDos de tipo direct attack se hace atacando al puerto ssh, 22. Si se encuentra conectado, se atacara a todos los puertos que tenga abiertos.
 
 Para direct attack:
 ```bash
@@ -1595,7 +1595,7 @@ Explicación del comando
 
     -D 22 = Puerto destino 22 (SSH - servicio importante)
 
-2- Reflective flooding attack:  Es como pedirle a 100 personas que llamen por ti a alguien. El atacante envía peticiones a servidores legítimos (DNS, NTP, routers) pero falsifica la IP de origen para que sea la de la víctima. Los servidores responden masivamente a la víctima, saturándola sin que el atacante sea directamente visible. Se utilizan nodos intermedios como amplificadores (routers, servidores web, DNS …). El atacante envía paquetes que requieren respuesta a los amplificadores con ip origen la ip de la víctima ( los amplificadores responderán masivamente a la víctima).
+2- Reflective flooding attack: en el ataque de tipo reflective flooding compromete un tercer equipo(routers, servidores DNS, amplificadores...) que ataque a la víctima. Envías paquetes a toda a red para que solo un equipo conteste e se sature.Es como pedirle a 100 personas que llamen por ti a alguien. El atacante envía peticiones a servidores legítimos (DNS, NTP, routers) pero falsifica la IP de origen para que sea la de la víctima. Los servidores responden masivamente a la víctima, saturándola sin que el atacante sea directamente visible. Se utilizan nodos intermedios como amplificadores (routers, servidores web, DNS …). El atacante envía paquetes que requieren respuesta a los amplificadores con ip origen la ip de la víctima ( los amplificadores responderán masivamente a la víctima).
 
 Para refelective flooding attack:
 ```bash
@@ -1613,8 +1613,30 @@ Instalar Apache. El atacante tiene que hacer un ataque DoS en capa 7 al servidor
 
 <br>
 
+1-Instalamos Apache y solo lo activaremos cuando sea necesario:
+```bash
+apt install apache2
+```
 
 
+```bash
+# Verificar que Apache se instaló correctamente
+systemctl status apache2
+
+# Pararlo y desactivarlo
+systemctl stop apache2
+systemctl disable apache2
+
+# Verificar que responde
+curl http://localhost
+```
+
+Activarlo solo cuando lo vayamos a usar (luego parar):
+```bash
+systemctl start apache2
+systemctl stop apache2
+```
+Si todo va bien podemos ver la plantilla de apache2 aquí: **http://10.11.48.202/**
 
 <br>
 <br>
@@ -1632,19 +1654,212 @@ Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no pr
 <br>
 
 ### **Apartado n) Buscamos información.:  
-- Obtenga de forma pasiva el direccionamiento público IPv4 e IPv6 asignado a la Universidade da Coruña.
+**- Obtenga de forma pasiva el direccionamiento público IPv4 e IPv6 asignado a la Universidade da Coruña.**
   
-- Obtenga información sobre el direccionamiento de los servidores DNS y MX de la Universidade da Coruña.
+**- Obtenga información sobre el direccionamiento de los servidores DNS y MX de la Universidade da Coruña.**
   
-- ¿Puede hacer una transferencia de zona sobre los servidores DNS de la UDC?. En caso negativo, obtenga todos los nombres.dominio posibles de la UDC.
-  
-- ¿Qué gestor de contenidos se utiliza en www.usc.es?**
-
-
+**- ¿Puede hacer una transferencia de zona sobre los servidores DNS de la UDC?. En caso negativo, obtenga todos los nombres.dominio posibles de la UDC.**
 
 Si es factible cambiar de zona -> mostrarlo
 Si no es factible mostrar también
 
+**- ¿Qué gestor de contenidos se utiliza en www.usc.es?**
+
+<br>
+
+**- Obtenga de forma pasiva el direccionamiento público IPv4 e IPv6 asignado a la Universidade da Coruña.**
+
+La obtención pasiva significa recopilar información sin interactuar directamente con los sistemas objetivo ni generar 
+tráfico hacia ellos.
+
+Varias formas:
+
+1- Páginas web:
+
+- **www.ip6.nl**
+
+En esta página si introducimos el dominio de la udc nos dará lo siguiente:
+<img width="947" height="606" alt="imagen" src="https://github.com/user-attachments/assets/926f4ed7-43c1-454c-ba9b-d3a05de7a353" />
+
+Lo correspondiente a esta pregunta se encuentra en: udc.es
+
+<br>
+
+2-Comandos: **host**, **nslookup**, **dig**
+
+```bash
+root@ismael:~# host www.udc.es
+www.udc.es has address 193.144.53.84
+```
+
+nslookup y dig a veces no viene instalado -> apt install dnsutils -y
+```bash
+root@ismael:~# nslookup udc.es
+Server:         10.8.8.8
+Address:        10.8.8.8#53
+
+Name:   udc.es
+Address: 193.144.53.84
+```
+
+```bash
+root@ismael:~# dig udc.es A
+
+; <<>> DiG 9.18.41-1~deb12u1-Debian <<>> udc.es A
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 36968
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 4, ADDITIONAL: 8
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 33f55244bf6e00590100000069074a3863a54c84982d3002 (good)
+;; QUESTION SECTION:
+;udc.es.                                IN      A
+
+;; ANSWER SECTION:
+udc.es.                 333     IN      A       193.144.53.84
+
+;; AUTHORITY SECTION:
+udc.es.                 14400   IN      NS      chico.rediris.es.
+udc.es.                 14400   IN      NS      sun.rediris.es.
+udc.es.                 14400   IN      NS      zape.udc.es.
+udc.es.                 14400   IN      NS      zipi.udc.es.
+
+;; ADDITIONAL SECTION:
+sun.rediris.es.         5202    IN      A       199.184.182.1
+zape.udc.es.            14400   IN      A       193.144.48.100
+zipi.udc.es.            14400   IN      A       193.144.48.30
+chico.rediris.es.       18983   IN      A       162.219.54.2
+sun.rediris.es.         6449    IN      AAAA    2620:171:808::1
+zape.udc.es.            14400   IN      AAAA    2001:720:121c:e000::102
+zipi.udc.es.            14400   IN      AAAA    2001:720:121c:e000::101
+
+;; Query time: 3 msec
+;; SERVER: 10.8.8.8#53(10.8.8.8) (UDP)
+;; WHEN: Sun Nov 02 13:10:32 CET 2025
+;; MSG SIZE  rcvd: 313
+```
+
+<br>
+
+  
+**- Obtenga información sobre el direccionamiento de los servidores DNS y MX de la Universidade da Coruña.**
+
+En esta parte tenemos que poder ver los servidores DNS y lo servidores de correo (MX) de la udc.
+Varias formas:
+
+1-Páginas web: **www.nic.es**, **www.ip6.nl**
+
+Podemos ver en la imagen de antes que también nos ofrecía información sobre esta pregunta, es decir, la web de ip6.nl nos daba iformación también sobre los servidores DNS de la udc también.
+
+<br>
+
+2-Comandos: **dig**, **nslookup -type=NS**, **dnsenum**
+
+En dig en lo que vimos antes, podemos ver en el apartado ADDITIONAL SECTION los servidores DNS. Hay 4 servidores DNS que gestionan el dominio y 2 externos (RedIRIS) + 2 propios de UDC.
+
+Para ver con dig los servidores de correo:
+```bash
+dig udc.es MX
+```
+Y veremos una línea tal que así:
+```text
+udc.es.                 3600    IN      MX      10 udc-es.mail.protection.outlook.com.
+```
+La UDC usa Microsoft Office 365/Exchange Online para su correo electrónico.
+
+<br>
+
+Con nslookup:
+
+```bash
+# Servidores DNS (NS)
+nslookup -type=NS udc.es
+
+# Servidores de Correo (MX)  
+nslookup -type=MX udc.es
+```
+
+<br>
+
+Con dnsenum. Este comando muestra ya  al vez los servidores DNS y los servidores de correo MX:
+
+<img width="780" height="563" alt="imagen" src="https://github.com/user-attachments/assets/77a990f8-4f8d-4f4f-b220-d3831a0bd83c" />
+
+<br>
+
+
+**- ¿Puede hacer una transferencia de zona sobre los servidores DNS de la UDC?. En caso negativo, obtenga todos los nombres.dominio posibles de la UDC.**
+
+Una transferencia de zona en servidores DNS es un proceso mediante el cual un servidor DNS obtiene una copia completa de la base de datos de zona de otro servidor DNS, lo cual no es posible debido a la configuración actual. No es posible. Los servidores DNS están configurados para bloquear esta acción por seguridad. Solo personal autorizado.
+
+Comando para realizar la transferencia: `dig axfr @nombre_del_servidor_dns dominio.com`
+```bash
+root@ismael:~# dig axfr @zipi.udc.es udc.es
+;; Connection to 193.144.48.30#53(193.144.48.30) for udc.es failed: timed out.
+;; no servers could be reached
+;; Connection to 193.144.48.30#53(193.144.48.30) for udc.es failed: timed out.
+;; no servers could be reached
+;; Connection to 193.144.48.30#53(193.144.48.30) for udc.es failed: timed out.
+;; no servers could be reached
+```
+
+```bash
+root@ismael:~# dig axfr udc.es
+
+; <<>> DiG 9.18.41-1~deb12u1-Debian <<>> axfr udc.es
+;; global options: +cmd
+; Transfer failed.
+```
+Otra opción es usar dnsenum y dejarlo ahí un rato. Veremos como intenta hacer transferencia de zona por si solo con los dominios que hay pero no puede hacerlo con ninguno:
+
+<img width="903" height="928" alt="imagen" src="https://github.com/user-attachments/assets/f5b21c2b-ca1a-4a20-808a-e7b5ed92c4d0" />
+
+<br>
+
+**Obtener todos los nombres.dominio posibles de la UDC**
+
+```bash
+nmap -sL 193.144.53.84/20 | grep udc.es
+```
+
+Usando dnsrecon:
+```bash
+apt install dnsrecon
+dnsrecon -d udc.es                             # Enumeración DNS completa del dominio 
+dnsrecon -r 193.144.48.0-193.144.63.255        # Escaneo inverso de rango IP
+```
+
+<br>
+
+**¿Qué gestor de contenidos se utiliza en www.usc.es?**
+
+Un sistema de gestión de contenidos (CMS) es un programa informático que permite publicar, editar y modificar contenido, así como realizar su mantenimiento desde una interfaz central. Es descubrir la "plataforma tecnológica" que usa la web sin acceder a zonas privadas. Por ejemplo: WordPress (como un blog grande), Drupal/Joomla (para plataformas más complejas), CMS propio (hecho a medida) etc.
+
+Podemos verlo de distintas formas.
+
+1- Páginas Web:
+
+**https://sitereport.netcraft.com/**
+
+Si ponemos aqui la web de la usc y vamos al apartado de Content Management System (Sistema de gestión de contenidos CMS)
+ podemos ver que nos indica que usa DRUPAL.
+
+<br>
+
+2- Comandos: **whatweb**
+
+Es una herramienta que hace un escaneo de aplicaciones web y enseña info sobre las tecnologías y servicios utilizados en un sitio web.
+
+```bash
+apt install whatweb
+whatweb https://www.usc.es
+```
+Vemos una parte que indica que usa DRUPAL:
+```bash
+https://www.usc.gal/gl [200 OK] Apache, Content-Language[gl], Country[UNITED STATES][US], HTML5, HTTPServer[Apache], IP[52.157.220.132], MetaGenerator[Drupal 10 (https://www.drupal.org)], Script[application/json,gl&amp;theme=usc_theme&amp;include=eJxdy-EKgCAMBOAXsvZIsuYwSx20-cO3D1Ii-nV3HxyJnIkVaOSh10qhujl9RMCKuVsidVEkZvYvwB9cU_LzCmo98yDbuTBsqLw89YPU1KQMvgE1LjcS,text/plain], Strict-Transport-Security[max-age=31536000; includeSubDomains; preload], Title[Inicio | Universidade de Santiago de Compostela], UncommonHeaders[x-content-type-options,x-consumer-id,link], X-Frame-Options[SAMEORIGIN], X-XSS-Protection[1; mode=block]
+```
 
 
 <br>
@@ -1703,6 +1918,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
