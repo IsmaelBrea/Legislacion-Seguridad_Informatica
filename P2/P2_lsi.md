@@ -1758,7 +1758,7 @@ Podemos ver en la imagen de antes que también nos ofrecía información sobre e
 
 2-Comandos: **dig**, **nslookup -type=NS**, **dnsenum**
 
-En dig en lo que vimos antes, podemos ver en el apartado ADDITIONAL SECTION los servidores DNS. Hay 4 servidores DNS que gestionan el dominio y 2 externos (RedIRIS) + 2 propios de UDC.
+En dig en lo que vimos antes, podemos ver en el apartado ADDITIONAL SECTION los servidores DNS. Hay 4 servidores DNS que gestionan el dominio, 2 externos (RedIRIS) + 2 propios de UDC.
 
 Para ver con dig los servidores de correo:
 ```bash
@@ -1919,6 +1919,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
