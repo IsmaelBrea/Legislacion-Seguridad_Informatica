@@ -1653,7 +1653,7 @@ Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no pr
 <br>
 <br>
 
-### **Apartado n) Buscamos información.:  
+### **Apartado n) Buscamos información.:**
 **- Obtenga de forma pasiva el direccionamiento público IPv4 e IPv6 asignado a la Universidade da Coruña.**
   
 **- Obtenga información sobre el direccionamiento de los servidores DNS y MX de la Universidade da Coruña.**
@@ -1665,6 +1665,7 @@ Si no es factible mostrar también
 
 **- ¿Qué gestor de contenidos se utiliza en www.usc.es?**
 
+<br>
 <br>
 
 **- Obtenga de forma pasiva el direccionamiento público IPv4 e IPv6 asignado a la Universidade da Coruña.**
@@ -1918,6 +1919,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
