@@ -1991,14 +1991,8 @@ apt install hydra -y
 1-Crear un fichero con los usuarios posibles:
 ```bash
 # Crear archivo de usuarios
-cat > /home/lsi/users.txt << 'EOF'
+nano > /home/lsi/users.txt 
 lsi
-admin
-root
-user
-ubuntu
-debian
-EOF
 ```
 
 2-Crear un fichero con las contraseñas posibles (la suya es la primera del txt):
@@ -2108,6 +2102,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
