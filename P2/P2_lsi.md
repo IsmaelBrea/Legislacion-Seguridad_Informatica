@@ -2075,7 +2075,12 @@ Mientras el atacante realiza el ataque, la víctima debe revisar sus logs:
 
 ```bash
 # En la máquina víctima, ver intentos
-tail -f /var/log/auth.log | grep "lsi"
+tail -f /var/log/rsyslog_server/lucas/auth.log
+```
+
+Ejemplo de lo que le sale:
+```bash
+2025-11-04T12:09:39.806141+01:00 lucas sshd[5414]: Accepted password for lsi from 10.                                                                                                11.48.202 port 39624 ssh2
 ```
 
 <br>
@@ -2102,6 +2107,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
