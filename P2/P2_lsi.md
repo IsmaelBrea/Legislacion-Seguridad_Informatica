@@ -2128,7 +2128,7 @@ tail /var/log/apache2/access.log
 
 2-Slow http post body (R-U-Dead-Yet):
 
-Se envían peteciones POST en la cabecera HTTP completa e incluyendo un Content Lnegth con el tamaño en bytes del POST DATA a enviar. Luego se envían menos bytes que los indicados haciendo esperar al servidor sin que rechace la conexión.
+El ataque Slow HTTP POST (de la familia R-U-Dead-Yet) envía peticiones donde la cabecera HTTP anuncia un cuerpo de datos muy grande mediante Content-Length, pero luego el cuerpo se envía de forma extremadamente lenta o incompleta. Esto engaña al servidor, que mantiene la conexión abierta esperando los datos restantes que nunca llegan. Al saturar así todos los hilos de conexión disponibles del servidor con solicitudes pendientes, se consigue denegar el servicio a usuarios legítimos.
 
 <img width="504" height="174" alt="imagen" src="https://github.com/user-attachments/assets/0c77a9af-17bc-4d57-b5cf-5d75769390c4" />
 
@@ -2834,6 +2834,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
