@@ -2555,6 +2555,14 @@ tail -f /var/log/apache2/error.log
 tail -f /var/log/apache2/access.log
 ```
 
+
+**APARTADO J -> GRAFANA**
+
+Ante de nada tenemos que poder ver los cambios de manera automática. Ponemos en el dashborad set autorefresh a 5 segundos para que se actualizen las gráficas solas cada 5 minutos.
+
+Cambios en las gráficas y métricas.
+
+
 <br>
 <br>
 
@@ -2957,6 +2965,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
