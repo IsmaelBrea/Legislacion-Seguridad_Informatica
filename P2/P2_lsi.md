@@ -2855,7 +2855,7 @@ lsi
 
 2-Crear un fichero con las contraseñas posibles (la suya es la primera del txt):
 ```bash
-cat > /home/lsi/passwords.txt << 'EOF'
+nano /home/lsi/passwords.txt 
 20022025
 password
 123456
@@ -2899,7 +2899,6 @@ admin123
 root123
 virtual
 virtual;..
-EOF
 ```
 
 
@@ -2933,12 +2932,13 @@ Mientras el atacante realiza el ataque, la víctima debe revisar sus logs:
 
 ```bash
 # En la máquina víctima, ver intentos
-tail -f /var/log/rsyslog_server/lucas/auth.log
+tail -f /var/log/rsyslog_server/lucas/auth.log       # lucas
+tail -f /var/log/auth.log                            # yo
 ```
 
 Ejemplo de lo que le sale:
 ```bash
-2025-11-04T12:09:39.806141+01:00 lucas sshd[5414]: Accepted password for lsi from 10.                                                                                                11.48.202 port 39624 ssh2
+2025-11-04T12:09:39.806141+01:00 lucas sshd[5414]: Accepted password for lsi from 10.11.48.202 port 39624 ssh2
 ```
 
 <br>
@@ -2965,6 +2965,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
