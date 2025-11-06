@@ -1035,11 +1035,6 @@ Crea script que da permisos automáticamente.
 zip -j actualizacion_emergencia.zip parche_seguridad.elf ejecutar_parche.sh
 ```
 
-```bash
-zip -j actualizacion_emergencia.zip parche_seguridad.elf ejecutar_parche.sh
-```
-
-
 Empaqueta todo en un ZIP y lo sube a mi servidor web. Para subirlo a Internet, lo hice con Apache (recomendado):
 ```bash
 cp actualizacion_emergencia.zip /var/www/html/
@@ -2980,6 +2975,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
