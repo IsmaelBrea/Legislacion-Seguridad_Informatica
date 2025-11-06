@@ -2957,17 +2957,118 @@ Ejemplo de lo que le sale:
 
 ### **Apartado q) Reportar alarmas está muy bien, pero no estaría mejor un sistema activo, en lugar de uno pasivo. Configure algún sistema activo, por ejemplo OSSEC, y pruebe su funcionamiento ante un “password guessing”.**
 
-Usar OSSEC para defender a los ataques. Baneará la Ip que está realizando el ataque constantemente.
+> Usar OSSEC para defender a los ataques. Baneará la Ip que está realizando el ataque constantemente.
 
-OSSEC no tiene que defender a un número de ataques. Tiene que defender ya de primeras.
+> OSSEC no tiene que defender a un número de ataques. Tiene que defender ya de primeras.
 
-Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. Si dejamos de atacar OSSEC se para.
+> Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. Si dejamos de atacar OSSEC se para.
 
 **Carlos nos va decir: Para OSSEC a la cuarta vez** -> Hay que hacerlo bien y explicar porque.
 
+<br>
+OSSEC es un HIDS (Host-based Intrusion Detection System) que monitoriza en tiempo real:
+
+     Logs del sistema
+
+     Integridad de archivos
+
+     Rootkits
+
+     Escaneo de puertos
+
+     Fuerza bruta (password guessing)
+
+
+**PASOS**:
+
+1-Instalación:
+```bash
+# Descargar última versión
+wget https://github.com/ossec/ossec-hids/archive/3.7.0.tar.gz
+tar -xzf 3.7.0.tar.gz
+cd ossec-hids-3.7.0
+
+# Instalar dependencias
+apt update
+# EJECUTA ESTE COMANDO COMPLETO:
+sudo apt install -y libpcre2-dev build-essential libssl-dev gcc zlib1g-dev \
+    libsystemd-dev libpam-systemd systemd make autoconf automake \
+    libevent-dev libcurl4-openssl-dev libxml2-dev
+
+# Instalar OSSEC (instalación interactiva)
+./install.sh
+```
+<br>
+
+2-Iniciar OSSEC:
+```
+/var/ossec/bin/ossec-control start
+```
+
+Para verificar estado:
+```bash
+# Verificar estado
+/var/ossec/bin/ossec-control status
+```
+
+Para reiniciar:
+```bash
+/var/ossec/bin/ossec-control restart
+```
+
+<br>
+
+3-Atacar con hydra y compobar que OSSEC funciona por defecto:
+
+El atacante hará un ataque con medusa. Con simplemente activarlo, al tercer intento
+va a parar. Hacemos CTRL + C dos veces para salir.
+
+La ip del atacante se nos meterá en el hosts.deny y el Firewall durante un tiempo fijado. Esta es la respuesta activa del OSSEC la cual no podemos tocar en configuración. Simplemente iremos haciendo ataques hasta que, cuando deje de dar error, nos deje probar de nuevo varias contraseñas. Si nos vuelven a banear, está todo bien.
+
+OSSEC por defecto SÍ bloquea, pero solo después de múltiples intentos. Funciona con un sistema de "detección acumulativa": aunque cada intento fallido de SSH es nivel 5, OSSEC incrementa el nivel cuando detecta múltiples ataques desde la misma IP. Cuando el nivel acumulado supera 6, activa el bloqueo automático en firewall y hosts.deny. Por eso Hydra al final fue bloqueada - no inmediatamente, sino tras acumular suficiente evidencia de ataque.
+
+Mi compañero hizo suficientes intentos para que OSSEC acumulara nivel ≥ 6 y activara el bloqueo automático.
+
+
+- IP aparece en iptables y /etc/hosts.deny
+
+- OSSEC muestra alerta de bloqueo en logs
+
+Para ver los logs:
+```bash
+# Ver logs de alertas
+tail -f /var/ossec/logs/alerts/alerts.log
+
+# Ver logs completos
+tail -f /var/ossec/logs/ossec.log
+```
+
+<br>
+
+4-Configurar para que funcione en los intentos que nosotros queramos.
+
+
+
+
+5-Después de comprobar que OSSEC funciona hacer un flush (Limpiar/Reiniciar)
+```bash
+# Parar OSSEC completamente
+/var/ossec/bin/ossec-control stop
+
+# Limpiar bloqueos existentes
+iptables -F
+
+# borrar a mano la línea del host.deny
+
+# Verificar limpieza
+iptables -L -n | grep DROP
+cat /etc/hosts.deny
+```
 
 
 <br>
+<br>
+
 
 ---
 
@@ -2975,6 +3076,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
