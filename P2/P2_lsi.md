@@ -3204,8 +3204,8 @@ cat /var/log/auth.log | /var/ossec/bin/ossec-logtest -a |/var/ossec/bin/ossec-re
 ```
 
 <br>
----
 
+---
 **ARPON**:
 
 > IMPORTANTE: si no vamos usar arpon paramos el servicio systemctl stop arpon@ens33 y hacemos un mask systemctl mask arpon@ens33. Si dejamos el servicio activo puede tirarnos la máquina
@@ -3238,7 +3238,7 @@ En mi caso añadí:
 
 <br>
 
-##### FUNCIONAMIENTO:
+### FUNCIONAMIENTO:
 
 **SIN ARPON**:
 - ATACANTE:
@@ -3308,6 +3308,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
