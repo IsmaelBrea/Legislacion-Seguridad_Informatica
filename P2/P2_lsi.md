@@ -3154,6 +3154,17 @@ El archivo de reglas locales **/var/ossec/etc/rules/local_rules.xml** tiene prio
 
 
 
+En ssh config:
+```bash
+LoginGraceTime 60
+#PermitRootLogin prohibit-password
+#StrictModes yes
+MaxAuthTries 10
+#MaxSessions 10
+```
+
+systemctl restart sshd
+
 Si cambio algo en conf lo reinicio con:
 ```bash
 sudo /var/ossec/bin/ossec-control restart
@@ -3193,15 +3204,110 @@ cat /var/log/auth.log | /var/ossec/bin/ossec-logtest -a |/var/ossec/bin/ossec-re
 ```
 
 <br>
+---
+
+**ARPON**:
+
+> IMPORTANTE: si no vamos usar arpon paramos el servicio systemctl stop arpon@ens33 y hacemos un mask systemctl mask arpon@ens33. Si dejamos el servicio activo puede tirarnos la máquina
 
 
+1-Instalamos arpon:
+```bash
+apt install arpon
+```
+
+2-Configuramos la ruta /etc/arpon.conf. Comentamos todas las lineas que tiene el archivo y añadimos la IP-MAC de nuestro compañero, del router y la nuestra propia (para ver la MAC ejecutamos ifconfig y en la interfaz correspondente miramos o campo ether o podemos hacer arp -a y usar grep con la ip):
+
+```bash
+root@ismael:/home/lsi# arp -a | grep 10.11.48.175
+? (10.11.48.175) at 00:50:56:97:29:8b [ether] on ens33
+
+root@ismael:/home/lsi# arp -a | grep 10.11.48.202
+? (10.11.48.175) at 00:50:56:97:29:8f [ether] on ens33
+00:50:56:97:29:8f
+
+root@ismael:/home/lsi# arp -a | grep 10.11.48.171
+_gateway (10.11.48.1) at dc:08:56:10:84:b9 [ether] on ens33
+```
+
+En mi caso añadí:
+```bash
+10.11.48.1       dc:08:56:10:84:b9
+10.11.48.175     00:50:56:97:29:8f
+```
+
+<br>
+
+##### FUNCIONAMIENTO:
+
+**SIN ARPON**:
+- ATACANTE:
+  
+1º) Hacemos un arp poisoning:
+```bash
+ettercap -T -i ens33 -M arp:remote /10.11.48.175/// /10.11.48.1///
+```
+
+Esperar un rato
+
+- VÍCTIMA:
+
+1º) Ejecutar:
+```bash
+ip neigh flush all    # borrar ARP caché
+arp -a
+```
+
+Debemos ver la MAC de atacante y la del router igual (la del ruter ahora es la de la máquina del atacante):
+<img width="491" height="48" alt="imagen" src="https://github.com/user-attachments/assets/26074b6f-373e-43a9-8269-7c20afbdb5a6" />
 
 
+<br>
+---
+
+**CON ARPON**
+
+- ATACANTE (igual que antes):
+  
+1º) Hacemos un arp poisoning:
+```bash
+ettercap -T -i ens33 -M arp:remote /10.11.48.175/// /10.11.48.1///
+```
 
 
+<br>
+
+- VÍCTIMA:
+
+Encender arpon:
+```bash
+root@ismael:/home/lsi# systemctl start arpon@ens33
+```
+
+Solo cuando lo usemos. Cuando no se usa PARAR Y ENMASCARAR!!
+```bash
+root@ismael:/home/lsi# systemctl stop arpon@ens33
+root@ismael:/home/lsi# systemctl disable arpon@ens33
+```
+
+Al volver a realiza el ataque, la MAC del router no cambia y la hace permanente.
 
 
+Logs del arpon:
+```bash
+cat /var/log/arpon/arpon.log
+```
 
+UPDATE: ¡Esto significa que 10.11.48.175 tiene la MAC del ROUTER! - ATAQUE DETECTADO
+```bash
+Nov 07 18:40:43 [INFO] UPDATE, 10.11.48.202 is at 0:50:56:97:29:8f on ens33
+```
+
+
+Borrar la tabla ARP:
+```bash
+ip neigh flush all
+```
 
 
 
