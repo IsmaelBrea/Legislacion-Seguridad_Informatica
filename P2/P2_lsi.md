@@ -3226,7 +3226,7 @@ root@ismael:/home/lsi# arp -a | grep 10.11.48.202
 ? (10.11.48.175) at 00:50:56:97:29:8f [ether] on ens33
 00:50:56:97:29:8f
 
-root@ismael:/home/lsi# arp -a | grep 10.11.48.171
+root@ismael:/home/lsi# arp -a | grep "(10.11.48.1)"
 _gateway (10.11.48.1) at dc:08:56:10:84:b9 [ether] on ens33
 ```
 
@@ -3308,6 +3308,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
