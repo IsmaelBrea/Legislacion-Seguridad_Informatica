@@ -2937,6 +2937,12 @@ En resumen, este comando comprueba para cada usuario del users.txt todas las con
 
 Ahí lo vemos.
 
+
+Con Medusa:
+```bash
+medusa -h 10.11.48.202 -u lsi -P passwords.txt -M ssh
+```
+
 <br>
 Mientras el atacante realiza el ataque, la víctima debe revisar sus logs:
 
@@ -2966,7 +2972,7 @@ Ejemplo de lo que le sale:
 **Carlos nos va decir: Para OSSEC a la cuarta vez** -> Hay que hacerlo bien y explicar porque.
 
 <br>
-OSSEC es un HIDS (Host-based Intrusion Detection System) que monitoriza en tiempo real:
+OSSEC es un HIDS (Host-based Intrusion Detection System, Sistema de detección de Intrusos) que monitoriza en tiempo real:
 
      Logs del sistema
 
@@ -3020,19 +3026,81 @@ Para reiniciar:
 
 3-Atacar con hydra y compobar que OSSEC funciona por defecto:
 
-El atacante hará un ataque con medusa. Con simplemente activarlo, al tercer intento
-va a parar. Hacemos CTRL + C dos veces para salir.
+El atacante hará un ataque con hydra. Con simplemente activarlo, al tercer intento va a parar. Hacemos CTRL + C dos veces para salir.
+- Intento 1-2: OSSEC detecta pero no banea
+- Intento 3-4: OSSEC banea la IP automáticamente
 
 La ip del atacante se nos meterá en el hosts.deny y el Firewall durante un tiempo fijado. Esta es la respuesta activa del OSSEC la cual no podemos tocar en configuración. Simplemente iremos haciendo ataques hasta que, cuando deje de dar error, nos deje probar de nuevo varias contraseñas. Si nos vuelven a banear, está todo bien.
-
-OSSEC por defecto SÍ bloquea, pero solo después de múltiples intentos. Funciona con un sistema de "detección acumulativa": aunque cada intento fallido de SSH es nivel 5, OSSEC incrementa el nivel cuando detecta múltiples ataques desde la misma IP. Cuando el nivel acumulado supera 6, activa el bloqueo automático en firewall y hosts.deny. Por eso Hydra al final fue bloqueada - no inmediatamente, sino tras acumular suficiente evidencia de ataque.
-
-Mi compañero hizo suficientes intentos para que OSSEC acumulara nivel ≥ 6 y activara el bloqueo automático.
-
-
 - IP aparece en iptables y /etc/hosts.deny
 
 - OSSEC muestra alerta de bloqueo en logs
+
+OSSEC por defecto SÍ bloquea, pero solo después de múltiples intentos. Funciona con un sistema de "detección acumulativa": aunque cada intento fallido de SSH es nivel 5, OSSEC incrementa el nivel cuando detecta múltiples ataques desde la misma IP. Cuando el nivel acumulado supera 6, activa el bloqueo automático en firewall y hosts.deny. Por eso Hydra al final fue bloqueada - no inmediatamente, sino tras acumular suficiente evidencia de ataque. Bloquea la IP durante 600 segundos por la parte del active response del fichero de configuración. Por defecto:
+
+```bash
+<!-- Active Response Config -->
+  <active-response>
+    <!-- This response is going to execute the host-deny
+       - command for every event that fires a rule with
+       - level (severity) >= 6.
+       - The IP is going to be blocked for  600 seconds.
+      -->
+    <command>host-deny</command>
+    <location>local</location>
+    <level>6</level>
+    <timeout>600</timeout>
+  </active-response>
+
+  <active-response>
+    <!-- Firewall Drop response. Block the IP for
+       - 600 seconds on the firewall (iptables,
+       - ipfilter, etc).
+      -->
+    <command>firewall-drop</command>
+    <location>local</location>
+    <level>6</level>
+    <timeout>600</timeout>
+  </active-response>
+```
+
+Mi compañero hizo suficientes intentos para que OSSEC acumulara nivel ≥ 6 y activara el bloqueo automático.
+
+Aquí están los levels de OSSEC:
+```text
+The rules will be read from the highest to the lowest level.
+
+00 - Ignored - No action taken. Used to avoid false positives. These rules are scanned before all the others. They include events with no security relevance.
+
+01 - None -
+
+02 - System low priority notification - System notification or status messages. They have no security relevance.
+
+03 - Successful/Authorized events - They include successful login attempts, firewall allow events, etc.
+
+04 - System low priority error - Errors related to bad configurations or unused devices/applications. They have no security relevance and are usually caused by default installations or software testing.
+
+05 - User generated error - They include missed passwords, denied actions, etc. By itself they have no security relevance.
+
+06 - Low relevance attack - They indicate a worm or a virus that have no affect to the system (like code red for apache servers, etc). They also include frequently IDS events and frequently errors.
+
+07 - “Bad word” matching. They include words like “bad”, “error”, etc. These events are most of the time unclassified and may have some security relevance.
+
+08 - First time seen - Include first time seen events. First time an IDS event is fired or the first time an user logged in. If you just started using OSSEC HIDS these messages will probably be frequently. After a while they should go away, It also includes security relevant actions (like the starting of a sniffer or something like that).
+
+09 - Error from invalid source - Include attempts to login as an unknown user or from an invalid source. May have security relevance (specially if repeated). They also include errors regarding the “admin” (root) account.
+
+10 - Multiple user generated errors - They include multiple bad passwords, multiple failed logins, etc. They may indicate an attack or may just be that a user just forgot his credentials.
+
+11 - Integrity checking warning - They include messages regarding the modification of binaries or the presence of rootkits (by rootcheck). If you just modified your system configuration you should be fine regarding the “syscheck” messages. They may indicate a successful attack. Also included IDS events that will be ignored (high number of repetitions).
+
+12 - High importancy event - They include error or warning messages from the system, kernel, etc. They may indicate an attack against a specific application.
+
+13 - Unusual error (high importance) - Most of the times it matches a common attack pattern.
+
+14 - High importance security event. Most of the times done with correlation and it indicates an attack.
+
+15 - Severe attack - No chances of false positives. Immediate attention is necessary.
+```
 
 Para ver los logs:
 ```bash
@@ -3041,14 +3109,55 @@ tail -f /var/ossec/logs/alerts/alerts.log
 
 # Ver logs completos
 tail -f /var/ossec/logs/ossec.log
+
+# Logs depurados -> para ver las alertas por su grado de criticidad (APARTADO R)
+cat /var/log/auth.log | /var/ossec/bin/ossec-logtest -a |/var/ossec/bin/ossec-reportd
 ```
+
+Nos debería salir 1 log por cada intento de password guessing con hydra.
+
+Ver IPS baneadas:
+```bash
+# Ver reglas de firewall
+iptables -L -n | grep DROP
+
+# Ver hosts denegados
+cat /etc/hosts.deny
+```
+
+Si nos pregunta que regla se está activando se encuentra en los logs (Rule -> ...):
+```bash
+** Alert 1762450377.25475: - syslog,sshd,authentication_failed,
+2025 Nov 06 18:32:57 ismael->/var/log/auth.log
+Rule: 5716 (level 5) -> 'SSHD authentication failed.'
+Src IP: 10.11.48.175
+User: lsi
+2025-11-06T18:32:55.596486+01:00 ismael sshd[188117]: Failed password for lsi from 10.11.48.175 port 48016 ssh2
+```
+ 
+Ahí vemos Regla 5716 nivel 5. Cada SSH fallido = Level 5 (regla 5716)
+
+**A nosotros las reglas que nos influyen son las que tienen que ver con SSH  y por tanto se encuentran en el archivo de configuración:
+sshd_rules.xml (Entender como funcionan estas reglas)**.
 
 <br>
 
 4-Configurar para que funcione en los intentos que nosotros queramos.
 
+Para ello hay que editar el archivo de configuración y las reglas locales:
+```bash
+nano /var/ossec/etc/ossec.conf
+```
 
 
+El archivo de reglas locales **/var/ossec/etc/rules/local_rules.xml** tiene prioridad sobre las reglas por defecto.
+
+
+
+Si cambio algo en conf lo reinicio con:
+```bash
+sudo /var/ossec/bin/ossec-control restart
+```
 
 5-Después de comprobar que OSSEC funciona hacer un flush (Limpiar/Reiniciar)
 ```bash
@@ -3074,8 +3183,17 @@ cat /etc/hosts.deny
 
 ### **Apartado r) Supongamos que una máquina ha sido comprometida y disponemos de un fichero con sus mensajes de log. Procese dicho fichero con OSSEC para tratar de localizar evidencias de lo acontecido (“post mortem”). Muestre las alertas detectadas con su grado de criticidad, así como un resumen de las mismas.**
 
+Fichero /var/ossec/bin/ossec-logtest: Aquí está toda la información. Sin embargo, está sin depurar.
+
+- Logs depurados -> para ver las alertas por su grado de criticidad 
+```bash
+cat /var/log/auth.log | /var/ossec/bin/ossec-logtest -a                                       # solo sacar alertas
+
+cat /var/log/auth.log | /var/ossec/bin/ossec-logtest -a |/var/ossec/bin/ossec-reportd         # resumen de las alertas
+```
 
 <br>
+
 
 
 
