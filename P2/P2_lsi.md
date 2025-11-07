@@ -2802,6 +2802,43 @@ El comando nmap -A 10.11.48.1/23 realiza un escaneo agresivo y completo de toda 
 
 -  10.11.48.1/23 = Escanea 512 IPs (10.11.48.0 - 10.11.49.255)
 
+
+Podemos probarlo de forma fácil con el router o con el compañero:
+```bash
+nmap -A 10.11.48.1 > nmap_router.txt
+```
+
+Salida:
+```bash
+Starting Nmap 7.93 ( https://nmap.org ) at 2025-11-07 20:46 CET
+Nmap scan report for 10.11.48.1
+Host is up (0.0045s latency).
+All 1000 scanned ports on 10.11.48.1 are in ignored states.
+Not shown: 994 filtered tcp ports (no-response), 6 filtered tcp ports (port-unreach)
+MAC Address: DC:08:56:10:84:B9 (Alcatel-Lucent Enterprise)
+Too many fingerprints match this host to give specific OS details
+Network Distance: 1 hop
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   4.49 ms 10.11.48.1
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 8.88 seconds
+```
+
+En general muestra:
+
+- Puertos abiertos con VERSIÓN exacta
+
+- Sistema Operativo
+
+- Servicios
+
+- Traceroute: hops hasta el destino
+
+- Scripts: Vulnerabilidades detectadas
+
 <br>
 
 2- NMAP con la flag -T4:
@@ -2818,6 +2855,30 @@ nmap -T4 10.11.48.0/23 está:
 - Revisando los 1000 puertos más comunes por cada host
 
 -  A máxima velocidad (T4)
+
+<br>
+
+**OPCIONES de forma INDIVIDUAL**
+
+1-Flag de detección de versiones de servicios
+```bash
+nmap -sV 10.11.48.1
+```
+
+
+2-Escaneo UDP del puerto 67 para Script NSE específico para DHCP
+```bash
+nmap -sU -p 67 --script=dhcp-discover 10.11.48.1
+```
+
+3-Scripts de vulnerabilidades
+nmap --script vuln 10.11.48.1
+
+
+4-Detección de Sistemas operativos (fingerprinting):
+```bash
+nmap -O 10.11.48.1
+```
 
 <br>
 <br>
@@ -3299,6 +3360,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
