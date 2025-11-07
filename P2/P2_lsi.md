@@ -2325,19 +2325,6 @@ Se crean numerosas peticiones superponiendo rangos de bytes en la cabecera agota
 <img width="447" height="206" alt="imagen" src="https://github.com/user-attachments/assets/317aa710-0915-4eed-b1ac-15d3b24ef24e" />
 
 
-Crear archivo:
-```bash
-nano AKiller.pl
-```
-
-Pegar:
-```bash
-
-
-
-```
-
-
 <br>
 
 
@@ -3312,6 +3299,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
