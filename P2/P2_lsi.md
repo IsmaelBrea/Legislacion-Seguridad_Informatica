@@ -1042,6 +1042,10 @@ cp actualizacion_emergencia.zip /var/www/html/
 
 Este enlace funcionará siempre, siempre que el servidor esté encencido, es decir, si Apache está iniciado funcionará.
 
+Tenemos subido el zip a Internet ahora en este enlace:
+```bash
+http://10.11.48.202/actualizacion_emergencia.zip
+```
 
 
 4-Crear el filtro ettercap:
@@ -3308,6 +3312,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
