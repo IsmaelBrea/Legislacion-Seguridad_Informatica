@@ -959,8 +959,10 @@ Para salir simplemente **exit** o **Ctrl+D**.
 <br>
 
 2- Payload:
-    Exploit = La llave que abre la cerradura (vulnerabilidad)
-    Payload = Lo que haces después de entrar (código que se ejecuta)
+
+  Exploit = La llave que abre la cerradura (vulnerabilidad)
+	
+  Payload = Lo que haces después de entrar (código que se ejecuta)
 Un payload en Metasploit es la parte del exploit que se ejecuta en el sistema objetivo después de que una vulnerabilidad ha sido explotada con éxito.
 
 Crear un ejecutable con un payload de Meterpreter Reverse TCP para Linux, integrarlo en un filtro de Ettercap y aplicar técnicas de ingeniería social para que la víctima lo ejecute.
@@ -3353,6 +3355,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
