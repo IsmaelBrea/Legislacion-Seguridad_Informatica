@@ -3339,6 +3339,9 @@ root@ismael:/home/lsi# systemctl disable arpon@ens33
 
 Al volver a realiza el ataque, la MAC del router no cambia y la hace permanente.
 
+Observa tail -F /var/log/arpon.log y ip neigh show.
+
+ArpON debería rechazar/limpiar entradas ARP inconsistentes o dejar constancia en el log de la detección (según modo).
 
 Logs del arpon:
 ```bash
@@ -3355,6 +3358,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
