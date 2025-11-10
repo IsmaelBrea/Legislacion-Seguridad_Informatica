@@ -747,10 +747,13 @@ apt installl nast
 
 1. Con nmap:
 ```bash
-nmap -sP 10.11.48.0/23
+nmap -sP 10.11.48.0/23    
 ```
 
-- -sP : Detecta hosts activos en una red sin escanear puertos.  
+
+- -sP : Detecta hosts activos en una red sin escanear puertos.
+
+Usa -sn (en vez de -sP) en nmap moderno. Si quieres fiabilidad en una red local, ejecuta nmap como root para que use ARP y devuelva MACs.
 
 Ejemplo de salida:
 ```bash
@@ -3350,6 +3353,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
