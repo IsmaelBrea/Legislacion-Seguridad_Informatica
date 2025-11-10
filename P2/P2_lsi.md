@@ -638,12 +638,9 @@ El atacante tiene que poder ver más adelante:
  scp lsi@10.11.48.202:/home/lsi/lsicompa.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
 ```
 
-```bash
- scp lsi@10.11.48.202:/home/lsi/lsicompa2.pcap "C:\Users\User\Desktop\INGENIERIA_INFORMATICA\4_curso\1_CUATRI\LSI\P2\"
-```
 
-- lsicompa- http con página web e imagen de servidor
-- lsicompa2- http con páginas web, imágenes y pdfs.
+- lsicompa- http con página web, foto y pdf.
+
 
 <br>
 
@@ -3353,6 +3350,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
