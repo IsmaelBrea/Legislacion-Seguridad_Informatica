@@ -615,18 +615,11 @@ tcpdump -i ens33 -s 65536 -w /home/lsi/lsicompa.pcap
 
  2.1- Archivo lsicompa:
 ```bash
-   curl http://w3af.org/                                                                            #página W3AF
-   curl http://www.edu4java.com/_img/web/http.png                                                   #foto de un servidor
-   curl 
-```
-
-
-2.1-Archivo lsicompa2:
-```bash
-curl http://securitylab.disi.unitn.it/lib/exe/fetch.php?media=teaching:netsec:2016:g4_-_mitm.pdf
-curl http://cdn2.thecatapi.com/images/MTY3ODIyMQ.jpg
+curl http://www.edu4java.com/_img/web/http.png 
 curl http://owasp.org/
+curl http://informatica.uv.es/iiguia/IST/Tema2.pdf
 ```
+
 
 El atacante tiene que poder ver más adelante:
 - pdf 
@@ -3360,6 +3353,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
