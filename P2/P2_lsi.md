@@ -2553,6 +2553,7 @@ perl slowloris.pl -dns 10.11.48.175 -port 80 -num 100
 # En otra terminal, ver logs
 tail -f /var/log/apache2/error.log
 tail -f /var/log/apache2/access.log
+tail -F /var/log/modsecurity/audit.log 
 ```
 
 
@@ -3369,6 +3370,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
