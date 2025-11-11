@@ -2490,6 +2490,10 @@ apt install libapache2-mod-security2 -y
 ```bash
 a2enmod security2
 ```
+**Para desactivar**:
+```bash
+a2dismod security2
+```
 
 3. Reiniciar Apache:
 ```bash
@@ -3365,6 +3369,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
