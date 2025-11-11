@@ -2771,7 +2771,14 @@ Vemos una parte que indica que usa DRUPAL:
 https://www.usc.gal/gl [200 OK] Apache, Content-Language[gl], Country[UNITED STATES][US], HTML5, HTTPServer[Apache], IP[52.157.220.132], MetaGenerator[Drupal 10 (https://www.drupal.org)], Script[application/json,gl&amp;theme=usc_theme&amp;include=eJxdy-EKgCAMBOAXsvZIsuYwSx20-cO3D1Ii-nV3HxyJnIkVaOSh10qhujl9RMCKuVsidVEkZvYvwB9cU_LzCmo98yDbuTBsqLw89YPU1KQMvgE1LjcS,text/plain], Strict-Transport-Security[max-age=31536000; includeSubDomains; preload], Title[Inicio | Universidade de Santiago de Compostela], UncommonHeaders[x-content-type-options,x-consumer-id,link], X-Frame-Options[SAMEORIGIN], X-XSS-Protection[1; mode=block]
 ```
 
+**GRAFANA**
+Habrá variaciones en las métricas de Grafana, y ocurrirán durante las consultas DNS y el uso de herramientas como dig, dnsrecon o whatweb.
 
+- Dónde:
+En los paneles de red (tráfico, peticiones DNS, uso de CPU o conexiones salientes).
+
+- Por qué:
+Porque al ejecutar esos comandos se generan peticiones hacia los servidores externos (DNS de la UDC, web de la USC, etc.), lo que aumenta momentáneamente el tráfico y las conexiones salientes, y Grafana lo registra como actividad en el sistema.
 <br>
 <br>
 
@@ -3358,6 +3365,7 @@ Borrar la tabla ARP:
 ```bash
 ip neigh flush all
 ```
+
 
 
 
