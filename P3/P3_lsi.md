@@ -1,8 +1,14 @@
 # PRÁCTICA 3 - Seguridad Informática
 
-<br>
+DEFENSA: Día 9 de diciembre, las máquinas de apagan el 5 de diciembre a las 10.
+
+**Objetivo**: El objetivo de esta práctica es comprender la importancia de los algoritmos criptográficos, el uso de autoridades de certificación y su aplicación-funcionamiento en la forma de protocolos seguros. También se abordará el proceso de análisis de vulnerabilidades en el contexto de los procesos de auditoría de seguridad. Se deberán aplicar los conceptos adquiridos en la resolución de los siguientes apartados.
 <br>
 
+
+Eliminar servicios y aplicaciones anteriores: metasploit, arpon, grafana etc. Dejar solo alguno inseguro para securizar nosotros.
+
+<br>
 
 ## **Apartado 1: SSH**
 Tomando como base de trabajo el SSH pruebe sus diversas utilidades:
@@ -40,6 +46,8 @@ Redirigir el tráfico por el túnel. Hay que poder leer el contenido. Usar w3m p
 - **Configure su Apache para que únicamente proporcione acceso a un determinado directorio del árbol web bajo la condición del uso de SSL.**
   - **Nota: si la clave privada está cifrada en el arranque, su máquina le pedirá la frase de paso, pudiendo dejarla inaccesible desde su sesión SSH.**
 
+
+Buscar entidad certificadora Debian 11/12
 ---
 
 ## **Apartado 3: openVPN**
