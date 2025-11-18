@@ -43,7 +43,7 @@ Redirigir el tráfico por el túnel. Hay que poder leer el contenido. Usar w3m p
 ---
 
 ## **Apartado 3: openVPN**
-**Configure una VPN entre dos equipos virtuales del laboratorio que garantice la confidencialidad de sus comunicaciones.
+**Configure una VPN entre dos equipos virtuales del laboratorio que garantice la confidencialidad de sus comunicaciones.**
 
 
 Clave precompartida
