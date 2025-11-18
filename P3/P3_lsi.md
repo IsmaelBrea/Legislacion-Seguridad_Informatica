@@ -14,6 +14,11 @@ Tomando como base de trabajo el SSH pruebe sus diversas utilidades:
 - “Exporte” un directorio y “móntelo” de forma remota sobre un túnel SSH.
 - **Para plantear de forma teórica:** Securice su servidor considerando que únicamente dará servicio SSH para sesiones de usuario desde determinadas IPs.
 
+ <img width="757" height="304" alt="funcionamiento-ssh-pressroom-de-hostalia-hosting" src="https://github.com/user-attachments/assets/a246da89-ff0f-4ee1-9e6c-8c0820f469c9" />
+
+
+Fingerprinting al conectarase a SSH. Nuestro portátil almacena la clave publica del servidor de la máquina a la que nos conectamos. Lo mismo sucede a la inversa con la máquina conectada.
+
 ---
 
 ## **Apartado 2: Servidor Apache2**
