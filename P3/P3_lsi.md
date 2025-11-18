@@ -17,7 +17,18 @@ Tomando como base de trabajo el SSH pruebe sus diversas utilidades:
  <img width="757" height="304" alt="funcionamiento-ssh-pressroom-de-hostalia-hosting" src="https://github.com/user-attachments/assets/a246da89-ff0f-4ee1-9e6c-8c0820f469c9" />
 
 
-Fingerprinting al conectarase a SSH. Nuestro portátil almacena la clave publica del servidor de la máquina a la que nos conectamos. Lo mismo sucede a la inversa con la máquina conectada.
+Fingerprinting al conectarse a SSH. Nuestro portátil almacena la clave publica del servidor de la máquina a la que nos conectamos. Lo mismo sucede a la inversa con la máquina conectada.
+1-Crear claves: ssh_keygen
+2-Fichero ~/.ssh / id_rsa -> id_rsa_pub
+3-Pasar el pub a ssh_know_hosts -> ssh-copy-id (mejor que no). Copiarlo uno tras otro con cat.
+
+
+Servicio tunelizado:
+ssh -L
+ssh -R
+
+
+Redirigir el tráfico por el túnel. Hay que poder leer el contenido. Usar w3m por ejemplo
 
 ---
 
@@ -34,6 +45,8 @@ Tomando como base de trabajo el servidor Apache2:
 ## **Apartado 3: openVPN**
 Configure una VPN entre dos equipos virtuales del laboratorio que garantice la confidencialidad de sus comunicaciones.
 
+
+Clave precompartida
 ---
 
 ## **Apartado 4: Autenticación en NTP**
