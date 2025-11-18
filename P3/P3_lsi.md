@@ -68,7 +68,9 @@ Configure un esquema que permita cifrar las comunicaciones.
 Hacer un script -> son líneas que actúan como comandos. Si falla el script perdemos la conectividad de la máquina. Para probar hacer un reinicio reprogramado.
 \bin\bash Programo reinicio dentro de 5 minutos
 
-Poner toda la protecciín necesario. Bloquear tráfico a todos los puertos y de todas las IPs no requeridas.
+
+Poner toda la protección necesaria. Bloquear tráfico a todos los puertos y de todas las IPs no requeridas.
+
 ---
 
 ## **Apartado 7: Auditoría con Lynis**
