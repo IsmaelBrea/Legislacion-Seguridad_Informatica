@@ -302,7 +302,9 @@ lsi@10.11.48.SERVER y podrá entrar sin meter la contraseña.
 - c. SSH_KEX_ALG: Algoritmo para identificarse y comprobar que
 el servidor es quién dice ser.
 
+
 6. ¿Cómo funciona?:
+
 El servidor cifra su clave privada con un token, el cliente lo descifra con su clave pública. Si en el token viene la identidad correcta, el único que tiene esa clave privada para haberlo cifrado es el servidor, por tanto comprobamos que es él de verdad.
 
 <br>
