@@ -249,7 +249,7 @@ Cuando ejecutamos el comando:
 
 2-El cliente realizará los siguientes pasos:
 
-a.Creamos la clave para la conexión. Ponemos todo por defecto, pero nos aseguramos de que se guarde en /home/lsi/.ssh. Se nos generarán dos claves: la pública y la privada.
+a. Creamos la clave para la conexión. Ponemos todo por defecto, pero nos aseguramos de que se guarde en /home/lsi/.ssh. Se nos generarán dos claves: la pública y la privada.
 
 ```bash
 ssh-keygen -t rsa
@@ -276,7 +276,7 @@ a. Acceder a la ruta donde se envió:
 cd /home/lsi/.ssh.
 ```
 
-b.Copiamos la clave en el fichero authorized_keys. Si no lo tenemos creado, al ejecutar el comando se creará automáticamente.
+b. Copiamos la clave en el fichero authorized_keys. Si no lo tenemos creado, al ejecutar el comando se creará automáticamente.
 ```bash
  cat id_rsa.pub >> authorized_keys
 ```
