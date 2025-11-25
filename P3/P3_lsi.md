@@ -183,6 +183,7 @@ scp -c aes256-ctr documento.txt lsi@10.11.48.175:/home/lsi/
 
 3-Verificar la copia en el servidor remoto. Acceder a la máquina y ver que se encuentra el archivo documento.txt
 
+<br>
 
 **Qué sucede durante la copia**
 
