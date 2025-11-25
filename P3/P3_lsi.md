@@ -32,7 +32,7 @@ Tomando como base de trabajo el SSH pruebe sus diversas utilidades:
 
 <br>
 
-- **Abra un shell remoto sobre SSH y analice el proceso que se realiza. Configure su fichero `ssh_known_hosts` para dar soporte a la clave pública del servidor.**
+### **Abra un shell remoto sobre SSH y analice el proceso que se realiza. Configure su fichero `ssh_known_hosts` para dar soporte a la clave pública del servidor.**
 
 La primera vez que hicimos ssh en nuestra máquina, SSH me mostró la huella digital del servidor para verificar si era un servidor de confianza. Tras escribir yes, la clave pública del servidor quedó registrada automáticamente en el fichero: **~/.ssh/known_hosts**.
 
@@ -133,7 +133,7 @@ lsi@10.11.48.175's password:
 
 <br>
 
-- **Haga una copia remota de un fichero utilizando un algoritmo de cifrado determinado. Analice el proceso que se realiza.**
+### **Haga una copia remota de un fichero utilizando un algoritmo de cifrado determinado. Analice el proceso que se realiza.**
 
 >Cipher es un algortimo de cifrado simétrico y asimétricos que se utilizan para establecer una conexión segura entre hosts.
 
@@ -237,7 +237,7 @@ Cuando ejecutamos el comando:
 
 <br>
 
-- **Configure su cliente y servidor para permitir conexiones basadas en un esquema de autenticación de usuario de clave pública.**
+## **Configure su cliente y servidor para permitir conexiones basadas en un esquema de autenticación de usuario de clave pública.**
 
 >Esta parte la harems toda desde el user lsi y no root.
 >Los dos tenemos qe probar a ser clientes y servidores.
