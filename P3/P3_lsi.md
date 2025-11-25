@@ -239,10 +239,64 @@ Cuando ejecutamos el comando:
 
 - **Configure su cliente y servidor para permitir conexiones basadas en un esquema de autenticación de usuario de clave pública.**
 
+>Esta parte la harems toda desde el user lsi y no root.
+>Los dos tenemos qe probar a ser clientes y servidores.
+
+1-Descomentamos la línea PubKeyAuthentication = yes en /etc/ssh/sshd_config.
+
+**SOLO ESTA PARTE SE HACE DESDE ROOT!!!**
+
+2-El cliente realizará los siguientes pasos:
+
+a.Creamos la clave para la conexión. Ponemos todo por defecto, pero nos aseguramos de que se guarde en /home/lsi/.ssh. Se nos generarán dos claves: la pública y la privada.
+
+```bash
+ssh-keygen -t rsa
+```
 
 
+b. Le envíamos la clave pública a nuestro compañero y se la metemos en /home/lsi/.ssh.
+
+```bash
+scp /home/lsi/.ssh/id_rsa.pub lsi@10.11.48.175:./.ssh/id_rsa.pub
+```
 
 
+3-El servidor realizará los siguientes pasos:
+
+a. Acceder a la ruta donde se envió:
+```bash
+cd /home/lsi/.ssh.
+```
+
+b.Copiamos la clave en el fichero authorized_keys. Si no lo tenemos creado, al ejecutar el comando se creará automáticamente.
+```bash
+ cat id_rsa.pub >> authorized_keys
+```
+
+c. Opcional pero recomendable: Borramos la clave con:
+```bash
+rm id_rsa.pub.
+```
+
+
+4-Para comprobar que funciona: El cliente, desde lsi, hará ssh:
+```bash
+lsi@10.11.48.SERVER y podrá entrar sin meter la contraseña.
+```
+
+5. Conceptos teóricos:
+
+- a. KEX: Key Exchange
+
+- b. SSH_MSG_KEXINIT: Algoritmo para crear una clave de sesión
+(RSA, Diffie Hellman, etc.).
+
+- c. SSH_KEX_ALG: Algoritmo para identificarse y comprobar que
+el servidor es quién dice ser.
+
+6. ¿Cómo funciona?:
+El servidor cifra su clave privada con un token, el cliente lo descifra con su clave pública. Si en el token viene la identidad correcta, el único que tiene esa clave privada para haberlo cifrado es el servidor, por tanto comprobamos que es él de verdad.
 
 
 
