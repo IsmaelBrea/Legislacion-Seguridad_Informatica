@@ -257,10 +257,16 @@ ssh-keygen -t rsa
 
 b. Le envíamos la clave pública a nuestro compañero y se la metemos en /home/lsi/.ssh.
 
+- Usar scp:
+
 ```bash
 scp /home/lsi/.ssh/id_rsa.pub lsi@10.11.48.175:./.ssh/id_rsa.pub
 ```
 
+- Usar ssh-copy-id
+```bash
+ssh-copy-id -i ~/.ssh/id_rsa.pub lsi@10.11.48.175
+```
 
 3-El servidor realizará los siguientes pasos:
 
@@ -297,6 +303,8 @@ el servidor es quién dice ser.
 
 6. ¿Cómo funciona?:
 El servidor cifra su clave privada con un token, el cliente lo descifra con su clave pública. Si en el token viene la identidad correcta, el único que tiene esa clave privada para haberlo cifrado es el servidor, por tanto comprobamos que es él de verdad.
+
+<br>
 
 
 
