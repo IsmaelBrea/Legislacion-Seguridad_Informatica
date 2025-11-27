@@ -240,8 +240,13 @@ Cuando ejecutamos el comando:
 
 ## **Configure su cliente y servidor para permitir conexiones basadas en un esquema de autenticación de usuario de clave pública.**
 
->Esta parte la harems toda desde el user lsi y no root.
+>Esta parte la haremos toda desde el user lsi y no root.
+
 >Los dos tenemos qe probar a ser clientes y servidores.
+
+>Para comprobar que lo hemos hecho bien tenemos que poder entrar en la máquina del compañero sin contraseña.
+
+
 
 1-Descomentamos la línea PubKeyAuthentication = yes en /etc/ssh/sshd_config.
 
