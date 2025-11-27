@@ -474,16 +474,365 @@ Escribimos algo. Nuestro compañero debería poder verlo y escribir también en 
 
 ## **Apartado 2: Servidor Apache2**
 **Tomando como base de trabajo el servidor Apache2:**
-
 - **Configure una Autoridad Certificadora en su equipo.**
 - **Cree su propio certificado para ser firmado por la Autoridad Certificadora y fírmelo.**
 - **Configure su Apache para que únicamente proporcione acceso a un determinado directorio del árbol web bajo la condición del uso de SSL.**
   - **Nota: si la clave privada está cifrada en el arranque, su máquina le pedirá la frase de paso, pudiendo dejarla inaccesible desde su sesión SSH.**
 
+> Buscar entidad certificadora Debian 11/12
 
-Buscar entidad certificadora Debian 11/12
 
----
+### **Configure una Autoridad Certificadora en su equipo.**
+
+Una Autoridad Certificadora (CA) es como un “notario digital” que garantiza que los certificados de los servidores son auténticos y confiables. Cuando un navegador se conecta a un servidor HTTPS, confía en el certificado porque fue firmado por una CA reconocida. Si creamos nuestra propia CA en el equipo, podremos firmar nuestros propios certificados y hacer que Apache pueda usar HTTPS de forma segura incluso en entornos de prueba.
+
+La CA tiene dos cosas importantes:
+
+Clave privada (ca.key): secreta, usada para firmar certificados.
+
+Certificado público (ca.crt): compartido con clientes para que puedan confiar en los certificados que firma la CA.
+
+
+Para crearlo vamos a usar Easy-rsa (Easy-RSA es una herramienta que automatiza los comandos de OpenSSL, organiza las carpetas y archivos, y hace más fácil crear y gestionar tu CA y certificados sin escribir manualmente comandos complicados de OpenSSL cada vez)
+
+1-Instalarlo y entrar en su directorio:
+
+```bash
+apt install easy-rsa
+```
+
+2-Crear directorio para la Autoridad Certificadora y copiamos el directorio anterior en este nuevo:
+```bash
+mkdir ~/miCA
+cp -r /usr/share/easy-rsa/ ~/miCA/
+cd miCA
+cd easy-rsa
+```
+
+3-Inicializar la infraestructura PKI dentro del directorio anterior:
+```bash
+./easyrsa init-pki
+```
+
+Salida:
+```bash
+lsi@ismael:~/miCA/easy-rsa$ ./easyrsa init-pki
+* Notice:
+
+  init-pki complete; you may now create a CA or requests.
+
+  Your newly created PKI dir is:
+  * /home/lsi/miCA/easy-rsa/pki
+
+* Notice:
+  IMPORTANT: Easy-RSA 'vars' file has now been moved to your PKI above.
+```
+
+
+Esto crea la estructura de carpetas necesarias (pki/) para almacenar claves, certificados y registros. PKI significa Public Key Infrastructure.
+
+4-Crear archivo de aleatoriedad (.rnd)
+```bash
+touch pki/.rnd
+```
+
+OpenSSL necesita este archivo para generar claves de manera segura. Evita errores relacionados con la semilla aleatoria.
+
+5-Crear la CA:
+```bash
+./easyrsa build-ca
+```
+
+La primera vez que creas la CA: defines la contraseña. Cada vez que uses la CA para firmar certificados: introduces la contraseña. En entornos de prueba, usar nopass evita tener que introducirla cada vez, pero reduce la seguridad.
+
+<br>
+
+
+### Archivos principales que se han generado
+
+- pki/private/ca.key   (PRIVADA)
+
+ - Es la clave privada de tu Autoridad Certificadora (CA).
+ 
+ - Protege tu CA y se usa para firmar los certificados de los servidores (como Apache).
+ 
+ - La contraseña que pusiste sirve para proteger esta clave.
+ 
+ - ¡No la compartas nunca!
+
+
+- pki/ca.crt     (PÚBLICA)
+
+Es el certificado público de tu CA.
+ 
+ - Puede ser distribuido a clientes o navegadores para que confíen en los certificados firmados por tu CA.
+ 
+ - Es como decir “todo certificado firmado por esta CA es confiable”.
+
+
+- pki/
+
+ - Carpeta donde se guardan todos los certificados, claves privadas y solicitudes (requests).
+ 
+ - Contiene subdirectorios como private/, issued/, reqs/, etc.
+ 
+
+**CONCLUSIÓN:**
+
+- Ahora tenemis nuestra propia Autoridad Certificadora, que es como un “notario digital” de confianza.
+
+- Cualquier certificado que queramos usar en servidores (Apache, NTP, etc.) puede ser firmado por esta CA.
+
+- Esto permite que los clientes/confían en mis servicios aunque esté en un entorno de prueba, sin necesidad de comprar certificados comerciales.
+
+
+<br>
+
+
+### **Cree su propio certificado para ser firmado por la Autoridad Certificadora. Bueno, y fírmelo.**
+
+1-Crear una solicitud de certificado para Apache
+
+Ahora que tenemios la CA lista, necesitas generar un certificado para el servidor Apache.
+```bash
+cd ~/miCA/easy-rsa
+./easyrsa gen-req lsi nopass
+```
+
+Nos pedirá un nombre de certificado (ismaCERT en mi caso) y la salida será:
+```bash
+lsi@ismael:~/miCA/easy-rsa$ ./easyrsa gen-req lsi nopass
+* Notice:
+Using Easy-RSA configuration from: /home/lsi/miCA/easy-rsa/pki/vars
+
+* Notice:
+Using SSL: openssl OpenSSL 3.0.17 1 Jul 2025 (Library: OpenSSL 3.0.17 1 Jul 2025)
+
+.+.........+.............+...+..+.......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+...+..+...+......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*..+......+.+..................+......+.....+.......+.....+.............+..+...............+...+.+...+..+.+...+...........+.+...+.....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+...........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*........+.....+.+...+..+...+...+....+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.......+...+..+......+.+.....+.+........................+........+...+.............+.....................+..................+...+..................+.....+....+...+.....+.........+...+.+.....+.......+..+.+..............+.+...........+.+.....+..........+..+..........+...........+......+.+..+.+..............+..........+...........+.......+..+.+.................+....+...........+...+.......+............+..+.+..+................+.........+.....+......+...............+.......+..+.+.....+.+...+............+..............+......+.+..................+..+..........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Common Name (eg: your user, host, or server name) [lsi]:ismaCERT
+* Notice:
+
+Keypair and certificate request completed. Your files are:
+req: /home/lsi/miCA/easy-rsa/pki/reqs/lsi.req
+key: /home/lsi/miCA/easy-rsa/pki/private/lsi.key
+```
+
+
+Como vemos se generarán dos archivos importantes en pki/:
+
+pki/private/lsi.key → clave privada del servidor.
+
+pki/reqs/lsi.req → solicitud de certificado para firmar.
+
+
+
+2-Enviar el certificado a nuestro compañero para que lo firme:
+
+```bash
+scp /home/lsi/miCA/easy-rsa/pki/reqs/lsi.req lsi@10.11.48.175:/home/lsi
+```
+
+Copiamos este archivo en la carpeta de easy-rsa con otro nombre:
+```bash
+cd ~/miCA/easy-rsa
+cp /home/lsi/lsi.req lsi-compa.req
+```
+
+
+3-Firmar su certificado con nuestro CA
+
+Ahora firmamos el certificado usando nuestro CA recién creado:
+
+```bash
+./easyrsa import-req lsi-compa.req lsi-compa
+./easyrsa sign-req server lsi-compa
+```
+
+Nos pedirá la contraseña de la CA (la que pusiste al crear la CA). Confirmamos el Common Name (lsi o el que hayamos puesto).
+
+Esto genera:
+
+pki/issued/lsi-compa.crt → certificado firmado por tu CA.
+
+
+El primer comando que usamos es ./easyrsa import-req lsi-compa.req lsi-compa. Lo que hace es tomar la solicitud de certificado que tu compañero te envió, llamada lsi-compa.req, y la importa dentro de tu infraestructura PKI de Easy-RSA. Al importar la solicitud, le damos un nombre interno (lsi-compa) que sirve como etiqueta para identificarla dentro de Easy-RSA. Esto no modifica el archivo original, simplemente lo registra y lo coloca en la carpeta pki/reqs/ para poder trabajar con él. Es como guardar un documento en un archivo con un nombre que tú eliges para poder encontrarlo y procesarlo después.
+
+El segundo comando es ./easyrsa sign-req server lsi-compa. Este comando firma la solicitud de certificado que importaste usando la clave de tu CA. Al indicar server, le decimos a Easy-RSA que el certificado que vamos a generar es para un servidor, no para un cliente. Durante este proceso, Easy-RSA te pedirá la contraseña de tu CA, ya que necesitas autorizar la firma. Una vez completado, se genera un archivo llamado pki/issued/lsi-compa.crt, que es el certificado final firmado por tu CA. Este es el certificado que tu compañero debe recibir para poder usarlo en su servidor Apache.
+
+En resumen, import-req sirve para traer la solicitud de tu compañero a tu CA y organizarla dentro de tu infraestructura, mientras que sign-req convierte esa solicitud en un certificado real y válido firmado por tu CA, listo para ser usado por su servidor. De esta manera, tu CA actúa como un notario que valida que el certificado realmente pertenece al propietario que lo solicitó.
+
+Por último, le cambiamos el nombre al ceritificado firmado, para saber de quien es cada uno:
+```bash
+cd ~/miCA/easy-rsa/pki/issued
+mv lsi-compa.crt lsiLucas.cr
+```
+
+
+
+4-Devolver el certificado firmado al compañero:
+
+```bash
+scp /home/lsi/miCA/easy-rsa/pki/issued/lsiLucas.crt lsi@10.11.48.175:/home/lsi
+```
+
+A la vez yo recibo el mío firmado por él:
+```bash
+lsi@ismael:~$ ls -l lsiisma.crt
+-rw------- 1 lsi lsi 4647 nov 27 19:47 lsiisma.crt
+```
+
+Perfecto, ya tenemos los certificados firmados mutuamente. Ahora toca configurar Apache para que use HTTPS con esos certificados.
+
+
+5-Añadir el certificado al sistema de confianza
+
+Desde root:
+```bash
+# Copiar el certificado de la CA al directorio de certificados del sistema
+cp /home/lsi/lsiisma.crt /etc/ssl/certs/
+
+# Entrar al directorio y renombrar a .pem
+cd /etc/ssl/certs
+mv lsiisma.crt lsiisma.pem
+
+# Actualizar la base de datos de certificados de confianza
+update-ca-certificates
+
+# Opcionalmente, también lo pones en /usr/share/ca-certificates/
+cp /home/lsi/lsiisma.crt /usr/share/ca-certificates/
+```
+
+Podemos ver el archivo que está firmado haciendole un cat:
+```bash
+cat lsiisma.crt
+```
+
+<br>
+
+### **Configure su Apache para que únicamente proporcione acceso a un determinado directorio del árbol web bajo la condición del uso de SSL.**
+  - **Nota: si la clave privada está cifrada en el arranque, su máquina le pedirá la frase de paso, pudiendo dejarla inaccesible desde su sesión SSH.**
+
+
+1- Activamos SSL para Apache:
+
+Desde root:
+```bash
+a2enmod ssl
+a2ensite default-ssl
+systemctl restart apache2.service.
+```
+
+2-Cambiar el fichero de configuración de Apache:
+
+En el fichero /etc/apache2/sites-enabled/default-ssl.conf debemos cambiar esta dos líneas:
+```bash
+SSLCertificateFile      /home/lsi/lsiisma.crt
+SSLCertificateKeyFile   /home/lsi/miCA/easy-rsa/pki/private/lsi.key
+```
+
+3-Instalar el certificado en el navegador:
+
+```bash
+nano /etc/w3m/config
+```
+
+Añadimos: /usr/share/ca-certificates/lsiisma.crt
+
+
+Y le damos permisos de lectura a ca.crt para que funcione desde lsi:
+```bash
+chmod +r lsiisma.crt
+```
+Para comprobar que funciona: En ambas máquinas, desde lsi, hacemos w3m https://NOMBREDOMINIO y no nos sale ningún warning.
+
+
+ 4- Creamos las carpetas y archivos de contraseñas para Apache:
+
+ Creamos la carpeta:
+ ```bash
+mkdir /var/www//html/p3
+```
+
+```bash
+htpasswd -c /home/lsi/passp3 isma
+htpasswd  /home/lsi/passp3 lucas
+```
+Nos pedirá una contraseña para cada usuario.
+
+
+Añadimos en /etc/apache2/sites-available/default-ssl.conf lo siguiente:
+
+```bash
+<Directory "/var/www/html/p3">
+    AuthName "Ficheros privados"
+    AuthType Basic
+    AuthUserFile /home/lsi/passp3
+    Require valid-user
+    SSLRequireSSL
+</Directory>
+```
+
+Y ahora reiniciamos apache:
+```bash
+systemctl restart apache2
+systemctl reload apache2
+```
+
+
+5-Probar:
+
+Para comprobar que todo funciona: Buscamos en ambas máquinas w3m https://NOMBRESERVIDOR/NOMBRECARPETA y nos pedirá autenticarnos.
+
+```bash
+w3m https://10.11.48.202/p3
+```
+
+La salida será:
+
+1-Conexión HTTPS
+
+Como estás usando un certificado firmado por tu CA propia, es normal que w3m primero te avise de que el certificado no es de una CA pública reconocida:
+
+```bash
+unable to get local issuer certificate: accept? (y/n)
+Bad cert ident from 10.11.48.202: dNSName=ismaCERT : accept? (y/n)
+Accept unsecure SSL session: Bad cert ...
+```
+
+
+2-Autenticación HTTP básica
+
+Después de aceptar el certificado, como configuraste AuthType Basic, el navegador te pedirá usuario y contraseña:
+
+<img width="351" height="43" alt="imagen" src="https://github.com/user-attachments/assets/681a8e8d-2e47-4550-a78f-1206470f7896" />
+<img width="607" height="166" alt="imagen" src="https://github.com/user-attachments/assets/8b881cbe-5c89-4456-afaf-6911bde90018" />
+
+<img width="581" height="189" alt="imagen" src="https://github.com/user-attachments/assets/a374b7ad-fab1-4854-8e52-bacba3705ac7" />
+
+
+Authorization required
+User: isma
+Password: ********
+
+
+3-Acceso al contenido
+
+Una vez autenticado, w3m te mostrará el contenido del directorio protegido.
+
+
+
+
+
+ ---
 
 ## **Apartado 3: openVPN**
 **Configure una VPN entre dos equipos virtuales del laboratorio que garantice la confidencialidad de sus comunicaciones.**
