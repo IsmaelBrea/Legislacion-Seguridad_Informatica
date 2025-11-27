@@ -323,6 +323,153 @@ El servidor cifra su clave privada con un token, el cliente lo descifra con su c
 
 ### **Mediante túneles SSH securice algún servicio no seguro.**
 
+Un túnel SSH permite proteger un servicio que no cifra sus comunicaciones (como HTTP, MySQL o VNC) encapsulando su tráfico dentro del canal cifrado de SSH. Así, aunque el servicio sea inseguro, el tráfico entre cliente y servidor viaja cifrado y no puede ser interceptado.
+
+En nuestro caso por ejemplo tenemos un server HTTP que no es seguro porque está sin cifrar. Podemos hacer un túnel entre mi compañero y yo para que los datos viajen cifrados. 
+
+Comando de túnel ssh:
+```bash
+ssh -L <puerto_local>:<ip_destino>:<puerto_destino> usuario@IP_servidor
+```
+
+El primer puerto es un puerto libre en el cliente(≥1023). El segundo puerto es el puerto inseguro.
+
+<br>
+
+Ejemplo 1: Securizar un servidor HTTP (puerto 80)
+
+Yo soy el cliente 10.11.48.202 y mi compañero tiene el servidor HTTP en 10.11.48.175.
+
+1. Creo el túnel:
+```bash
+ssh -L 8080:10.11.48.175:80 lsi@10.11.48.175
+```
+
+8080 → puerto local donde escucharé.
+
+10.11.48.175:80 → servicio HTTP inseguro de mi compañero.
+
+
+En otra terminal en mi máquina:
+```bash
+curl http://localhost:8080
+```
+
+Esto muestra la web del Apache de mi compañero, pero viajando cifrada por SSH.
+
+Se puede comprobar qur funciona bien con:
+
+ - El servidor hará un ettercap
+```bash
+ettercap-Tq -w /home/lsi/FICHERO.pcap -i ens33 -M arp:remote
+/10.11.48.IPVICTIMA// /IPROUTER(10.11.48.1)//
+```
+- El cliente buscará la página. Si al meter el .pcap en el Wireshark no sale ningún paquete HTTP, es que está todo bien.
+
+
+El comando ssh -L 8080:localhost:80 lsi@10.11.48.175 crea un túnel SSH. Esto significa que redirige una conexión desde tu propio ordenador hacia un servicio que está en la máquina remota. Es una forma segura de acceder a un puerto que normalmente no sería accesible desde fuera.
+
+En concreto, el parámetro -L 8080:localhost:80 indica que todo lo que abras en tu navegador en http://localhost:8080 se enviará a través del túnel y acabará realmente en el puerto 80 del servidor 10.11.48.175. De este modo puedes ver la web de ese servidor como si fuese local, pero de forma cifrada gracias a SSH.
+
+El usuario lsi es la cuenta con la que te conectas al servidor remoto. Con esta técnica no hace falta abrir puertos en el firewall, porque la conexión sale desde tu máquina hacia el servidor y va totalmente protegida dentro del túnel SSH.
+
+
+<br>
+
+**Ejemplo con NTP**:
+
+1-Crear el túnel SSH
+
+En tu cliente:
+```bash
+ssh -L 1234:localhost:123 lsi@10.11.49.83
+```
+
+1234 → puerto local donde escucharás NTP.
+
+localhost:123 → puerto NTP del servidor.
+
+Todo lo que envíes a localhost:1234 se cifrará hasta el servidor.
+
+
+2️-Sincronizar usando el túnel
+
+En otra terminal del cliente:
+```bash
+sudo ntpdate localhost 1234
+```
+
+Esto fuerza a que tu máquina consulte la hora a través del puerto local 1234, que viaja cifrado por el túnel.
+
+Si se actualiza la hora, significa que el túnel está funcionando.
+
+
+3-Comprobación adicional (opcional, más técnica)
+
+Puedes ver el tráfico con tcpdump para confirmar que no circula NTP en texto plano:
+
+```bash
+sudo tcpdump -i lo port 1234
+```
+
+<br>
+
+##### Resumen
+Se demuestra que un servicio inseguro (por ejemplo HTTP sin HTTPS) puede viajar de forma segura y cifrada si lo encapsulas dentro de un túnel SSH.
+
+<br>
+<br>
+
+- **“Exporte” un directorio y “móntelo” de forma remota sobre un túnel SSH.**
+
+
+Instalamos sshfs: 
+```bash
+apt install sshfs
+```
+
+Para acceder a un directorio de un servidor remoto de forma segura, podemos usar SSHFS, que permite montar un directorio remoto como si fuera local, utilizando el protocolo SSH para cifrar todo el tráfico. Esto evita que los datos viajen en texto plano por la red y garantiza confidencialidad e integridad.
+
+El comando básico es:
+
+```bash
+sshfs lsi@<IPCOMPA>:/<Directorio compa> <Midirectorio>
+```
+
+usuario@IP_servidor indica la cuenta y la máquina remota a la que nos conectamos.
+
+/ruta/remota es el directorio en el servidor que queremos montar.
+
+/ruta/local es la carpeta de nuestro equipo donde aparecerá el directorio remoto.
+
+Todo el tráfico entre cliente y servidor viaja cifrado por SSH, y una vez montado el directorio, podemos acceder a los archivos del servidor como si fueran locales, copiar, editar o borrar, sin necesidad de transferencias adicionales ni exposición de datos por la red.
+
+
+En mi caso:
+```bash
+sshfs lsi@10.11.48.175:/home/lsi/apartadoe /home/lsi/apartadoe
+```
+
+- lsi@10.11.48.175 indica que nos conectamos a la cuenta lsi en el servidor de mi compañero.
+
+- /home/lsi/apartadoe del servidor es el directorio que queremos montar.
+
+- /home/lsi/apartadoe en mi máquina es el punto de montaje local donde podremos acceder a los archivos como si fueran propios.
+
+
+Ahora para probar que funciona creamos un txt en dicha carpeta:
+```bash
+nano hola.txt
+```
+
+Escribimos algo. Nuestro compañero debería poder verlo y escribir también en él a la vez. Si él está en el archivo nos lo indica abajo ya: El archivo x está siendo modificado por pid y. Algo así.
+
+
+<br>
+<br>
+
+### **PARA PLANTEAR DE FORMA TEÓRICA.: Securice su sevidor considerando que únicamente dará servicio ssh para sesiones de usuario desde determinadas IPs.**
+
 ---
 
 ## **Apartado 2: Servidor Apache2**
