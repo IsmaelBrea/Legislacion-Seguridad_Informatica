@@ -781,6 +781,22 @@ Añadimos en /etc/apache2/sites-available/default-ssl.conf lo siguiente:
 </Directory>
 ```
 
+1. Requerir HTTPS y Certificado Propio (SSL)
+
+    - SSLEngine on (Global): Habilita el cifrado para todo el Virtual Host en el puerto 443.
+
+    - SSLCertificateFile y SSLCertificateKeyFile (Global): Apuntan a tu certificado (/home/lsi/lsiisma.crt) y clave privada, que fue firmado por tu CA (tu compañero). Esto establece la conexión HTTPS.
+
+    - SSLRequireSSl (Dentro del <Directory>): Esta directiva asegura que, incluso si el Virtual Host estuviera mal configurado para permitir HTTP en algún caso, el acceso a este directorio específico /p3 solo se permite si la conexión es mediante SSL/TLS (HTTPS).
+
+2. Requerir Usuario y Contraseña (Autenticación Básica)
+
+    - AuthType Basic y AuthName: Especifican que se debe usar el método de autenticación básica y muestran el mensaje "Ficheros privados" en el cuadro de diálogo de inicio de sesión.
+
+    - AuthUserFile /home/lsi/passp3: Define la ruta al archivo (.htpasswd) donde se almacenan las credenciales cifradas.
+
+    - Require valid-user: Permite el acceso a cualquier usuario cuya credencial sea válida en el archivo especificado.
+
 Y ahora reiniciamos apache:
 ```bash
 systemctl restart apache2
@@ -814,7 +830,9 @@ Accept unsecure SSL session: Bad cert ...
 Después de aceptar el certificado, como configuraste AuthType Basic, el navegador te pedirá usuario y contraseña:
 
 <img width="351" height="43" alt="imagen" src="https://github.com/user-attachments/assets/681a8e8d-2e47-4550-a78f-1206470f7896" />
+
 <img width="423" height="31" alt="imagen" src="https://github.com/user-attachments/assets/e3d90504-c20f-4630-9f83-dc46c31b2aee" />
+
 <img width="581" height="189" alt="imagen" src="https://github.com/user-attachments/assets/a374b7ad-fab1-4854-8e52-bacba3705ac7" />
 
 
