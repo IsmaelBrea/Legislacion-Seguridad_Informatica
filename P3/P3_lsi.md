@@ -252,7 +252,9 @@ Cuando ejecutamos el comando:
 
 **SOLO ESTA PARTE SE HACE DESDE ROOT!!!**
 
-2-El cliente realizará los siguientes pasos:
+<br>
+
+2-El **cliente** realizará los siguientes pasos:
 
 a. Creamos la clave para la conexión. Ponemos todo por defecto, pero nos aseguramos de que se guarde en /home/lsi/.ssh. Se nos generarán dos claves: la pública y la privada.
 
@@ -274,7 +276,9 @@ scp /home/lsi/.ssh/id_rsa.pub lsi@10.11.48.175:./.ssh/id_rsa.pub
 ssh-copy-id -i ~/.ssh/id_rsa.pub lsi@10.11.48.175
 ```
 
-3-El servidor realizará los siguientes pasos:
+<br>
+
+3-El **servidor** realizará los siguientes pasos:
 
 a. Acceder a la ruta donde se envió:
 ```bash
@@ -292,10 +296,11 @@ rm id_rsa.pub.
 ```
 
 
-4-Para comprobar que funciona: El cliente, desde lsi, hará ssh:
+4-Para comprobar que funciona: El **cliente**, desde lsi, hará ssh:
 ```bash
 lsi@10.11.48.SERVER y podrá entrar sin meter la contraseña.
 ```
+<br>
 
 5. Conceptos teóricos:
 
@@ -307,6 +312,8 @@ lsi@10.11.48.SERVER y podrá entrar sin meter la contraseña.
 - c. SSH_KEX_ALG: Algoritmo para identificarse y comprobar que
 el servidor es quién dice ser.
 
+<br>
+
 
 6. ¿Cómo funciona?:
 
@@ -314,7 +321,7 @@ El servidor cifra su clave privada con un token, el cliente lo descifra con su c
 
 <br>
 
-
+### **Mediante túneles SSH securice algún servicio no seguro.**
 
 ---
 
