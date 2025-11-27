@@ -335,6 +335,7 @@ El servidor cifra su clave privada con un token, el cliente lo descifra con su c
 
 
 Buscar entidad certificadora Debian 11/12
+
 ---
 
 ## **Apartado 3: openVPN**
