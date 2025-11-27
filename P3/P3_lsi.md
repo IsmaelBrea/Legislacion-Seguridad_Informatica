@@ -814,8 +814,7 @@ Accept unsecure SSL session: Bad cert ...
 Después de aceptar el certificado, como configuraste AuthType Basic, el navegador te pedirá usuario y contraseña:
 
 <img width="351" height="43" alt="imagen" src="https://github.com/user-attachments/assets/681a8e8d-2e47-4550-a78f-1206470f7896" />
-<img width="607" height="166" alt="imagen" src="https://github.com/user-attachments/assets/8b881cbe-5c89-4456-afaf-6911bde90018" />
-
+<img width="423" height="31" alt="imagen" src="https://github.com/user-attachments/assets/e3d90504-c20f-4630-9f83-dc46c31b2aee" />
 <img width="581" height="189" alt="imagen" src="https://github.com/user-attachments/assets/a374b7ad-fab1-4854-8e52-bacba3705ac7" />
 
 
