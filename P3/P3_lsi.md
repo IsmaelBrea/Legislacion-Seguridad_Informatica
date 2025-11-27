@@ -346,14 +346,16 @@ Clave precompartida
 ---
 
 ## **Apartado 4: Autenticación en NTP**
-En la Práctica 1 se configuró una infraestructura con servidores y clientes NTP.
-Modifique la configuración para autenticar los equipos involucrados.
+**En la Práctica 1 se configuró una infraestructura con servidores y clientes NTP. Modifique la configuración para autenticar los equipos involucrados.**
+
+#### NO SE HACE
 
 ---
 
 ## **Apartado 5: Cifrado en servidores y clientes de log**
-En la Práctica 1 se instalaron servidores y clientes de log.
-Configure un esquema que permita cifrar las comunicaciones.
+**En la Práctica 1 se instalaron servidores y clientes de log. Configure un esquema que permita cifrar las comunicaciones.**
+
+#### NO SE HACE
 
 ---
 
@@ -375,6 +377,7 @@ Poner toda la protección necesaria. Bloquear tráfico a todos los puertos y de 
 - **Las acciones de securización detectadas.**
 - **Los consejos de mejora que se deberían aplicar.**
 
+#### NO SE HACE
 ---
 
 ## **Apartado 8: Informe de análisis de vulnerabilidades**
