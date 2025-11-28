@@ -873,6 +873,7 @@ Una vez autenticado, w3m te mostrará el contenido del directorio protegido.
 
 
 Clave precompartida
+
 ---
 
 ## **Apartado 4: Autenticación en NTP**
