@@ -470,6 +470,23 @@ Escribimos algo. Nuestro compañero debería poder verlo y escribir también en 
 
 ### **PARA PLANTEAR DE FORMA TEÓRICA.: Securice su sevidor considerando que únicamente dará servicio ssh para sesiones de usuario desde determinadas IPs.**
 
+Para permitir solo conexiones de determinadas IPs, en el fichero /etc/ssh/sshd_config, en la opción AllowUsers meteremos los usuarios e IPs de las conexiones que queramos permitir:
+```bash
+AllowUsers lsi@10.11.48.175
+```
+
+Podríamos securizarlo también de las siguientes maneras:
+
+- Mediante iptables:
+```bash
+iptables -A INPUT -p tcp --dport 22 -s 10.11.48.175 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -j DROP
+```
+
+- Mediante tcpwrappers:
+
+Ya lo tenemos hecho de la p1.
+
 ---
 
 ## **Apartado 2: Servidor Apache2**
