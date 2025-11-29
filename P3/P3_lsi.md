@@ -131,6 +131,8 @@ lsi@ismael:~$ ssh lsi@10.11.48.175
 lsi@10.11.48.175's password:
 ```
 
+Vemos que no nos pone el mensaje de add new fingerprint, por lo que está bien configurado.
+
 <br>
 
 ### **Haga una copia remota de un fichero utilizando un algoritmo de cifrado determinado. Analice el proceso que se realiza.**
