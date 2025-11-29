@@ -154,6 +154,12 @@ aes256-gcm@openssh.com
 chacha20-poly1305@openssh.com
 ```
 
+- Otra forma de ver los algoritmos de cifrado:
+```bash
+ cat /etc/ssh/ssh_config | grep Ciphers
+#   Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc
+```
+
 
 - Para ver la lista de los algoritmos que se aplican por defecto, haciendo ssh -vv lsi@x.x.x.x veremos estas dos lineas indicando los algoritmos por defecto:
 ```bash
@@ -164,6 +170,9 @@ chacha20-poly1305@openssh.com
   ciphers ctos -> algoritmos cifrados que o cliente (ctos) está disposto a utilizar durante a negociación da conexión SSH
   ciphers stoc -> algoritmos cifrados que o servidor (stoc) acepta durante a negociación.
 ```
+
+<br>
+
 
 Ahora vamos a crear un documento y subirlo al servidor remoto (la máquina del compañero):
 
