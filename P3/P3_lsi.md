@@ -428,13 +428,13 @@ sudo tcpdump -i lo port 1234
 
 <br>
 
-##### Resumen
+#### Resumen
 Se demuestra que un servicio inseguro (por ejemplo HTTP sin HTTPS) puede viajar de forma segura y cifrada si lo encapsulas dentro de un túnel SSH.
 
 <br>
 <br>
 
-- **“Exporte” un directorio y “móntelo” de forma remota sobre un túnel SSH.**
+### **“Exporte” un directorio y “móntelo” de forma remota sobre un túnel SSH.**
 
 
 Instalamos sshfs: 
