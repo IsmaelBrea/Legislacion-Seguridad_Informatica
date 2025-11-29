@@ -191,10 +191,13 @@ nano documento.txt
 scp -c aes256-ctr documento.txt lsi@10.11.48.175:/home/lsi/
 ```
 
+Sin vez de crear antes el docuemento, uso el comando anterior con un punto(.) al final de la ruta me hace una copia en local.
+
 
 3-Verificar la copia en el servidor remoto. Acceder a la máquina y ver que se encuentra el archivo documento.txt
 
 <br>
+
 
 **Qué sucede durante la copia**
 
