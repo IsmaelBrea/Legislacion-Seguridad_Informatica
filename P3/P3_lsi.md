@@ -897,12 +897,14 @@ Aun así al entrar nos da varios errores:
 Añadir en /etc/hosts en mi ip: ismaCERT
 
 
-2-accept unsecure SSL session: unverified: unable to get local issuer certificate
 
-Mi certificado fue firmado por la CA de tu compañero. Mi máquina no confía automáticamente en esa CA, porque no es una CA pública (como Let’s Encrypt).
+<br>
 
-Hay que instalar la CA de mi compañero en mi máquina:
+**PROBAR TODO**:
 
+```bash
+openssl s_client -connect 10.11.48.175:443 -CAfile /home/lsi/ismaCA.crt
+```
 
  ---
 
