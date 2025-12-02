@@ -747,6 +747,11 @@ Podemos ver el archivo que está firmado haciendole un cat:
 cat lsiisma.crt
 ```
 
+Para ver el del compañero firmado por nosotros:
+```bash
+cat /home/lsi/miCA/easy-rsa/pki/issued/lsiLucas.crt
+```
+
 <br>
 
 ### **Configure su Apache para que únicamente proporcione acceso a un determinado directorio del árbol web bajo la condición del uso de SSL.**
