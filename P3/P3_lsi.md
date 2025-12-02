@@ -1038,12 +1038,10 @@ Clave precompartida
 ## **Apartado 6: Firewall Stateful**
 **Cada máquina virtual será servidor y cliente de diversos servicios (NTP, syslog, ssh, web, etc.).Configure un **firewall stateful** adecuado a la situación actual de su máquina.**
 
+> Hacer un script (son líneas que actúan como comandos). Si falla el script perdemos la conectividad de la máquina. Para probar hacer un reinicio reprogramado.
+\bin\bash y programo reinicio dentro de 5 minutos
 
-Hacer un script -> son líneas que actúan como comandos. Si falla el script perdemos la conectividad de la máquina. Para probar hacer un reinicio reprogramado.
-\bin\bash Programo reinicio dentro de 5 minutos
-
-
-Poner toda la protección necesaria. Bloquear tráfico a todos los puertos y de todas las IPs no requeridas.
+> Poner toda la protección necesaria. Bloquear tráfico a todos los puertos y de todas las IPs no requeridas.
 
 ---
 
@@ -1070,4 +1068,8 @@ Referencias sugeridas:
 - Plantilla de vulnerabilityassessment.co.uk.
 
 
-Hacer sobre nuestra propio ordenador, no la máquina de debian.
+> Hacer sobre nuestra propio ordenador, no la máquina de debian.
+
+<br>
+
+Instalamos NESSUS y ejecutamos Advanced Scan sobre nuestro portátil añadiendo Ip, usuario y contraseña para análisis más extenso.
