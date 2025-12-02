@@ -788,14 +788,15 @@ nano /etc/w3m/config
 
 Añadimos: /usr/share/ca-certificates/ismaCA.crt
 
-
 Y le damos permisos de lectura a ca.crt para que funcione desde lsi:
 ```bash
 chmod +r ismaCA.crt
 ```
+
 Para comprobar que funciona: En ambas máquinas, desde lsi, hacemos w3m https://NOMBREDOMINIO y no nos sale ningún warning.
 
 El nombre del dominio es el nombre de la Autoridad Certificadora
+
 
 
  4- Creamos las carpetas y archivos de contraseñas para Apache:
@@ -859,7 +860,9 @@ La salida será:
 
 1-Conexión HTTPS
 
-Como estás usando un certificado firmado por tu CA propia, es normal que w3m primero te avise de que el certificado no es de una CA pública reconocida:
+401 Unauthorized --> No pueden salir más cosas
+
+Si sale algo de esto va mal:
 
 ```bash
 unable to get local issuer certificate: accept? (y/n)
@@ -888,23 +891,125 @@ Password: ********
 
 Una vez autenticado, w3m te mostrará el contenido del directorio protegido.
 
+<br>
 
-Aun así al entrar nos da varios errores:
+Debemos hacer lo mismo pero para el apache del compañero ahora. Antes hemos consumido nuestro Apache, ahora debemos hacer lo mismo para nuestro compañero.
+
+1-Añadir su ip y nombre de CA en nuestro /etc/hosts:
+
+```bash
+10.11.48.175  lucasCERT
+```
+
+```bash
+w3m https://lucasCERT/p3
+```
+
+No debe dar error ya.
 
 
-1-Bad cert:
+2-Juntar las dos CAs en una sola 
+```bash
+cat /home/lsi/ismaCA.crt /home/lsi/lucasCA.crt > /home/lsi/CAs.crt
+```
 
-Añadir en /etc/hosts en mi ip: ismaCERT
+3-Subir este nuevo archivo a /usr/share/ca-certificates y meter la ruta en w3m
 
+```bash
+cp /home/lsi/CAs.crt /usr/share/ca-certificates/
+chmod 644 /usr/share/ca-certificates/CAs.crt
+```
+
+```bash
+nano /etc/w3m/config
+```
+ Cambiar la anterior linea por:
+ ```text
+ ssl_ca_file /usr/share/ca-certificates/CAs.crt
+```
+
+Ya podemos probar w3m en ambos servidores:
+```bash
+w3m https://ismaCERT/p3    # mi Apache
+w3m https://lucasCERT/p3   # Apache de tu compañero
+```
+
+**Solo se puede acceder por ismaCERT y lucasCERT. Funciona usando ismaCERT o lucasCERT porque esos nombres coinciden con el CN (Common Name) o SAN (Subject Alternative Name) de los certificados; al usar la IP, no hay coincidencia, por lo que el navegador o cliente marca “Bad cert ident”. La solución estándar es mapear las IPs a esos nombres en /etc/hosts y acceder siempre por nombre, aunque también se podría generar un certificado que incluya la IP como SAN (en nuestro caso no lo hemos hecho).
 
 
 <br>
 
 **PROBAR TODO**:
 
+Carlos no va pedir un comando de openssl para ver básicamente la cadena de certificados y sus profundidades (depth) en la verificación TLS en tiempo real. Dice que debemos ver algo como:
+```text
+0
+_
+_
+1
+_
+_
+
+```
+
+0 → el certificado del servidor (CN = lucasCERT)
+
+1 → el certificado de la CA que lo firmó (CN = ismaCA)
+
+Las líneas de por medio representan detalles o separadores entre niveles de la cadena.
+
+
+Ejemplo:
+
 ```bash
 openssl s_client -connect 10.11.48.175:443 -CAfile /home/lsi/ismaCA.crt
 ```
+
+- connect 10.11.48.175:443 → Conecta al servidor Apache de tu compañero por HTTPS.
+
+- showcerts → Muestra todos los certificados enviados por el servidor (la “cadena de confianza”).
+
+- CAfile /home/lsi/CAs.crt → Le dice a OpenSSL qué archivo usar como lista de autoridades certificadoras de confianza. En tu caso, contiene tu CA y la de tu compañero.
+
+El comando básicamente hace una conexión TLS real y te enseña los certificados que el servidor usa, verificando si están firmados por una CA de confianza.
+
+
+En este caso veremos algo como:
+```bash
+Certificate chain
+ 0 s:CN = lucasCERT
+   i:CN = ismaCA
+```
+
+s: → subject (quién es el certificado) → el servidor lucasCERT
+
+i: → issuer (quién lo firmó) → ismaCA
+
+Esto refleja lo que Carlos quería ver con 0, 1 (nivel 0 = servidor, nivel 1 = CA).
+
+
+Si invertimos los roles y usamos ahora mi IP y la CA de mi compañero veremos algo así:
+
+```bash
+openssl s_client -connect 10.11.48.202:443 -CAfile /home/lsi/lucasCA.crt
+```
+
+### RESUMEN FÁCIL:
+
+1-Para conectarte a tu Apache (el que tiene un certificado firmado por tu compañero):
+
+ -  El certificado del servidor fue firmado por lucasCA.
+
+ - Por tanto, necesitas que openssl s_client confíe en la CA de tu compañero (lucasCA.crt).
+
+
+2- Para conectarte al Apache de tu compañero (que tiene un certificado firmado por ti):
+
+  - El certificado del servidor fue firmado por tu CA (ismaCA).
+
+  - Entonces necesitas confiar en tu propia CA (ismaCA.crt).
+
+Si quieres poder conectar a ambos servidores sin cambiar el comando cada vez, lo más práctico es usar un archivo que tenga ambas CAs concatenadas (CAs.crt), como ya hiciste. Así, openssl s_client -CAfile /home/lsi/CAs.crt funcionará con ambos.
 
  ---
 
