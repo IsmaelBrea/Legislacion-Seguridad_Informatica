@@ -775,20 +775,27 @@ SSLCertificateFile      /home/lsi/lsiisma.crt
 SSLCertificateKeyFile   /home/lsi/miCA/easy-rsa/pki/private/lsi.key
 ```
 
-3-Instalar el certificado en el navegador:
+3-Instalar el certificado del compañero en el navegador:
+
+```bash
+cp /home/lsi/miCA/easy-rsa/pki/ca.crt /home/lsi/ismaCA.crt
+scp /home/lsi/ismaCA.crt lsi@10.11.48.175:/home/lsi
+```
 
 ```bash
 nano /etc/w3m/config
 ```
 
-Añadimos: /usr/share/ca-certificates/lsiisma.crt
+Añadimos: /usr/share/ca-certificates/ismaCA.crt
 
 
 Y le damos permisos de lectura a ca.crt para que funcione desde lsi:
 ```bash
-chmod +r lsiisma.crt
+chmod +r ismaCA.crt
 ```
 Para comprobar que funciona: En ambas máquinas, desde lsi, hacemos w3m https://NOMBREDOMINIO y no nos sale ningún warning.
+
+El nombre del dominio es el nombre de la Autoridad Certificadora
 
 
  4- Creamos las carpetas y archivos de contraseñas para Apache:
@@ -882,7 +889,19 @@ Password: ********
 Una vez autenticado, w3m te mostrará el contenido del directorio protegido.
 
 
+Aun así al entrar nos da varios errores:
 
+
+1-Bad cert:
+
+Añadir en /etc/hosts en mi ip: ismaCERT
+
+
+2-accept unsecure SSL session: unverified: unable to get local issuer certificate
+
+Mi certificado fue firmado por la CA de tu compañero. Mi máquina no confía automáticamente en esa CA, porque no es una CA pública (como Let’s Encrypt).
+
+Hay que instalar la CA de mi compañero en mi máquina:
 
 
  ---
