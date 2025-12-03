@@ -934,7 +934,7 @@ w3m https://ismaCERT/p3    # mi Apache
 w3m https://lucasCERT/p3   # Apache de tu compañero
 ```
 
-**Solo se puede acceder por ismaCERT y lucasCERT. Funciona usando ismaCERT o lucasCERT porque esos nombres coinciden con el CN (Common Name) o SAN (Subject Alternative Name) de los certificados; al usar la IP, no hay coincidencia, por lo que el navegador o cliente marca “Bad cert ident”. La solución estándar es mapear las IPs a esos nombres en /etc/hosts y acceder siempre por nombre, aunque también se podría generar un certificado que incluya la IP como SAN (en nuestro caso no lo hemos hecho).
+**Solo se puede acceder por ismaCERT y lucasCERT. Funciona usando ismaCERT o lucasCERT porque esos nombres coinciden con el CN (Common Name) o SAN (Subject Alternative Name) de los certificados; al usar la IP, no hay coincidencia, por lo que el navegador o cliente marca “Bad cert ident”. La solución estándar es mapear las IPs a esos nombres en /etc/hosts y acceder siempre por nombre, aunque también se podría generar un certificado que incluya la IP como SAN (en nuestro caso no lo hemos hecho).**
 
 
 <br>
