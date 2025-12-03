@@ -1016,8 +1016,152 @@ Si quieres poder conectar a ambos servidores sin cambiar el comando cada vez, lo
 ## **Apartado 3: openVPN**
 **Configure una VPN entre dos equipos virtuales del laboratorio que garantice la confidencialidad de sus comunicaciones.**
 
+> Usar clave precompartida
+> Cliente y servidor ambos. En el ejemplo yo seré cliente y lucas servidor.
 
-Clave precompartida
+1-Cargar un modulo tun:
+
+- TUN es un dispositivo de red virtual que OpenVPN usa para crear túneles punto a punto (modo IP, “tun”) entre máquinas.
+
+Al principio no aparecía nada, porque el módulo no estaba cargado con esto:
+```bash
+lsmod | grep tun
+```
+
+Lo cargamos:
+```bash
+modprobe tun
+```
+
+Esto carga el módulo tun en el kernel, permitiendo que OpenVPN cree el túnel virtual.
+```bash
+root@ismael:/home/lsi# lsmod | grep tun
+tun                    61440  0
+```
+
+**Sin el módulo tun, no podemos crear la VPN en modo “tun” y no habría comunicación cifrada entre los equipos.**
+
+<br>
+
+2-Instalar openVPN:
+
+```bash
+apt install openvpn
+```
+<br>
+
+3-Pasos del servidor:
+
+- 3.1. Comando cd /etc/openvpn.
+
+ - 3.2. Generamos la clave precompartida:
+```bash
+openvpn --genkey secret lucasVPN.key
+```
+
+Crea un archivo llamado lucasVPN.key que es una clave secreta compartida. Esta clave se usará para cifrar todo el tráfico entre el servidor y el cliente. Nadie que no tenga esta clave podrá leer los datos.
+
+
+- 3.3. Le pasamos la clave al compañero:
+```bash
+scp /etc/openvpn/lucasVPN.key lsi@10.11.48.202:/home/lsi
+```
+
+Copia la clave al otro equipo (el cliente) de forma segura usando SSH. El cliente necesita la misma clave para poder descifrar y cifrar los mensajes que le enviamos.
+
+
+- 3.4. Creamos el archivo de configuración del túnel:
+  ```bash
+  nano tun0.conf
+  ```
+  Tiene que quedar así:
+  
+```bash
+dev tun0
+ifconfig 10.8.0.1 10.8.0.2
+secret /etc/openvpn/lucasVPN.key
+cipher AES-256-CBC
+auth SHA256
+port 6969
+ping 10
+ping-restart 60
+persist-key
+persist-tun
+comp-lzo
+
+```
+
+
+  <br>
+
+4-Pasos en el cliente:
+
+ - 4.1. Movemos la clave que nos ha enviado el compañero a /etc/openvpn::
+```bash
+mv /home/lsi/lucasVPN.key /etc/openvpn/
+```
+ -4.2. Crear archivo de configuración del túnel
+ ```bash
+nano tun0.conf
+```
+
+```bash
+dev tun0
+ifconfig 10.8.0.2 10.8.0.1   # tu IP (cliente) primero, servidor después
+secret /etc/openvpn/lucasVPN.key
+cipher AES-256-CBC
+auth SHA256
+ping 10
+ping-restart 60
+persist-key
+persist-tun
+comp-lzo
+
+remote 10.11.48.175           # IP del servidor
+```
+
+
+
+5-Probarlo:
+
+Antes de probar tenemos que añadir ambas IPs (server y cliente) en el hosts.allow en sshd para que funcione la conexión y no lo deniegue.
+
+Arrancamos la vpn ambos con:
+```bash
+openvpn --config /etc/openvpn/tun0.conf --verb 6
+```
+
+En otra terminal hacemos un ifconfig:
+
+Al final de todo debería salir esto en el **cliente**:
+```bash
+tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
+        inet 10.8.0.2  netmask 255.255.255.255  destination 10.8.0.1
+        unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 500  (UNSPEC)
+        RX packets 2  bytes 96 (96.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+Y esto en el **servidor**:
+```bash
+tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
+        inet 10.8.0.1  netmask 255.255.255.255  destination 10.8.0.2
+        unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 500  (UNSPEC)
+        RX packets 2  bytes 96 (96.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+### RESUMEN FÁCIL:
+
+Cuando iniciamos la VPN:
+
+1-El cliente tiene la IP: 10.8.0.2
+
+2-El servidor tiene la IP: 10.8.0.1
 
 ---
 
