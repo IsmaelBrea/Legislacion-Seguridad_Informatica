@@ -1100,7 +1100,7 @@ comp-lzo
 ```bash
 mv /home/lsi/lucasVPN.key /etc/openvpn/
 ```
- -4.2. Crear archivo de configuración del túnel
+ - 4.2. Crear archivo de configuración del túnel
  ```bash
 nano tun0.conf
 ```
@@ -1187,6 +1187,81 @@ Cuando iniciamos la VPN:
 
 > Poner toda la protección necesaria. Bloquear tráfico a todos los puertos y de todas las IPs no requeridas.
 
+Hay que securizar todos los servicios que tengamos. Algunos se pueden borrar como prometheus, grafana, node-exporter, ossec etc.
+
+
+### PASO 1: Crear el script de reset del firewall
+
+Esto es importante para evitar quedarte fuera si el firewall bloquea algo por error.
+
+1-Creamos el archivo:
+```nano
+nano /home/lsi/reset_firewall.sh
+```
+
+```bash
+#!/bin/bash
+# Este script resetea las reglas del firewall a un estado "permitir todo"
+# para poder recuperar conectividad si algo falla.
+
+# IPv4
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+
+iptables -F    # Borrar todas las reglas existentes
+iptables -X    # Borrar cadenas personalizadas
+iptables -t nat -F  # Borrar reglas NAT
+
+# Guardamos en log que se ha hecho reset
+echo "$(date): firewall reseteado" >> /var/log/fw_reset.log
+```
+
+3-Hacemos ejecutable:
+```bash
+chmod +x /home/lsi/reset_firewall.sh
+```
+
+
+**PROGRAMAR REINICIO AUTOMÁTICO:**:
+
+Crontab es un archivo donde Linux guarda tareas que quieres que se ejecuten automáticamente:
+
+- Editamos el cron del usuario root:
+```bash
+crontab -e
+```
+
+- Añadimos al final:
+```bash
+*/10 * * * * /bin/bash /home/lsi/reset_firewall.sh
+```
+
+Debajo de esto:
+
+```bash
+# m h  dom mon dow   command
+*/10 * * * * /bin/bash /home/lsi/reset_firewall.sh
+```
+
+Esto ejecutará el reset cada 10 minutos. Así, si bloqueamos algo accidentalmente, se recupera solo.
+
+<br>
+
+
+### PASO 2: Crear el script del firewall securizando cada servicio
+
+En nuestro caso tenemos que securizar Apache, SSH, RSYSLOG, NTP , openvpn. 
+
+- Apache → HTTP/HTTPS (puertos 80/443 TCP)
+
+- SSH → puerto 22 TCP y wrappers
+
+- RSYSLOG → puerto 514 TCP/UDP (para enviar o recibir logs)
+
+- NTP → puerto 123 UDP (para sincronizar la hora)
+
+- OpenVPN → puerto 6969 UDP 
 ---
 
 ## **Apartado 7: Auditoría con Lynis**
