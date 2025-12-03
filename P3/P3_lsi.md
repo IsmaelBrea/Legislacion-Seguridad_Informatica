@@ -1253,15 +1253,17 @@ Esto ejecutará el reset cada 10 minutos. Así, si bloqueamos algo accidentalmen
 
 En nuestro caso tenemos que securizar Apache, SSH, RSYSLOG, NTP , openvpn. 
 
-- Apache → HTTP/HTTPS (puertos 80/443 TCP)
-
 - SSH → puerto 22 TCP y wrappers
+  
+- Apache → HTTP/HTTPS (puertos 80/443 TCP)
 
 - RSYSLOG → puerto 514 TCP/UDP (para enviar o recibir logs)
 
 - NTP → puerto 123 UDP (para sincronizar la hora)
 
-- OpenVPN → puerto 6969 UDP 
+- OpenVPN → puerto 6969 UDP
+
+  -Otros: acceso a servidores DNS
 ---
 
 ## **Apartado 7: Auditoría con Lynis**
