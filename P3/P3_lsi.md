@@ -1251,6 +1251,251 @@ En nuestro caso tenemos que securizar Apache, SSH, RSYSLOG, NTP , openvpn.
 - OpenVPN → puerto 6969 UDP
 
   -Otros: acceso a servidores DNS
+
+
+Crear el archivo **firewall.sh**:
+
+```bash
+#!/bin/sh
+
+
+### Variables personales
+ipIsma=10.11.48.202
+ipIsma1=10.11.50.202
+ipLucas=10.11.48.175
+ipLucas1=10.11.50.175
+
+# OpenVPN
+ipOpenVPN1=10.8.0.1
+ipOpenVPN2=10.8.0.2
+ipOpenVPN3=10.9.0.1
+ipOpenVPN4=10.9.0.2
+
+# Redes VPN válidas para SSH
+vpnNet1=10.20.0.0/16
+vpnNet2=10.25.0.0/16
+vpnNet3=10.30.0.0/16
+
+# DNS
+dns1=10.8.8.9
+dns2=10.8.8.8
+
+localhost=127.0.0.1
+
+
+### Limpiar firewall
+iptables -F
+iptables -X
+iptables -t nat -F
+
+
+### Políticas por defecto
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+
+### Control de estado
+iptables -A INPUT  -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+
+### Loopback
+iptables -A INPUT  -s $localhost -j ACCEPT
+iptables -A OUTPUT -d $localhost -j ACCEPT
+
+
+### Permitir tráfico entre tú y tu compa
+for ip in $ipLucas $ipLucas1; do
+    iptables -A INPUT  -s $ip -j ACCEPT
+    iptables -A OUTPUT -d $ip -j ACCEPT
+done
+
+
+### SSH (solo IPs permitidas)
+sshAllowed="
+$ipIsma
+$ipIsma1
+$ipLucas
+$ipLucas1
+$ipOpenVPN1
+$ipOpenVPN2
+$ipOpenVPN3
+$ipOpenVPN4
+$vpnNet1
+$vpnNet2
+$vpnNet3
+"
+
+for ip in $sshAllowed; do
+    iptables -A INPUT -p tcp --dport 22 -s $ip -m conntrack --ctstate NEW -j ACCEPT
+done
+
+iptables -A OUTPUT -p tcp --dport 22 -d $ipLucas -m conntrack --ctstate NEW -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 22 -d $ipLucas1 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 22 -d $ipOpenVPN1 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 22 -d $ipOpenVPN2 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 22 -d $ipOpenVPN3 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 22 -d $ipOpenVPN4 -m conntrack --ctstate NEW -j ACCEPT
+
+
+### DNS (UDP 53)
+for ip in $dns1 $dns2; do
+    iptables -A OUTPUT -p udp --dport 53 -d $ip -m conntrack --ctstate NEW -j ACCEPT
+done
+
+
+### Rsyslog (TCP 514)
+iptables -A INPUT  -s $ipLucas -p tcp --dport 514 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A OUTPUT -d $ipLucas -p tcp --dport 514 -m conntrack --ctstate NEW -j ACCEPT
+
+
+### NTP (UDP 123)
+for ip in $ipLucas $localhost; do
+    iptables -A INPUT  -s $ip -p udp --dport 123 -m conntrack --ctstate NEW -j ACCEPT
+    iptables -A OUTPUT -d $ip -p udp --dport 123 -m conntrack --ctstate NEW -j ACCEPT
+done
+
+
+### HTTP (80)
+iptables -A INPUT  -p tcp --dport 80 -s $ipLucas -m conntrack --ctstate NEW -j ACCEPT
+
+# Salida HTTP permitida a todo
+iptables -A OUTPUT -p tcp --dport 80  -m conntrack --ctstate NEW -j ACCEPT
+
+
+### HTTPS (443)
+iptables -A INPUT  -p tcp --dport 443 -s $ipLucas -m conntrack --ctstate NEW -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 443 -m conntrack --ctstate NEW -j ACCEPT
+
+
+### ICMP (solo tú + compa + OpenVPN + localhost)
+icmpAllowed="
+$ipIsma
+$ipIsma1
+$ipLucas
+$ipLucas1
+$ipOpenVPN1
+$ipOpenVPN2
+$ipOpenVPN3
+$ipOpenVPN4
+$localhost
+"
+
+for ip in $icmpAllowed; do
+    iptables -A INPUT  -p icmp -s $ip -m conntrack --ctstate NEW -j ACCEPT
+    iptables -A OUTPUT -p icmp -d $ip -m conntrack --ctstate NEW -j ACCEPT
+done
+
+
+### Rechazar todo lo no permitido
+iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+iptables -A INPUT -p icmp -j REJECT --reject-with icmp-port-unreachable
+
+
+### --- Log ---
+echo "$(date): firewall aplicado" >> /var/log/fw_ssh.log
+```
+
+Darle permisos:
+```bash
+chmod +x /home/lsi/firewall.sh
+```
+
+Si queremos ejecutarlo una sola vez hasta que el reset reinicie las tablas:
+```bash
+/home/lsi/firewall.sh
+```
+
+Se quedará parado. Tendremos que abrir otra terminal y ver las IPTABLES:
+```bash
+ iptables -L -n --line-numbers
+```
+
+
+ Nos sale algo así:
+```bash
+Chain INPUT (policy DROP)
+num  target     prot opt source               destination
+1    ACCEPT     0    --  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+2    ACCEPT     0    --  127.0.0.1            0.0.0.0/0
+3    ACCEPT     0    --  10.11.48.175         0.0.0.0/0
+4    ACCEPT     0    --  10.11.50.175         0.0.0.0/0
+5    ACCEPT     6    --  10.11.48.202         0.0.0.0/0            tcp dpt:22 ctstate NEW
+6    ACCEPT     6    --  10.11.50.202         0.0.0.0/0            tcp dpt:22 ctstate NEW
+7    ACCEPT     6    --  10.11.48.175         0.0.0.0/0            tcp dpt:22 ctstate NEW
+8    ACCEPT     6    --  10.11.50.175         0.0.0.0/0            tcp dpt:22 ctstate NEW
+9    ACCEPT     6    --  10.8.0.1             0.0.0.0/0            tcp dpt:22 ctstate NEW
+10   ACCEPT     6    --  10.8.0.2             0.0.0.0/0            tcp dpt:22 ctstate NEW
+11   ACCEPT     6    --  10.9.0.1             0.0.0.0/0            tcp dpt:22 ctstate NEW
+12   ACCEPT     6    --  10.9.0.2             0.0.0.0/0            tcp dpt:22 ctstate NEW
+13   ACCEPT     6    --  10.20.0.0/16         0.0.0.0/0            tcp dpt:22 ctstate NEW
+14   ACCEPT     6    --  10.25.0.0/16         0.0.0.0/0            tcp dpt:22 ctstate NEW
+15   ACCEPT     6    --  10.30.0.0/16         0.0.0.0/0            tcp dpt:22 ctstate NEW
+16   ACCEPT     6    --  10.11.48.175         0.0.0.0/0            tcp dpt:514 ctstate NEW
+17   ACCEPT     17   --  10.11.48.175         0.0.0.0/0            udp dpt:123 ctstate NEW
+18   ACCEPT     17   --  127.0.0.1            0.0.0.0/0            udp dpt:123 ctstate NEW
+19   ACCEPT     6    --  10.11.48.175         0.0.0.0/0            tcp dpt:80 ctstate NEW
+20   ACCEPT     6    --  10.11.48.175         0.0.0.0/0            tcp dpt:443 ctstate NEW
+21   ACCEPT     1    --  10.11.48.202         0.0.0.0/0            ctstate NEW
+22   ACCEPT     1    --  10.11.50.202         0.0.0.0/0            ctstate NEW
+23   ACCEPT     1    --  10.11.48.175         0.0.0.0/0            ctstate NEW
+24   ACCEPT     1    --  10.11.50.175         0.0.0.0/0            ctstate NEW
+25   ACCEPT     1    --  10.8.0.1             0.0.0.0/0            ctstate NEW
+26   ACCEPT     1    --  10.8.0.2             0.0.0.0/0            ctstate NEW
+27   ACCEPT     1    --  10.9.0.1             0.0.0.0/0            ctstate NEW
+28   ACCEPT     1    --  10.9.0.2             0.0.0.0/0            ctstate NEW
+29   ACCEPT     1    --  127.0.0.1            0.0.0.0/0            ctstate NEW
+30   REJECT     17   --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-port-unreachable
+31   REJECT     6    --  0.0.0.0/0            0.0.0.0/0            reject-with tcp-reset
+32   REJECT     1    --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-port-unreachable
+
+Chain FORWARD (policy DROP)
+num  target     prot opt source               destination
+
+Chain OUTPUT (policy DROP)
+num  target     prot opt source               destination
+1    ACCEPT     0    --  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+2    ACCEPT     0    --  0.0.0.0/0            127.0.0.1
+3    ACCEPT     0    --  0.0.0.0/0            10.11.48.175
+4    ACCEPT     0    --  0.0.0.0/0            10.11.50.175
+5    ACCEPT     6    --  0.0.0.0/0            10.11.48.175         tcp dpt:22 ctstate NEW
+6    ACCEPT     6    --  0.0.0.0/0            10.11.50.175         tcp dpt:22 ctstate NEW
+7    ACCEPT     6    --  0.0.0.0/0            10.8.0.1             tcp dpt:22 ctstate NEW
+8    ACCEPT     6    --  0.0.0.0/0            10.8.0.2             tcp dpt:22 ctstate NEW
+9    ACCEPT     6    --  0.0.0.0/0            10.9.0.1             tcp dpt:22 ctstate NEW
+10   ACCEPT     6    --  0.0.0.0/0            10.9.0.2             tcp dpt:22 ctstate NEW
+11   ACCEPT     17   --  0.0.0.0/0            10.8.8.9             udp dpt:53 ctstate NEW
+12   ACCEPT     17   --  0.0.0.0/0            10.8.8.8             udp dpt:53 ctstate NEW
+13   ACCEPT     6    --  0.0.0.0/0            10.11.48.175         tcp dpt:514 ctstate NEW
+14   ACCEPT     17   --  0.0.0.0/0            10.11.48.175         udp dpt:123 ctstate NEW
+15   ACCEPT     17   --  0.0.0.0/0            127.0.0.1            udp dpt:123 ctstate NEW
+16   ACCEPT     6    --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 ctstate NEW
+17   ACCEPT     6    --  0.0.0.0/0            0.0.0.0/0            tcp dpt:443 ctstate NEW
+18   ACCEPT     1    --  0.0.0.0/0            10.11.48.202         ctstate NEW
+19   ACCEPT     1    --  0.0.0.0/0            10.11.50.202         ctstate NEW
+20   ACCEPT     1    --  0.0.0.0/0            10.11.48.175         ctstate NEW
+21   ACCEPT     1    --  0.0.0.0/0            10.11.50.175         ctstate NEW
+22   ACCEPT     1    --  0.0.0.0/0            10.8.0.1             ctstate NEW
+23   ACCEPT     1    --  0.0.0.0/0            10.8.0.2             ctstate NEW
+24   ACCEPT     1    --  0.0.0.0/0            10.9.0.1             ctstate NEW
+25   ACCEPT     1    --  0.0.0.0/0            10.9.0.2             ctstate NEW
+26   ACCEPT     1    --  0.0.0.0/0            127.0.0.1            ctstate NEW
+``` 
+
+
+Ahora con el firewall activo antes de que se reinice con el reset_firewall.sh podemos probar que todo funciona como se espera.
+
+Si queremos que se ejecute de manera automática, lo podemos añadir al crontab:
+```bash
+crontab -e
+```
+Pegamos al final_
+```bash
+@reboot /bin/bash /home/lsi/firewall.sh
+```
+
 ---
 
 ## **Apartado 7: Auditoría con Lynis**
