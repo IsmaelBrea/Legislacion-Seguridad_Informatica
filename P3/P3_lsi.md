@@ -1594,7 +1594,7 @@ En mi caso, el NESSSU Essentials registró las siguientes vulnerabilidades:
 
 <br>
 
-### **SMB Signing Not Required (Medium)**
+### **5-SMB Signing Not Required (Medium)**
 
 - **Qué es**: Mi servidor SMB (compartición de archivos en red) no requiere firma digital en los mensajes.
 
