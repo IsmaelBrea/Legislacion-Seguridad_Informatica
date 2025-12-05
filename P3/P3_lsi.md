@@ -1193,20 +1193,15 @@ nano /home/lsi/reset_firewall.sh
 
 ```bash
 #!/bin/bash
-# Este script resetea las reglas del firewall a un estado "permitir todo"
-# para poder recuperar conectividad si algo falla.
 
-# IPv4
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
+/usr/sbin/iptables -P INPUT ACCEPT
+/usr/sbin/iptables -P OUTPUT ACCEPT
+/usr/sbin/iptables -P FORWARD ACCEPT
+/usr/sbin/iptables -F
+/usr/sbin/iptables -X
+/usr/sbin/iptables -t nat -F
 
-iptables -F    # Borrar todas las reglas existentes
-iptables -X    # Borrar cadenas personalizadas
-iptables -t nat -F  # Borrar reglas NAT
-
-# Guardamos en log que se ha hecho reset
-echo "$(date): firewall reseteado" >> /var/log/fw_reset.log
+/bin/echo "$(date): firewall reset" >> /var/log/fw_reset.log
 ```
 
 3-Hacemos ejecutable:
