@@ -1544,7 +1544,7 @@ Referencias sugeridas:
 Instalamos NESSUS y ejecutamos Advanced Scan sobre nuestro portátil añadiendo Ip, usuario y contraseña para análisis más extenso.
 
 
-En mi caso, el NESSSU Essentials registró las siguientes vulnerabilidades:
+En mi caso, el NESSUS Essentials registró las siguientes vulnerabilidades:
 
 ### **1-TLS Version 1.0 Protocol Detection (Medium)**
 
