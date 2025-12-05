@@ -704,7 +704,7 @@ En resumen, import-req sirve para traer la solicitud de tu compañero a tu CA y 
 Por último, le cambiamos el nombre al ceritificado firmado, para saber de quien es cada uno:
 ```bash
 cd ~/miCA/easy-rsa/pki/issued
-mv lsi-compa.crt lsiLucas.cr
+mv lsi-compa.crt lsiLucas.crt
 ```
 
 
@@ -1001,19 +1001,6 @@ Un certificado en dos niveles es simplemente una cadena de certificación de dos
 
 Es “dos niveles” porque no es auto-firmado directamente; hay un paso intermedio de validación.
 
-
-1-Para conectarte a tu Apache (el que tiene un certificado firmado por tu compañero):
-
- -  El certificado del servidor fue firmado por lucasCA.
-
- - Por tanto, necesitamos que openssl s_client confíe en la CA de tu compañero y por tanto en su clave pública(lucasCA.crt).
-
-
-2- Para conectarte al Apache de tu compañero (que tiene un certificado firmado por ti):
-
-  - El certificado del servidor fue firmado por tu CA (ismaCA).
-
-  - Entonces necesitas confiar en tu propia CA (ismaCA.crt).
 
 
  ---
