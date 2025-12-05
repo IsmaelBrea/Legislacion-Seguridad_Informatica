@@ -775,6 +775,11 @@ SSLCertificateFile      /home/lsi/lsiisma.crt
 SSLCertificateKeyFile   /home/lsi/miCA/easy-rsa/pki/private/lsi.key
 ```
 
+Y abajo descomentar esta línea y poner la clave pública de la CA del compañero:
+```bash
+SSLCertificateChainFile /home/lsi/lucasCA.crt
+```
+
 3-Instalar el certificado del compañero en el navegador:
 
 ```bash
@@ -941,14 +946,15 @@ w3m https://lucasCERT/p3   # Apache de tu compañero
 
 **PROBAR TODO**:
 
-Carlos no va pedir un comando de openssl para ver básicamente la cadena de certificados y sus profundidades (depth) en la verificación TLS en tiempo real. Dice que debemos ver algo como:
+Carlos no va pedir un comando de openssl para ver básicamente la cadena de certificados y sus profundidades (depth) en la verificación TLS en tiempo real. Dice que debemos ver esto así:
+
+ Si busco mi Apach tiene que salir:
 ```text
-0
-_
-_
-1
-_
-_
+0 → servidor: ismaCERT
+Esto es tu certificado de Apache, el que usa tu servidor.
+
+1 → CA que lo firmó: lucasCA
+Esto es la clave pública/certificado de la CA de tu compañero, que firmó tu certificado.
 
 ```
 
@@ -962,30 +968,21 @@ Las líneas de por medio representan detalles o separadores entre niveles de la 
 Ejemplo:
 
 ```bash
-openssl s_client -connect 10.11.48.175:443 -CAfile /home/lsi/ismaCA.crt
+openssl s_client -connect 10.11.48.175:443 -showcerts
 ```
 
 - connect 10.11.48.175:443 → Conecta al servidor Apache de tu compañero por HTTPS.
 
 - showcerts → Muestra todos los certificados enviados por el servidor (la “cadena de confianza”).
 
-- CAfile /home/lsi/CAs.crt → Le dice a OpenSSL qué archivo usar como lista de autoridades certificadoras de confianza. En tu caso, contiene tu CA y la de tu compañero.
-
 El comando básicamente hace una conexión TLS real y te enseña los certificados que el servidor usa, verificando si están firmados por una CA de confianza.
 
-
-En este caso veremos algo como:
-```bash
-Certificate chain
- 0 s:CN = lucasCERT
-   i:CN = ismaCA
-```
 
 s: → subject (quién es el certificado) → el servidor lucasCERT
 
 i: → issuer (quién lo firmó) → ismaCA
 
-Esto refleja lo que Carlos quería ver con 0, 1 (nivel 0 = servidor, nivel 1 = CA).
+Esto refleja lo que Carlos quería ver con 0, 1 -> ceriticado en dos niveles (nivel 0 = servidor, nivel 1 = CA).
 
 
 Si invertimos los roles y usamos ahora mi IP y la CA de mi compañero veremos algo así:
@@ -996,11 +993,20 @@ openssl s_client -connect 10.11.48.202:443 -CAfile /home/lsi/lucasCA.crt
 
 ### RESUMEN FÁCIL:
 
+Un certificado en dos niveles es simplemente una cadena de certificación de dos pasos:
+
+- Certificado del servidor (nivel 0) → el que usa el servidor/host, ej. ismaCERT.
+
+- Certificado de la CA (nivel 1) → la autoridad que firma el certificado del servidor, ej. lucasCA.
+
+Es “dos niveles” porque no es auto-firmado directamente; hay un paso intermedio de validación.
+
+
 1-Para conectarte a tu Apache (el que tiene un certificado firmado por tu compañero):
 
  -  El certificado del servidor fue firmado por lucasCA.
 
- - Por tanto, necesitas que openssl s_client confíe en la CA de tu compañero (lucasCA.crt).
+ - Por tanto, necesitamos que openssl s_client confíe en la CA de tu compañero y por tanto en su clave pública(lucasCA.crt).
 
 
 2- Para conectarte al Apache de tu compañero (que tiene un certificado firmado por ti):
@@ -1009,7 +1015,6 @@ openssl s_client -connect 10.11.48.202:443 -CAfile /home/lsi/lucasCA.crt
 
   - Entonces necesitas confiar en tu propia CA (ismaCA.crt).
 
-Si quieres poder conectar a ambos servidores sin cambiar el comando cada vez, lo más práctico es usar un archivo que tenga ambas CAs concatenadas (CAs.crt), como ya hiciste. Así, openssl s_client -CAfile /home/lsi/CAs.crt funcionará con ambos.
 
  ---
 
