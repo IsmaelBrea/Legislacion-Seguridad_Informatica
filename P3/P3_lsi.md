@@ -337,9 +337,14 @@ El servidor cifra su clave privada con un token, el cliente lo descifra con su c
 
 ### **Mediante túneles SSH securice algún servicio no seguro.**
 
+
 Un túnel SSH permite proteger un servicio que no cifra sus comunicaciones (como HTTP, MySQL o VNC) encapsulando su tráfico dentro del canal cifrado de SSH. Así, aunque el servicio sea inseguro, el tráfico entre cliente y servidor viaja cifrado y no puede ser interceptado.
 
+**EJEMPLO HTTP:**
+
 En nuestro caso por ejemplo tenemos un server HTTP que no es seguro porque está sin cifrar. Podemos hacer un túnel entre mi compañero y yo para que los datos viajen cifrados. 
+
+- **OPCIÓN 1 — SSH Local Forward (-L)**
 
 Comando de túnel ssh:
 ```bash
@@ -348,13 +353,6 @@ ssh -L <puerto_local>:<ip_destino>:<puerto_destino> usuario@IP_servidor
 
 El primer puerto es un puerto libre en el cliente(≥1023). El segundo puerto es el puerto inseguro.
 
-<br>
-
-Ejemplo 1: Securizar un servidor HTTP (puerto 80)
-
-Yo soy el cliente 10.11.48.202 y mi compañero tiene el servidor HTTP en 10.11.48.175.
-
-1. Creo el túnel:
 ```bash
 ssh -L 8080:10.11.48.175:80 lsi@10.11.48.175
 ```
@@ -364,15 +362,13 @@ ssh -L 8080:10.11.48.175:80 lsi@10.11.48.175
 10.11.48.175:80 → servicio HTTP inseguro de mi compañero.
 
 
-En otra terminal en mi máquina:
+Para probarlo, en otra terminal en mi máquina:
 ```bash
-curl http://localhost:8080
+curl http://10.11.48.202:8080
 ```
 
-Esto muestra la web del Apache de mi compañero, pero viajando cifrada por SSH.
-
-Se puede comprobar qur funciona bien con:
-
+Estamos viendo su puerto 80, pero a través de un túnel seguro.
+Si hacemos **curl http://10.11.48.202:8080** , debe responder el servicio del compañero. En Wireshark veremos tráfico SSH cifrado, no HTTP:
  - El servidor hará un ettercap
 ```bash
 ettercap-Tq -w /home/lsi/FICHERO.pcap -i ens33 -M arp:remote
@@ -381,16 +377,30 @@ ettercap-Tq -w /home/lsi/FICHERO.pcap -i ens33 -M arp:remote
 - El cliente buscará la página. Si al meter el .pcap en el Wireshark no sale ningún paquete HTTP, es que está todo bien.
 
 
-El comando ssh -L 8080:localhost:80 lsi@10.11.48.175 crea un túnel SSH. Esto significa que redirige una conexión desde tu propio ordenador hacia un servicio que está en la máquina remota. Es una forma segura de acceder a un puerto que normalmente no sería accesible desde fuera.
-
-En concreto, el parámetro -L 8080:localhost:80 indica que todo lo que abras en tu navegador en http://localhost:8080 se enviará a través del túnel y acabará realmente en el puerto 80 del servidor 10.11.48.175. De este modo puedes ver la web de ese servidor como si fuese local, pero de forma cifrada gracias a SSH.
-
-El usuario lsi es la cuenta con la que te conectas al servidor remoto. Con esta técnica no hace falta abrir puertos en el firewall, porque la conexión sale desde tu máquina hacia el servidor y va totalmente protegida dentro del túnel SSH.
-
+**Yo me conecto al servicio inseguro de mi compañero mediante un túnel cifrado**
 
 <br>
 
-**Ejemplo con NTP**:
+
+OPCIÓN 2 — SSH Remote Forward (-R)
+
+Mi compañero accede a mi servicio inseguro, usando mi SSH como punto intermedio:
+
+Comando desde la máquina de Lucas:
+```bash
+ssh -R 8080:10.11.48.202:80 lsi@10.11.48.202
+```
+
+Mi compañero accederá a mi servicio inseguro por **http://10.11.48.175:8080**, pero el tráfico irá cifrado dentro del túnel SSH hacia mi máquina.
+
+Para probarlo, en otra terminal desde su máquina:
+```bash
+curl http://10.11.48.175:8080
+```
+
+<br>
+
+**EJEMPLO CON NTP**:
 
 1-Crear el túnel SSH
 
@@ -428,8 +438,14 @@ sudo tcpdump -i lo port 1234
 
 <br>
 
-#### Resumen
+#### RESUMEN  FÁCIL:
+
 Se demuestra que un servicio inseguro (por ejemplo HTTP sin HTTPS) puede viajar de forma segura y cifrada si lo encapsulas dentro de un túnel SSH.
+
+
+- El que quiere acceder usa -L
+  
+- El que exporta su servicio usa -R
 
 <br>
 <br>
