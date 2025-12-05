@@ -1542,3 +1542,75 @@ Referencias sugeridas:
 <br>
 
 Instalamos NESSUS y ejecutamos Advanced Scan sobre nuestro portátil añadiendo Ip, usuario y contraseña para análisis más extenso.
+
+
+En mi caso, el NESSSU Essentials registró las siguientes vulnerabilidades:
+
+### **1-TLS Version 1.0 Protocol Detection (Medium)**
+
+- **Qué es**: Mi sistema acepta conexiones usando TLS 1.0, un protocolo antiguo para cifrado que tiene fallos conocidos.
+
+- **Porque es malo**: TLS 1.0 puede ser vulnerable a ataques que comprometen la confidencialidad de la información. Los navegadores modernos ya no lo aceptan desde 2020.
+
+- **Como arreglarlo**: Configurar mi sistema para usar TLS 1.2 o TLS 1.3 y desactivar TLS 1.0 en el servicio que escucha en el puerto 3389 (RDP).
+
+<br>
+
+### **2-TLS Version 1.1 Deprecated Protocol (Medium)**
+
+- **Qué es**: Similar al anterior, pero TLS 1.1 es la versión siguiente a TLS 1.0. Aún soporta cifrados antiguos y no los recomendados hoy.
+
+- **Porque es malo**: TLS 1.1 no permite algunos cifrados modernos más seguros (como GCM) y los navegadores tampoco lo aceptan.
+
+- **Como arreglarlo**: Igual que antes, activa TLS 1.2 o 1.3 y desactiva TLS 1.1 en el puerto 3389.
+
+<br>
+
+### **3-SSL Certificate Cannot Be Trusted**  -> 2 vulnerabilidades de esto
+
+- **Qué es**: El certificado SSL del servidor no puede verificarse correctamente. Esto puede pasar si:
+
+   - Es un certificado auto-firmado.
+ 
+   - Faltan certificados intermedios en la cadena.
+ 
+   - El certificado está caducado o firmado de manera incorrecta.
+
+- **Porque es malo**: Los usuarios podrían ser víctimas de ataques “man-in-the-middle” y los navegadores mostrarán advertencias.
+
+- **Como arreglarlo**: Compra o genera un certificado válido desde una autoridad certificadora reconocida (CA) y asegúrate de incluir todos los certificados intermedios.
+
+
+<br>
+
+
+### **4-SSL Self-Signed Certificate**
+
+- **Qué es**: Tu certificado es auto-firmado, lo que significa que no hay una autoridad externa que lo respalde.
+
+- **Porque es malo**: Cualquiera podría crear un certificado falso y engañar a los usuarios.
+
+- **Como arreglarlo**: Igual que antes, adquiere un certificado de una CA reconocida o usa uno válido internamente si es solo para pruebas, pero nunca en producción pública.
+
+<br>
+
+### **SMB Signing Not Required (Medium)**
+
+- **Qué es**: Mi servidor SMB (compartición de archivos en red) no requiere firma digital en los mensajes.
+
+- **Porque es malo**: Esto permite que un atacante intercepte y modifique mensajes SMB (MITM).
+
+- **Como arreglarlo**: En Windows, habilita la política "Microsoft network server: Digitally sign communications (always)" o en Samba ajusta server signing para exigir firmas.
+
+
+<br>
+
+### RESUMEN FÁCIL
+
+Resumen rápido
+
+- TLS 1.0 y 1.1 → Actualiza a TLS 1.2/1.3.
+
+- Certificados SSL → Usa certificados válidos de una CA.
+
+- SMB → Exige firmas en mensajes.
