@@ -1612,9 +1612,7 @@ En mi caso, el NESSUS Essentials registró las siguientes vulnerabilidades:
 
 <br>
 
-### RESUMEN FÁCIL
-
-Resumen rápido
+### RESUMEN
 
 - TLS 1.0 y 1.1 → Actualiza a TLS 1.2/1.3.
 
