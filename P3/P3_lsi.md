@@ -398,6 +398,13 @@ Para probarlo, en otra terminal desde su máquina:
 curl http://10.11.48.175:8080
 ```
 
+
+Para ver que si va cifrado, en otra terminal:
+```bash
+tcpdump -i ens33 port 8080
+```
+
+
 <br>
 
 **EJEMPLO CON NTP**:
