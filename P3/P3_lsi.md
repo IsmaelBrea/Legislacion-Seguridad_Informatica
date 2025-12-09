@@ -382,7 +382,7 @@ ettercap-Tq -w /home/lsi/FICHERO.pcap -i ens33 -M arp:remote
 <br>
 
 
-OPCIÓN 2 — SSH Remote Forward (-R)
+- **OPCIÓN 2 — SSH Remote Forward (-R)**
 
 Mi compañero accede a mi servicio inseguro, usando mi SSH como punto intermedio:
 
